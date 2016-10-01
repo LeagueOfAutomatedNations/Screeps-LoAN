@@ -1,3 +1,5 @@
+{% extends "layout.html" %}
+{% block content %}
 {% for alliance in alliances %}
     <div>
         <div> {{alliance['fullname']}} ({{alliance['shortname']}})</div>
@@ -18,3 +20,4 @@
     </div>
     <br>
 {% endfor %}
+{% endblock %}

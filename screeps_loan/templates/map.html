@@ -1,5 +1,12 @@
+{% extends "layout.html" %}
+{% block head %}
 <script type="text/javascript" language="javascript" src="{{url_for ('static', filename = 'js/ScreepsMap.js')}}">
 </script>
+<link rel="stylesheet" href="{{url_for('static', filename='css/map.css')}}">
+{{ super() }}
+{% endblock %}
+
+{% block content %}
 <div class="unit whole">
   <div id="ScreepsMapFlex">
     <div id="ScreepsMapContainer"></div>
@@ -19,3 +26,4 @@
   </script>
 </div>
 
+{% endblock %}
