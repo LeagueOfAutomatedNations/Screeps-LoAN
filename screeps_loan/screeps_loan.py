@@ -16,7 +16,7 @@ def index():
     #    return 'Logged in as %s' % escape(session['username'])
     #return 'You are not logged in'
     if ('username' in session):
-        return render_template('alliance_listing.html')
+        return redirect(url_for('alliance_listing'))
     return redirect(url_for('login'))
 
 @app.route('/login/', methods=['GET', 'POST'])
