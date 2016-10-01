@@ -9,7 +9,7 @@ var ScreepsMap = function() {
 
     // Defaults
     this.setRoomSize(5,5);
-    this.setMapBounds("W60N60","E60S60");
+    this.setMapBounds("W70N70","E70S70");
     this.setPadding(5);
 };
 
