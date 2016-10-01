@@ -48,7 +48,7 @@ def map():
 
     alliances_aux = {}
     for alliance in all_alliances:
-        alliance['users'] = [user['name'] for user in users_with_alliance
+        alliance['members'] = [user['name'] for user in users_with_alliance
                              if user['alliance'] == alliance['shortname']]
         alliances_aux[alliance['shortname']]=alliance
         alliance['name'] = alliance['fullname']
