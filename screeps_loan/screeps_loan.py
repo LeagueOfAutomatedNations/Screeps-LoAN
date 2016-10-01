@@ -39,10 +39,10 @@ def alliance_listing():
 
     alliance_query = alliances.AllianceQuery()
     all_alliances = alliance_query.getAll()
-    alliances_name = [item["name"] for item in all_alliances]
+    alliances_name = [item["shortname"] for item in all_alliances]
     users_with_alliance = users.UserQuery().find_name_by_alliances(alliances_name)
     for alliance in all_alliances:
-        alliance['users'] = [user for user in users_with_alliance if user['alliance'] == alliance['name']]
+        alliance['users'] = [user for user in users_with_alliance if user['alliance'] == alliance['shortname']]
     return render_template("alliance_listing.html", alliances = all_alliances)
 
 

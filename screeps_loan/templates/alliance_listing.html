@@ -1,6 +1,6 @@
 {% for alliance in alliances %}
     <div>
-        <div> {{alliance['name']}} </div>
+        <div> {{alliance['fullname']}} ({{alliance['shortname']}})</div>
         <div> Slack channel:
             <a href="https://screeps.slack.com/messages/{{alliance['slack_channel']}}">
             {{alliance['slack_channel']}}
