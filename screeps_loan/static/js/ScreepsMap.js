@@ -4,12 +4,12 @@ var ScreepsMap = function() {
     this.containerID = "ScreepsMapContainer";
     this.canvasID = "ScreepsMapCanvas";
     this.colorKeyID = "ScreepsColorKeyContainer";
-    this.topLeftOfTerrain = this.roomNameToXY("W70N70");
+    this.topLeftOfTerrain = this.roomNameToXY("W60N60");
     this.terrainImageRoomSize = 50;
 
     // Defaults
     this.setRoomSize(5,5);
-    this.setMapBounds("W70N70","E70S70");
+    this.setMapBounds("W60N60","E60S60");
     this.setPadding(5);
 };
 
@@ -126,6 +126,7 @@ ScreepsMap.prototype.drawAllianceMap = function(options) {
     this.loadImages(function() {
         this.drawTerrain();
         this.drawAlliances();
+        this.drawGroupLabels();
     }.bind(this));
 }
 
@@ -137,7 +138,7 @@ ScreepsMap.prototype.resetCanvas = function(container) {
 
 ScreepsMap.prototype.loadImages = function(callback) {
     this.terrainImage = new Image();
-    this.terrainImage.src = "/static/img/screeps_terrain.png";
+    this.terrainImage.src = "/img/screeps_terrain.png";
     this.terrainImage.onload = callback;
 }
 
@@ -172,8 +173,49 @@ ScreepsMap.prototype.drawAlliances = function() {
     }
 }
 
+ScreepsMap.prototype.drawGroupLabels = function() {
+    let groups = this.findGroups(function(name) {
+        let room = this.rooms[name];
+        if (!room) { return; }
+        for (let aName of Object.keys(this.alliances)) {
+            if (this.alliances[aName].members.indexOf(this.rooms[name].owner) != -1) {
+                if (aName == "neutral") { return; }
+                return aName;
+            }
+        }
+    }.bind(this), 10);
+    for (let group of groups) {
+        let center = this.geometricCenter(group.rooms);
+        let title = (this.alliances[group.matchingValue].abbreviation ? this.alliances[group.matchingValue].abbreviation : this.alliances[group.matchingValue].name);
+        this.drawOutlinedText(center, title, this.colorForAlliance(group.matchingValue));
+        //this.drawFadeCircle(center, this.roomWidth*4, this.roomWidth*2, this.colorForAlliance(group.matchingValue));
+    }
+}
+
+ScreepsMap.prototype.drawText = function(xy, text, color) {
+    this.context.save();
+    this.context.font = "15px Arial";
+    this.context.fillStyle = color;
+    this.context.textAlign = "center";
+    this.context.fillText(text, xy.x, xy.y);
+    this.context.restore();
+}
+
+ScreepsMap.prototype.drawOutlinedText = function(xy, text, color) {
+    this.drawText({"x": xy.x - 1, "y": xy.y - 1}, text, "#000");
+    this.drawText({"x": xy.x - 1, "y": xy.y + 1}, text, "#000");
+    this.drawText({"x": xy.x + 1, "y": xy.y - 1}, text, "#000");
+    this.drawText({"x": xy.x + 1, "y": xy.y + 1}, text, "#000");
+    this.drawText(xy, text, color);
+}
+
 ScreepsMap.prototype.drawFadeCircle = function(roomName, radius, solidRadius, color) {
-    let xy = this.roomNameToRoomCenter(roomName);
+    let xy;
+    if (typeof roomName === "string") {
+        xy = this.roomNameToRoomCenter(roomName);
+    } else {
+        xy = roomName;
+    }
     this.context.beginPath();
     let rad = this.context.createRadialGradient(xy.x, xy.y, solidRadius, xy.x, xy.y, radius);
     let parts = this.hexToRgb(color);
@@ -204,3 +246,64 @@ ScreepsMap.prototype.drawColorKey = function() {
     container.innerHTML = output;
 }
 
+ScreepsMap.prototype.findGroups = function(matchingFunc, radius) {
+    let result = [];
+    let checked = {};
+    for (let y = this.topLeft.y; y <= this.bottomRight.y; y++) {
+        for (let x = this.topLeft.x; x <= this.bottomRight.x; x++) {
+            let xy = {"x": x, "y": y};
+            let name = this.xyToRoomName(xy);
+            if (checked[name]) { continue; }
+            checked[name] = 1;
+            if (!this.rooms[name]) { continue; }
+            let matchingValue = matchingFunc(name);
+            if (matchingValue) {
+                let group = {"matchingValue": matchingValue, "rooms": []};
+                result.push(this.buildGroup(group, name, matchingFunc, radius, checked));
+            }
+        }
+    }
+    return result;
+}
+
+ScreepsMap.prototype.buildGroup = function(group, name, matchingFunc, radius, checked) {
+    let groupChecked = {};
+    let toCheck = [name];
+    group.rooms.push(name);
+    while (toCheck.length > 0) {
+        let checkName = toCheck.pop();
+        let xy = this.roomNameToXY(checkName);
+        //let minXY = {"x": Math.max(this.topLeft.x, xy.x - radius), "y": xy.y};
+        let minXY = {"x": Math.max(this.topLeft.x, xy.x - radius), "y": Math.max(this.topLeft.y, xy.y - radius)};
+        let maxXY = {"x": Math.min(this.bottomRight.x, xy.x + radius), "y": Math.min(this.bottomRight.y, xy.y + radius)};
+        for (let y = minXY.y; y <= maxXY.y; y++) {
+            for (let x = minXY.x; x <= maxXY.x; x++) {
+                if (y == minXY.y && x <= xy.x) { continue; }
+                let curXY = {"x": x, "y": y};
+                let curName = this.xyToRoomName(curXY);
+                if (!this.rooms[curName]) { continue; }
+                if (groupChecked[curName] || checked[curName]) { continue; }
+                groupChecked[curName] = 1;
+                let matchingValue = matchingFunc(curName);
+                if (matchingValue && matchingValue == group.matchingValue) {
+                    checked[curName] = 1;
+                    toCheck.push(curName);
+                    group.rooms.push(curName);
+                }
+            }
+        }
+    }
+    return group;
+}
+
+ScreepsMap.prototype.geometricCenter = function(rooms) {
+    let sum = {"x": 0, "y": 0};
+    for (let name of rooms) {
+        let xy = this.roomNameToRoomCenter(name);
+        sum.x += xy.x;
+        sum.y += xy.y;
+    }
+    sum.x = Math.floor(sum.x / rooms.length);
+    sum.y = Math.floor(sum.y / rooms.length);
+    return sum;
+}
