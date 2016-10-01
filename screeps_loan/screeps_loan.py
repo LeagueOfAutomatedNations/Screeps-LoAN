@@ -58,7 +58,7 @@ def map():
         alliance.pop('fullname', None)
         alliance.pop('shortname', None)
     import json
-    return render_template("map.html", room_data = json.dumps(room_data), alliance_data = json.dumps(alliances_aux))
+    return render_template("map.html", room_data = json.dumps(room_data_aux), alliance_data = json.dumps(alliances_aux))
 
 
 @app.route('/alliances')
