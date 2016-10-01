@@ -1,4 +1,6 @@
 from screeps_loan.models.db import get_conn
+import screeps_loan.models.users as users_model
+import screeps_loan.services.users as users_service
 import hashlib
 import os
 import datetime
@@ -12,34 +14,11 @@ class AuthPlayer(object):
         return hashlib.sha512(os.urandom(128)).hexdigest()[0: 15]
 
 
-    def player_id_from_db(self, name):
-        query = "SELECT screeps_id FROM users WHERE ign=%s"
-        conn = get_conn()
-        cursor = conn.cursor()
-        cursor.execute(query, (name,))
-        row = cursor.fetchone()
-        if (row is not None):
-            return row[0]
-        return None
-
-    def player_id_from_api(self, name):
-        resp = self.api_client.user_find(name)
-        if ((resp['ok'] == 1) and (resp['user'] is not None)):
-            return resp['user']['_id']
-        return None
-
-    def store_id(self, name, id):
-        query = "INSERT INTO users(ign, screeps_id) VALUES(%s, %s)"
-        conn = get_conn()
-        cursor = conn.cursor()
-        cursor.execute(query, (name, id))
-        conn.commit()
-
     def id_from_name(self, name):
-        id = self.player_id_from_db(name)
+        id = users_model.player_id_from_db(name)
         if (id is None):
-            id = self.player_id_from_api(name)
-            self.store_id(name, id)
+            id = users_service.player_id_from_api(name)
+            users_model.insert_username_with_id(name, id)
         return id
 
 

@@ -9,3 +9,28 @@ class UserQuery():
     def update_alliance_by_screeps_id (self, id, alliance):
         query = "UPDATE users SET alliance = %s WHERE screeps_id=%s"
         db.execute(query, (alliance, id))
+
+def update_alliance_by_screeps_id (id, alliance):
+    query = "UPDATE users SET alliance = %s WHERE screeps_id=%s"
+    db.execute(query, (alliance, id))
+
+def player_id_from_db(name):
+    query = "SELECT screeps_id FROM users WHERE ign=%s"
+    row = db.find_one(query, (name,))
+    if (row is not None):
+        return row[0]
+    return None
+
+def insert_username_with_id(name, id):
+    query = "INSERT INTO users(ign, screeps_id) VALUES(%s, %s)"
+    conn = get_conn()
+    cursor = conn.cursor()
+    cursor.execute(query, (name, id))
+    conn.commit()
+
+def alliance_of_user(id):
+    query = "SELECT fullname, shortname from users JOIN alliances ON alliance=shortname where id=%s"
+    row = db.find_one(query, (id,))
+    if (row is not None):
+        return {'fullname': row[0], 'shortname': row[1]}
+    return None

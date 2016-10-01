@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div>
+        <form action="/invite" method="post">
+            <p> Invite a user to your alliance. NAME IS CASE SENSITIVE</p>
+            <p><input type=text name=username></p>
+            <p><input type=submit value=Submit></p>
+        </form>
+    </div>
+{% endblock %}

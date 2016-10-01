@@ -1,4 +1,4 @@
-from flask import Flask, session, redirect, url_for, escape, request, render_template
+from flask import Flask, session, redirect, url_for, escape, request, render_template, flash
 from screeps_loan import app
 app.config.from_envvar('SETTINGS')
 
@@ -9,6 +9,7 @@ from screeps_loan.models.db import get_conn
 import screeps_loan.screeps_client as screeps_client
 import screeps_loan.cli.import_user
 
+import screeps_loan.routes.auth
 
 @app.route('/')
 def index():
@@ -18,6 +19,13 @@ def index():
     if ('username' in session):
         return redirect(url_for('alliance_listing'))
     return redirect(url_for('login'))
+
+@app.route('/my')
+def my_alliance():
+    if ('username' not in session):
+        return redirect(url_for('login'))
+    return render_template('my.html')
+
 
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
@@ -60,6 +68,34 @@ def map():
     import json
     return render_template("map.html", room_data = json.dumps(room_data_aux), alliance_data = json.dumps(alliances_aux))
 
+@app.route('/invite', methods=["POST"])
+def invite_to_alliance():
+    import screeps_loan.models.users as users_model
+    import screeps_loan.services.users as users_service
+    import hashlib
+
+    my_id = session['my_id']
+    alliance = users_model.alliance_of_user(my_id)
+    if (alliance is None):
+        return "You are not in an alliance, can't invite anyone"
+
+    username = request.form['username']
+    api = screeps_client.get_client()
+
+    auth = AuthPlayer(api)
+    id = auth.id_from_name(username)
+    users_model.update_alliance_by_screeps_id(id, alliance['shortname'])
+    #(id, token) = auth.auth_token(username)
+
+    #if (id is not None):
+    #    api.msg_send(id, "You are invited to join %s, click for more info: \n\n" % alliance+
+    #                 url_for('accept_alliance_invite', token=token, _external=True))
+    flash('Successfully add user to your alliance')
+    return redirect(request.referrer)
+
+@app.route('/invite/accept/<token>')
+def accept_alliance_invite(token):
+    pass
 
 @app.route('/alliances')
 def alliance_listing():
@@ -75,21 +111,6 @@ def alliance_listing():
     return render_template("alliance_listing.html", alliances = all_alliances)
 
 
-@app.route('/auth/success')
-def auth_request():
-    return render_template('auth_sent.html')
-
-@app.route('/auth/<token>')
-def auth(token):
-    query = "SELECT ign FROM users WHERE login_code=%s"
-    conn = get_conn()
-    cursor = conn.cursor()
-    cursor.execute(query, (token,))
-    row = cursor.fetchone()
-    if (row is not None):
-        session['username'] = row[0]
-
-    return redirect(url_for('index'))
 
 @app.route('/logout', methods = ["GET", "POST"])
 def logout():

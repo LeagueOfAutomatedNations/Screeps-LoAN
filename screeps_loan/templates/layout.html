@@ -16,10 +16,24 @@
                 <div class="pure-u-1-6"><p>
                     <a href="{{url_for('map')}}">Alliance Map</a>
                 </p></div>
-                <div class="pure-u-1-6"><p>About</p></div>
+                <div class="pure-u-1-6">
+                    <p>
+                        <a href="{{url_for('my_alliance')}}">
+                            My Alliance
+                        </a></p></div>
             </div>
 
             <div id="main">
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        <ul class=flashes>
+                            {% for message in messages %}
+                                <li>{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                {% endwith %}
+
                 {% block content %}
                 {% endblock %}
             </div>
