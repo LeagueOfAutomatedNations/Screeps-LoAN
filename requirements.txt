@@ -10,7 +10,7 @@ pkg-resources==0.0.0
 psycopg2==2.6.2
 requests==2.11.1
 Requires==0.0.3
-screepsapi==0.2
+-e git+https://github.com/NhanHo/python-screeps.git#egg=screepsapi
 six==1.10.0
 websocket==0.2.1
 websocket-client==0.37.0
