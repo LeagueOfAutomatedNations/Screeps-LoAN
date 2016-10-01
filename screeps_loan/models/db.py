@@ -1,0 +1,33 @@
+import psycopg2
+from flask import g
+from screeps_loan import app
+from psycopg2.extensions import STATUS_BEGIN, STATUS_READY
+
+def get_conn():
+    conn = getattr(g, '_database', None)
+    if conn is None:
+        g._database = psycopg2.connect(database=app.config['DB'], user=app.config['DB_USERNAME'],
+                         password=app.config['DB_PASSWORD'], host=app.config['DB_HOST'])
+    return g._database
+
+
+def runQuery(query, params= None):
+    conn = get_conn()
+    if (conn.status == STATUS_BEGIN): #Note: this read like it might cause weird race condition
+        conn.rollback()
+    cursor = conn.cursor()
+    if (params is not None):
+        cursor.execute(query, params)
+    else:
+        cursor.execute(query)
+
+    conn.commit()
+    return cursor
+
+
+def find_one(query, params = None):
+    return runQuery(query, params).fetchone()
+
+
+def find_all(query, params = None):
+    return runQuery(query, params).fetchall()

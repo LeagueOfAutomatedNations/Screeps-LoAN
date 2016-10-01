@@ -1,4 +1,4 @@
-from db import get_conn
+from screeps_loan.models.db import get_conn
 import hashlib
 import os
 import datetime

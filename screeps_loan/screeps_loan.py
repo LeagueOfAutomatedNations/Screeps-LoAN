@@ -1,12 +1,11 @@
 from flask import Flask, session, redirect, url_for, escape, request, render_template
-app = Flask(__name__)
+from screeps_loan import app
 app.config.from_envvar('SETTINGS')
 
 import screepsapi.screepsapi as screepsapi
-from auth_user import AuthPlayer
+from screeps_loan.auth_user import AuthPlayer
 import socket
-from db import get_conn
-
+from screeps_loan.models.db import get_conn
 
 @app.route('/')
 def index():
@@ -22,9 +21,7 @@ def login():
     if request.method == 'POST':
         #TODO: Authenticate via url
         username = request.form['username']
-        user = app.config['API_USERNAME']
-        password = app.config['API_PASSWORD']
-        api = screepsapi.API(user, password)
+        api = screeps_client.get_client()
         auth = AuthPlayer(api)
         (id, token) = auth.auth_token(username)
         if (id is not None):
@@ -32,9 +29,24 @@ def login():
         return redirect(url_for('auth_request'))
     return render_template("login.html")
 
+@app.route('/alliances')
+def alliance_listing():
+    import screeps_loan.models.alliances as alliances
+    import screeps_loan.models.users as users
+
+    alliance_query = alliances.AllianceQuery()
+    all_alliances = alliance_query.getAll()
+    alliances_name = [item["name"] for item in all_alliances]
+    users_with_alliance = users.UserQuery().find_name_by_alliances(alliances_name)
+    for alliance in all_alliances:
+        alliance['users'] = [user for user in users_with_alliance if user['alliance'] == alliance['name']]
+    return render_template("alliance_listing.html", alliances = all_alliances)
+
+
 @app.route('/auth/success')
 def auth_request():
     return render_template('auth_sent.html')
+
 @app.route('/auth/<token>')
 def auth(token):
     query = "SELECT ign FROM users WHERE login_code=%s"
