@@ -63,6 +63,7 @@ def map():
                              if user['alliance'] == alliance['shortname']]
         alliances_aux[alliance['shortname']]=alliance
         alliance['name'] = alliance['fullname']
+        alliance['abbreviation'] = alliance['shortname']
         alliance.pop('fullname', None)
         alliance.pop('shortname', None)
     import json
