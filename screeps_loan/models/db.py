@@ -31,3 +31,6 @@ def find_one(query, params = None):
 
 def find_all(query, params = None):
     return runQuery(query, params).fetchall()
+
+def execute(query, params = None):
+    runQuery(query, params)

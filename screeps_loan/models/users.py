@@ -6,3 +6,6 @@ class UserQuery():
         result = db.find_all(query, (alliances,))
         return [{"name": row[0], "alliance": row[1]} for row in result]
 
+    def update_alliance_by_screeps_id (self, id, alliance):
+        query = "UPDATE users SET alliance = %s WHERE screeps_id=%s"
+        db.execute(query, (alliance, id))

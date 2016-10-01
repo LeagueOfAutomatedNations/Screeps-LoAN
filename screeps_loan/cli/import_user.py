@@ -3,6 +3,7 @@ from screeps_loan import app
 import screepsapi.screepsapi as screepsapi
 import re
 from screeps_loan.models.db import get_conn
+from screeps_loan.screeps_client import get_client
 
 class Map(object):
     roomRegex = re.compile(r'(E|W)(\d+)(N|S)(\d+)')
@@ -99,3 +100,36 @@ def initdb():
     """Initialize the database."""
     click.echo('Init the db')
 
+@app.cli.command()
+def import_alliances():
+    import requests as r
+    import json
+    import screeps_loan.models.alliances as alliances_model
+    import screeps_loan.models.users as users_model
+    import screeps_loan.auth_user
+
+    alliance_query = alliances_model.AllianceQuery()
+    users_query = users_model.UserQuery()
+    screeps = get_client()
+    auth_user = screeps_loan.auth_user.AuthPlayer(screeps)
+    resp = r.get('http://www.leagueofautomatednations.com/alliances.js')
+    data = json.loads(resp.text)
+    for shortname, info in data.items():
+        members = info['members']
+        fullname = info['name']
+        color = None
+        if 'color' in info:
+            color = info['color']
+        slack = None
+        if 'slack' in info:
+            slack = info['slack']
+        alliance = alliance_query.find_by_shortname(shortname)
+        if (alliance is None):
+            alliance_query.insert_alliance(shortname, fullname, color, slack)
+            alliance = shortname
+
+        existing_member = [i['name'] for i in users_query.find_name_by_alliances([alliance])]
+        new_members = [name for name in members if name not in existing_member]
+        for member in new_members:
+            id = auth_user.player_id_from_api(member)
+            users_query.update_alliance_by_screeps_id(id, alliance)
