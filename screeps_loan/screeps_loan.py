@@ -39,7 +39,10 @@ def map():
     import screeps_loan.models.users as users
 
     room_data = get_all_rooms()
-    room_data = [{item['roomname']: {'level': item['level'], 'owner': item['owner_name']}} for item in room_data]
+    #room_data = [{item['roomname']: {'level': item['level'], 'owner': item['owner_name']}} for item in room_data]
+    room_data_aux = {}
+    for room in room_data:
+        room_data_aux[room['roomname']] = {'level': room['level'], 'owner': room['owner_name']}
 
     alliance_query = alliances.AllianceQuery()
     all_alliances = alliance_query.getAll()
