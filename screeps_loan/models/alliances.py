@@ -2,9 +2,9 @@ from screeps_loan.models import db
 
 class AllianceQuery():
     def getAll(self):
-        query = "SELECT shortname, fullname, slack_channel FROM alliances"
+        query = "SELECT shortname, fullname, slack_channel, color FROM alliances"
         result = db.find_all(query)
-        return [{"shortname":i[0], "fullname": i[1], "slack_channel": i[2]} for i in result]
+        return [{"shortname":i[0], "fullname": i[1], "slack_channel": i[2], "color": i[3]} for i in result]
 
 
     def find_by_shortname(self, name):
@@ -18,3 +18,4 @@ class AllianceQuery():
         query = """INSERT INTO alliances(shortname, fullname, color, slack_channel) \
                  VALUES(%s, %s, %s, %s)"""
         result = db.execute(query, (shortname, fullname, color, slack_channel))
+

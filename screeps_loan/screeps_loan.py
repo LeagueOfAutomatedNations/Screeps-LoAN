@@ -32,6 +32,32 @@ def login():
         return redirect(url_for('auth_request'))
     return render_template("login.html")
 
+@app.route('/map')
+def map():
+    import screeps_loan.models.alliances as alliances
+    from screeps_loan.models.rooms import get_all_rooms
+    import screeps_loan.models.users as users
+
+    room_data = get_all_rooms()
+    room_data = [{item['roomname']: {'level': item['level'], 'owner': item['owner_name']}} for item in room_data]
+
+    alliance_query = alliances.AllianceQuery()
+    all_alliances = alliance_query.getAll()
+    alliances_name = [item["shortname"] for item in all_alliances]
+    users_with_alliance = users.UserQuery().find_name_by_alliances(alliances_name)
+
+    alliances_aux = {}
+    for alliance in all_alliances:
+        alliance['users'] = [user['name'] for user in users_with_alliance
+                             if user['alliance'] == alliance['shortname']]
+        alliances_aux[alliance['shortname']]=alliance
+        alliance['name'] = alliance['fullname']
+        alliance.pop('fullname', None)
+        alliance.pop('shortname', None)
+    import json
+    return render_template("map.html", room_data = json.dumps(room_data), alliance_data = json.dumps(alliances_aux))
+
+
 @app.route('/alliances')
 def alliance_listing():
     import screeps_loan.models.alliances as alliances
