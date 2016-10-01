@@ -8,7 +8,11 @@
         </div>
         <ul>
             {% for user in alliance['users'] %}
-                <li> {{user['name']}} </li>
+                <li>
+                    <a href="https://screeps.com/a/#!/profile/{{user['name']}}">
+                        {{user['name']}}
+                    </a>
+                </li>
             {% endfor %}
         </ul>
     </div>
