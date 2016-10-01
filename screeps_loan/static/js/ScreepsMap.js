@@ -138,7 +138,7 @@ ScreepsMap.prototype.resetCanvas = function(container) {
 
 ScreepsMap.prototype.loadImages = function(callback) {
     this.terrainImage = new Image();
-    this.terrainImage.src = "/img/screeps_terrain.png";
+    this.terrainImage.src = "/static/img/screeps_terrain.png";
     this.terrainImage.onload = callback;
 }
 
