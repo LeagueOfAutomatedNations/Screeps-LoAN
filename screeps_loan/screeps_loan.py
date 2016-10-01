@@ -7,6 +7,7 @@ from screeps_loan.auth_user import AuthPlayer
 import socket
 from screeps_loan.models.db import get_conn
 import screeps_loan.screeps_client as screeps_client
+import screeps_loan.cli.import_user
 
 
 @app.route('/')
