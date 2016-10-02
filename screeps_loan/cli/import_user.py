@@ -107,6 +107,7 @@ def import_alliances():
     import screeps_loan.models.alliances as alliances_model
     import screeps_loan.models.users as users_model
     import screeps_loan.auth_user
+    import screeps_loan.services.users as users_service
 
     alliance_query = alliances_model.AllianceQuery()
     users_query = users_model.UserQuery()
@@ -131,5 +132,5 @@ def import_alliances():
         existing_member = [i['name'] for i in users_query.find_name_by_alliances([alliance])]
         new_members = [name for name in members if name not in existing_member]
         for member in new_members:
-            id = auth_user.player_id_from_api(member)
+            id = users_service.player_id_from_api(member)
             users_query.update_alliance_by_screeps_id(id, alliance)
