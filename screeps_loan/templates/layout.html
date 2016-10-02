@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Foundation | Welcome</title>
     <link rel="stylesheet" href="http://dhbhdrzi4tiry.cloudfront.net/cdn/sites/foundation.min.css">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/app.css')}}">
     {% block head %}
     {% endblock %}
   </head>
@@ -16,8 +17,12 @@
           <div class="row column">
             <br>
             <img class="thumbnail" src="{{url_for('static', filename='img/leaguelogo.png')}}">
-            <h5>Foo Bar</h5>
-            <p>Lorem ipsum dolor sit amet, tristique commodo justo convallis ipsum nam lacinia. Ultrices tempora interdum cumque maecenas nulla, sit sem diam etiam nunc, eget pellentesque turpis velit tempus porta, non nibh fusce placerat. Wisi morbi. Eleifend turpis dolor mollis, magna eu amet malesuada sapien </p>
+            <h5>League of Automated Nations</h5>
+            <hr>
+            <p><a href="{{url_for('alliance_listing')}}"> Alliance Index </a></p>
+            <p> <a href="{{url_for('map')}}">Alliance Map </a></p>
+            <p> <a href="https://www.screeps.com" target="_blank">Screeps </a></p>
+            <p> <a href="https://screeps.slack.com/messages/loan/details/" target="_blank"> Slack </a></p>
           </div>
         </div>
         <div id="main" class="off-canvas-content" data-off-canvas-content>
