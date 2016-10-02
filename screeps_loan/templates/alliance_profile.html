@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block head %}
+<script type="text/javascript" language="javascript" src="{{url_for ('static', filename = 'js/ScreepsMap.js')}}">
+</script>
+<link rel="stylesheet" href="{{url_for('static', filename='css/map.css')}}">
+{{ super() }}
+{% endblock %}
+
+{% block content %}
+<div class="unit whole">
+  <div id="ScreepsMapFlex">
+    <div id="ScreepsMapContainer"></div>
+    <div id="ScreepsColorKeyContainer"></div>
+  </div>
+  <script type="text/javascript" language="javascript">
+    window.onload = function() {
+      let map = new ScreepsMap();
+      map.setRoomSize(5,5);
+      map.setMapBounds("W60N60","E60S60");
+      map.setPadding(5);
+      map.setRoomData({{room_data | safe}});
+      map.setAllianceData({{alliance_data | safe}});
+      map.drawAllianceMap({"roomStyle": "box"});
+      map.drawColorKey();
+    }
+  </script>
+</div>
+
+{% endblock %}

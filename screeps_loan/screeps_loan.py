@@ -10,7 +10,7 @@ import screeps_loan.screeps_client as screeps_client
 import screeps_loan.cli.import_user
 
 import screeps_loan.routes.auth
-
+import screeps_loan.routes.alliances
 @app.route('/')
 def index():
     #if 'username' in session:

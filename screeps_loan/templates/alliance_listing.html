@@ -1,23 +1,30 @@
 {% extends "layout.html" %}
 {% block content %}
-{% for alliance in alliances %}
     <div>
-        <div> {{alliance['fullname']}} ({{alliance['shortname']}})</div>
-        <div> Slack channel:
-            <a target="_blank" href="https://screeps.slack.com/messages/{{alliance['slack_channel']}}">
-            {{alliance['slack_channel']}}
-            </a>
+        <div class="title-bar hide-for-large">
+            <div class="title-bar-left">
+                <button class="menu-icon" type="button" data-open="my-info"></button>
+                <span class="title-bar-title">Mike Mikerson</span>
+            </div>
         </div>
-        <ul>
-            {% for user in alliance['users'] %}
-                <li>
-                    <a href="https://screeps.com/a/#!/profile/{{user['name']}}">
-                        {{user['name']}}
+        <div class="callout primary">
+            <div class="row column">
+                <h1>League of Automated Nations</h1>
+                <p class="lead">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus luctus urna sed urna ultricies ac tempor dui sagittis. In condimentum facilisis porta. Sed nec diam eu diam mattis viverra. Nulla fringilla.</p>
+            </div>
+        </div>
+        <div class="row small-up-2 medium-up-3 large-up-4">
+            {% for alliance in alliances %}
+                <div class="column">
+                    <a href="{{url_for('alliance_profile', shortname=alliance['shortname'])}}">
+                        <img class="thumbnail" src="{{url_for('static', filename='img/leaguelogo.png')}}">
                     </a>
-                </li>
+                    <h5>{{alliance['fullname']}}</h5>
+                </div>
             {% endfor %}
-        </ul>
+        </div>
+
+        <hr>
     </div>
-    <br>
-{% endfor %}
+
 {% endblock %}
