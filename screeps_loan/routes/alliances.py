@@ -16,7 +16,7 @@ def alliance_profile(shortname):
     users = users_model.find_name_by_alliance(shortname)
     users_aux = {}
     for user in users:
-        users_aux['user'] = {"members": [user], "name": user}
+        users_aux[user] = {"members": [user], "name": user}
     return render_template("alliance_profile.html", room_data = json.dumps(room_data_aux),
                            alliance_data = json.dumps(users_aux));
     
