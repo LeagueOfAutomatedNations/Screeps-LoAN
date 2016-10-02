@@ -5,3 +5,25 @@
 .off-canvas-wrapper {
     height: 100%;
 }
+
+#my-info {
+    height: 100%;
+    background-color: #000000;
+}
+
+ul.navbar{
+    color: #ddd;
+    list-style-type: none;
+}
+
+.navbar-sitename {
+    color: #ddd;
+    text-align: center;
+}
+ul.navbar a {
+    color: #ddd;
+}
+
+ul.navbar .fa {
+    width: 1.2em;
+}

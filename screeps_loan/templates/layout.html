@@ -4,8 +4,9 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Foundation | Welcome</title>
-    <link rel="stylesheet" href="http://dhbhdrzi4tiry.cloudfront.net/cdn/sites/foundation.min.css">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/foundation.css')}}">
     <link rel="stylesheet" href="{{url_for('static', filename='css/app.css')}}">
+    <script src="https://use.fontawesome.com/b48ca1ccb9.js"></script>
     {% block head %}
     {% endblock %}
   </head>
@@ -13,16 +14,27 @@
     <div class="off-canvas-wrapper">
       <div class="off-canvas-wrapper-inner" data-off-canvas-wrapper>
 
-        <div class="off-canvas position-left reveal-for-large" id="my-info" data-off-canvas data-position="left">
+        <div class="off-canvas position-left reveal-for-large " id="my-info" data-off-canvas data-position="left">
           <div class="row column">
             <br>
             <img class="thumbnail" src="{{url_for('static', filename='img/leaguelogo.png')}}">
-            <h5>League of Automated Nations</h5>
+            <h5 class="navbar-sitename">League of Automated Nations</h5>
             <hr>
-            <p><a href="{{url_for('alliance_listing')}}"> Alliance Index </a></p>
-            <p> <a href="{{url_for('map')}}">Alliance Map </a></p>
-            <p> <a href="https://www.screeps.com" target="_blank">Screeps </a></p>
-            <p> <a href="https://screeps.slack.com/messages/loan/details/" target="_blank"> Slack </a></p>
+            <ul class="off-canvas-list navbar">
+
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{url_for('alliance_listing')}}"> Alliance Index </a></li>
+                <li>
+                    <i class="fa fa-map-marker"></i>
+                    <a href="{{url_for('map')}}">Alliance Map </a></li>
+                <li>
+                    <i class="fa fa-terminal"></i>
+                    <a href="https://www.screeps.com" target="_blank">Screeps </a></li>
+                <li>
+                    <i class="fa fa-slack"></i>
+                    <a href="https://screeps.slack.com/messages/loan/details/" target="_blank">Slack </a></li>
+            </ul>
           </div>
         </div>
         <div id="main" class="off-canvas-content" data-off-canvas-content>
