@@ -5,7 +5,9 @@
 # Setup
 
 Update the info in settings.example
-``` pip install -r requirements.txt
+
+```
+pip install -r requirements.txt
 export SETTINGS=/path//to/settings
 export FLASK_APP=screeps_loan/screeps_loan.py
 python db/manage.py version_control
