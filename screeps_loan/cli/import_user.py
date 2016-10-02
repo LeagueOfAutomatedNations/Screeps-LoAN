@@ -36,7 +36,7 @@ class Map(object):
         return False
 
     def run(self):
-        api = screepsapi.API("Screeps-API", "Iop1lkjbnm")
+        api = get_client()
         queue = []
         user_map = {}
         roomCount = 0;
