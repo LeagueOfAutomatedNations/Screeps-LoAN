@@ -1,0 +1,7 @@
+DB = 'screeps'
+DB_USERNAME = 'screeps'
+DB_PASSWORD = 'screeps'
+DB_HOST = 'localhost'
+API_USERNAME = 'a-screep-account'
+API_PASSWORD = 'said-account-password'
+SECRET_KEY = '123456789'
