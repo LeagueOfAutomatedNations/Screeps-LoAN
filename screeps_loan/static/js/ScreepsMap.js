@@ -4,16 +4,29 @@ var ScreepsMap = function() {
     this.containerID = "ScreepsMapContainer";
     this.canvasID = "ScreepsMapCanvas";
     this.colorKeyID = "ScreepsColorKeyContainer";
-    this.topLeftOfTerrain = this.roomNameToXY("W60N60");
+    this.topLeftOfTerrain = this.roomNameToXY("W70N70");
     this.terrainImageRoomSize = 50;
 
     // Defaults
-    this.setRoomSize(5,5);
-    this.setMapBounds("W60N60","E60S60");
+    this.setRoomSize(4);
+    this.setMapBounds("W70N70","E70S70");
     this.setPadding(5);
 };
 
-ScreepsMap.prototype.colors = ["#FF0", "#6A6","#66F","#F6A","#6AA","#06A","#0A6","#6A0","#A06","#60A"];
+ScreepsMap.prototype.colors = [
+  '#FF0',
+  '#E0FFFF',
+  '#ADFF2F',
+  '#F0E68C',
+  '#FF00FF',
+  '#FFE4E1',
+  '#F6A',
+  '#FF4500',
+  '#00FF00',
+  '#DDA0DD',
+  '#D00000',
+  '#60A'
+];
 
 ScreepsMap.prototype.setRoomSize = function(width, height) {
     this.roomWidth = width;
@@ -239,8 +252,12 @@ ScreepsMap.prototype.drawColorKey = function() {
     let container = document.getElementById(this.colorKeyID);
     let output = '<ul class="colorKeyList">';
     for (let aName of this.allianceNames) {
+        output += '<div id=#colorkey_alliance_' + aName + '>'
         output += '<li class="colorKeyItem"><span class="colorBox" style="background-color: ' + this.colorForAlliance(aName) + ';"></span>';
+        output += '<a href="index.html#alliance_' + aName + '">'
         output += '<span class="colorLabel">' + this.alliances[aName].name + '</li>';
+        output += '</a>'
+        output += '</div>'
     }
     output += '</ul>';
     container.innerHTML = output;
