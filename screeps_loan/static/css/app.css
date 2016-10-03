@@ -32,3 +32,7 @@ ul.navbar .fa {
     width:191px;
     height:191px;
 }
+
+#ScreepsColorKeyContainer {
+    display: none;
+}
