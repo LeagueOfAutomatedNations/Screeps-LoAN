@@ -1,10 +1,33 @@
 {% extends "layout.html" %}
 {% block content %}
-    <div>
-        <form action="/invite" method="post">
-            <p> Invite a user to your alliance. NAME IS CASE SENSITIVE</p>
-            <p><input type=text name=username></p>
-            <p><input type=submit value=Submit></p>
-        </form>
+    <div class="row">
+
+        <div class="small-11 columns">
+            <ul class="tabs" data-tabs id="example-tabs">
+                <li class="tabs-title is-active"><a href="#panel1" aria-selected="true">Management</a></li>
+                <li class="tabs-title"><a href="#panel2">Tab 2</a></li>
+            </ul>
+            <div class="tabs-content" data-tabs-content="example-tabs">
+                <div class="tabs-panel is-active" id="panel1">
+                    <form action="/invite" method="post">
+                        <p> Invite a user to your alliance. NAME IS CASE SENSITIVE</p>
+                        <p><input type=text name=username></p>
+                        <p><input type=submit value=Submit></p>
+                    </form>
+                    <hr>
+                    Upload your logo
+                    <form enctype="multipart/form-data"
+                          action="{{url_for('upload_my_alliance_logo')}}" method="POST">
+                        <input type=file name="logo">
+                        <input type=submit value=Submit>
+                    </form>
+                </div>
+                <div class="tabs-panel" id="panel2">
+                    <p>two</p>
+                    <img class="thumbnail" src="assets/img/generic/rectangle-7.jpg">
+                </div>
+            </div>
+
+        </div>
     </div>
 {% endblock %}

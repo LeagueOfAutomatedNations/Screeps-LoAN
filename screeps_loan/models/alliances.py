@@ -19,3 +19,7 @@ class AllianceQuery():
                  VALUES(%s, %s, %s, %s)"""
         result = db.execute(query, (shortname, fullname, color, slack_channel))
 
+
+def update_logo_of_alliance(shortname, logo):
+    query = "UPDATE alliances SET logo=%s WHERE shortname = %s"
+    db.execute(query, (logo, shortname))

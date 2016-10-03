@@ -11,6 +11,7 @@ import screeps_loan.cli.import_user
 
 import screeps_loan.routes.auth
 import screeps_loan.routes.alliances
+import screeps_loan.routes.my_alliance
 @app.route('/')
 def index():
     #if 'username' in session:
