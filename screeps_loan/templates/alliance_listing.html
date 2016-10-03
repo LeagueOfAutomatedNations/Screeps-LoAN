@@ -18,7 +18,13 @@
             {% for alliance in alliances %}
                 <div class="column">
                     <a href="{{url_for('alliance_profile', shortname=alliance['shortname'])}}">
-                        <img class="thumbnail" src="{{url_for('static', filename='img/leaguelogo.png')}}">
+                        {% if alliance['logo'] %}
+                        <img class="thumbnail alliance_logo"
+                             src="{{url_for('get_obj', filename = alliance['logo']) }}">
+                        {% else %}
+                        <img class="thumbnail"
+                             src="{{url_for('static', filename = 'img/leaguelogo.png') }}">
+                        {% endif %}
                     </a>
                     <h5>{{alliance['fullname']}}</h5>
                 </div>

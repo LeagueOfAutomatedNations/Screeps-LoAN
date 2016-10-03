@@ -38,3 +38,13 @@ def upload_my_alliance_logo():
         file.save(os.path.join(app.config['OBJECT_STORAGE'], filename))
         alliances_model.update_logo_of_alliance(alliance['shortname'], filename)
         return redirect(url_for('my_alliance'))
+
+
+@app.route('/my')
+def my_alliance():
+    if ('username' not in session):
+        return redirect(url_for('login'))
+    my_id = session['my_id']
+    alliance = users_model.alliance_of_user(my_id)
+
+    return render_template('my.html', alliance = alliance)
