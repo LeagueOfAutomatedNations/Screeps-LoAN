@@ -1,4 +1,8 @@
 {% extends "layout.html" %}
+{% block head %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+    <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+{% endblock %}
 {% block content %}
 <div class="row">
 
@@ -14,7 +18,7 @@
             {% endif %}
             </div>
             <li class="tabs-title is-active"><a href="#panel1" aria-selected="true">Management</a></li>
-            <li class="tabs-title"><a href="#panel2">Charter</a></li>
+            <li class="tabs-title"><a href="#panel2" onclick="activateCharterBox()">Charter</a></li>
         </ul>
         <div class="tabs-content" data-tabs-content="example-tabs">
             <div class="tabs-panel is-active" id="panel1">
@@ -32,11 +36,24 @@
                 </form>
             </div>
             <div class="tabs-panel" id="panel2">
-                <p>To be developed!</p>
-                <img class="thumbnail" src="assets/img/generic/rectangle-7.jpg">
+                <form id="charter-form" action="/my/updatecharter" method="POST">
+                    <textarea id="charter" name="charter">{{alliance['charter']}}</textarea>
+                    <input type=submit value="Submit">
+                </form>
             </div>
         </div>
 
     </div>
 </div>
+<script>
+ var simplemde = new SimpleMDE({ element: document.getElementById("charter"),
+                                 autofocus:true});
+ function activateCharterBox() {
+     setTimeout(function() {
+         simplemde.codemirror.refresh();
+     }.bind(simplemde), 0);
+
+ };
+</script>
+
 {% endblock %}

@@ -25,6 +25,17 @@ def update_logo_of_alliance(shortname, logo):
     db.execute(query, (logo, shortname))
 
 
+def update_charter_of_alliance(shortname, charter):
+    query = "UPDATE alliances SET charter=%s WHERE shortname = %s"
+    db.execute(query, (charter, shortname))
+
+
 def find_by_shortname(name):
+    import psycopg2.extras
+
+    conn = db.get_conn()
+    cursor = conn.cursor(cursor_factory = psycopg2.extras.DictCursor)
     query = "SELECT * FROM alliances where shortname=%s"
-    return db.find_one(query, (name,))
+    cursor.execute(query, (name,))
+    result = cursor.fetchone()
+    return result

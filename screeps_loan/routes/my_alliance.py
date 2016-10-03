@@ -1,5 +1,5 @@
 from screeps_loan import app
-from flask import render_template, redirect, request, session, url_for
+from flask import render_template, redirect, request, session, url_for, escape
 from werkzeug.utils import secure_filename
 import os
 import hashlib
@@ -40,11 +40,19 @@ def upload_my_alliance_logo():
         return redirect(url_for('my_alliance'))
 
 
+@app.route('/my/updatecharter', methods=["POST"])
+def update_my_alliance_charter():
+    charter = request.form['charter']
+    my_id = session['my_id']
+    alliance = users_model.alliance_of_user(my_id)
+
+    alliances_model.update_charter_of_alliance(alliance['shortname'], charter)
+    return (redirect(url_for('my_alliance')))
+
 @app.route('/my')
 def my_alliance():
     if ('username' not in session):
         return redirect(url_for('login'))
     my_id = session['my_id']
     alliance = users_model.alliance_of_user(my_id)
-
     return render_template('my.html', alliance = alliance)
