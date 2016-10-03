@@ -7,8 +7,8 @@ from screeps_loan.screeps_client import get_client
 
 class Map(object):
     roomRegex = re.compile(r'(E|W)(\d+)(N|S)(\d+)')
-    queueLimit = 50
-    worldSize = 60
+    queueLimit = 100
+    worldSize = 70
 
     def getRoomData(self, room):
         match = self.roomRegex.match(room)

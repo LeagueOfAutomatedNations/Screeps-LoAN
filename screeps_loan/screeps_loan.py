@@ -1,4 +1,4 @@
-from flask import Flask, session, redirect, url_for, escape, request, render_template, flash
+from flask import Flask, session, redirect, url_for, escape, request, render_template, flash, send_from_directory
 from screeps_loan import app
 app.config.from_envvar('SETTINGS')
 
@@ -11,6 +11,12 @@ import screeps_loan.cli.import_user
 
 import screeps_loan.routes.auth
 import screeps_loan.routes.alliances
+import screeps_loan.routes.my_alliance
+
+@app.route('/obj/<filename>')
+def get_obj(filename):
+    return send_from_directory(app.config['OBJECT_STORAGE'], filename)
+
 @app.route('/')
 def index():
     #if 'username' in session:
@@ -19,12 +25,6 @@ def index():
     if ('username' in session):
         return redirect(url_for('alliance_listing'))
     return redirect(url_for('login'))
-
-@app.route('/my')
-def my_alliance():
-    if ('username' not in session):
-        return redirect(url_for('login'))
-    return render_template('my.html')
 
 
 @app.route('/login/', methods=['GET', 'POST'])

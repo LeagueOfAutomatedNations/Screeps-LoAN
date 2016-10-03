@@ -27,3 +27,8 @@ ul.navbar a {
 ul.navbar .fa {
     width: 1.2em;
 }
+
+.thumbnail.alliance_logo {
+    width:191px;
+    height:191px;
+}
