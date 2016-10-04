@@ -45,3 +45,17 @@ def find_by_shortname(name):
     cursor.execute(query, (name,))
     result = cursor.fetchone()
     return result
+
+def create_an_alliance(user_id, fullname, shortname, color):
+    conn = db.get_conn()
+    try:
+        query = "INSERT INTO alliances(fullname, shortname, color) VALUES(%s, %s, %s)"
+        cursor = conn.cursor()
+        cursor.execute (query, (fullname, shortname, color))
+
+        query = "UPDATE users SET alliance = %s WHERE id = %s"
+        cursor.execute(query, (shortname, user_id))
+
+        conn.commit()
+    except (e):
+        conn.rollback()

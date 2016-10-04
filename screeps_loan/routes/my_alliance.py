@@ -67,4 +67,19 @@ def my_alliance():
         return redirect(url_for('login'))
     my_id = session['my_id']
     alliance = users_model.alliance_of_user(my_id)
+    if (alliance is None):
+        return render_template("alliance_creation.html")
     return render_template('my.html', alliance = alliance)
+
+
+@app.route('/my/create', methods=["POST"])
+def create_an_alliance():
+    if ('username' not in session):
+        return redirect(url_for('login'))
+
+    my_id = session['my_id']
+    fullname = request.form['fullname']
+    shortname = request.form['shortname']
+    color = request.form['color']
+    alliances_model.create_an_alliance(my_id, fullname, shortname, color)
+    return redirect(url_for("my_alliance"))
