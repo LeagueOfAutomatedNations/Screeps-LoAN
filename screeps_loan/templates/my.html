@@ -1,7 +1,13 @@
 {% extends "layout.html" %}
 {% block head %}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.8.0/spectrum.min.css">
+
+{% endblock %}
+{% block js_include %}
     <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+    <script src="{{url_for('static', filename="js/tinycolorpicker.js")}}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.8.0/spectrum.min.js"></script>
 {% endblock %}
 {% block content %}
 <div class="row">
@@ -25,15 +31,54 @@
                 <form action="/invite" method="post">
                     <p> Invite a user to your alliance. NAME IS CASE SENSITIVE</p>
                     <p><input type=text name=username></p>
-                    <p><input type=submit value=Submit></p>
+                    <p><input class="button" type=submit value=Submit></p>
                 </form>
                 <hr>
                 Upload your logo (around 190x190)
                 <form enctype="multipart/form-data"
                       action="{{url_for('upload_my_alliance_logo')}}" method="POST">
-                    <input type=file name="logo">
-                    <input type=submit value=Submit>
+                    <input class="button" type=file name="logo">
+                    <input class="button" type=submit value=Submit>
                 </form>
+
+                <hr>
+                <form action="/my/updateprofile" method="POST">
+                    <div class="row">
+                        <div class="large-4 columns">
+                            <label> Full name
+                                <input type="text" value="{{alliance['fullname']}}" name="fullname"/>
+                            </label>
+                        </div>
+                        <div class="large-3 columns">
+                            <label> Abbreviation
+                                <input type="text" value="{{alliance['shortname']}}" name="shortname" />
+                            </label>
+                        </div>
+                        <div class="large-3 columns">
+                            <label> Slack channel </label>
+                            <div class="input-group">
+                                <span class="input-group-label prefix">#</span>
+                                <input class="input-group-field"
+                                       type="text"
+                                       value="{{alliance['slack_channel']}}"
+                                       name="slack_channel" />
+                            </div>
+                        </div>
+                        <div class="large-2 columns">
+                            <label> Alliance Color </label>
+                            <input name="color" type="color"
+                                   id='colorpicker' value="{{alliance['color']}}"/>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="large-12 columns">
+                            <input type="submit" value="Save" class="success button">
+                        </div>
+                    </div>
+
+                </form>
+
             </div>
             <div class="tabs-panel" id="panel2">
                 <form id="charter-form" action="/my/updatecharter" method="POST">
@@ -45,15 +90,22 @@
 
     </div>
 </div>
+{% endblock %}
+{% block script %}
 <script>
- var simplemde = new SimpleMDE({ element: document.getElementById("charter"),
-                                 autofocus:true});
- function activateCharterBox() {
-     setTimeout(function() {
-         simplemde.codemirror.refresh();
-     }.bind(simplemde), 0);
+ $(document).ready(function() {
+     //$("#colorpicker").spectrum({
+     //    color: "#f00"
+     //});
+     var simplemde = new SimpleMDE({ element: document.getElementById("charter"),
+                                     autofocus:true});
+     function activateCharterBox() {
+         setTimeout(function() {
+             simplemde.codemirror.refresh();
+         }.bind(simplemde), 0);
+     };
 
- };
+ });
+
 </script>
-
 {% endblock %}

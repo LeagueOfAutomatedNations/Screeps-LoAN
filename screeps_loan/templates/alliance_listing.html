@@ -5,7 +5,7 @@
         <div class="title-bar hide-for-large">
             <div class="title-bar-left">
                 <button class="menu-icon" type="button" data-open="my-info"></button>
-                <span class="title-bar-title">Mike Mikerson</span>
+                <span class="title-bar-title">League of Automated Nations </span>
             </div>
         </div>
         <div class="callout primary">
@@ -26,7 +26,7 @@
                              src="{{url_for('static', filename = 'img/leaguelogo.png') }}">
                         {% endif %}
                     </a>
-                    <h5>{{alliance['fullname']}}</h5>
+                    <h5 style="color:{{alliance['color']}}">{{alliance['fullname']}}</h5>
                 </div>
             {% endfor %}
         </div>

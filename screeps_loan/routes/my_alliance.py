@@ -49,6 +49,18 @@ def update_my_alliance_charter():
     alliances_model.update_charter_of_alliance(alliance['shortname'], charter)
     return (redirect(url_for('my_alliance')))
 
+
+@app.route('/my/updateprofile', methods=["POST"])
+def update_my_alliance_profile():
+    fullname = request.form['fullname']
+    shortname = request.form['shortname']
+    slack_channel = request.form['slack_channel']
+    color = request.form['color']
+    my_id = session['my_id']
+    alliance = users_model.alliance_of_user(my_id)
+    alliances_model.update_all_alliances_info(alliance['shortname'], shortname, fullname, slack_channel, color)
+    return (redirect(url_for('my_alliance')))
+
 @app.route('/my')
 def my_alliance():
     if ('username' not in session):

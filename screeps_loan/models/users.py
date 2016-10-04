@@ -34,8 +34,5 @@ def insert_username_with_id(name, id):
     conn.commit()
 
 def alliance_of_user(id):
-    query = "SELECT fullname, shortname, logo, charter from users JOIN alliances ON alliance=shortname where id=%s"
-    row = db.find_one(query, (id,))
-    if (row is not None):
-        return {'fullname': row[0], 'shortname': row[1], 'logo': row[2], 'charter': row[3]}
-    return None
+    query = "SELECT fullname, shortname, logo, charter, slack_channel, color from users JOIN alliances ON alliance=shortname where id=%s"
+    return db.find_one(query, (id,))
