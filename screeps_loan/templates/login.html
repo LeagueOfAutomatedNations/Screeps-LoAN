@@ -1,5 +1,12 @@
-<form action="" method="post">
-    <p> Use your screeps in game name to login
-    <p><input type=text name=username>
-        <p><input type=submit value=Login>
-</form>
+{% extends "layout.html" %}
+{% block content %}
+    <div class="row">
+        <div class="large-4 columns">
+            <form action="" method="post">
+                <p> Use your screeps in game name to login</p>
+                <p><input type=text name=username></p>
+                <p><input type=submit value=Login></p>
+            </form>
+        </div>
+    </div>
+{% endblock %}
