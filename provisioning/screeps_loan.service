@@ -1,0 +1,15 @@
+[Unit]
+Description=Gunicorn instance to serve screeps_loan
+After=network.target
+
+[Service]
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/vagrant
+Environment="PATH=/vagrant/env/bin"
+Environment="SETTINGS=/vagrant/settings"
+Environment="FLASK_APP=/vagrant/screeps_loan/screeps_loan.py"
+ExecStart=/vagrant/env/bin/gunicorn --workers 3 --bind unix:/tmp/screeps_loan.sock -m 000 screeps_loan:app
+
+[Install]
+WantedBy=multi-user.target
