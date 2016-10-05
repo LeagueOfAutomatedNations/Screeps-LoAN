@@ -14,12 +14,14 @@ pbr==1.10.0
 psycopg2==2.6.2
 requests==2.11.1
 Requires==0.0.3
-screepsapi==0.2
+#screepsapi==0.2
+-e git+https://github.com/NhanHo/python-screeps.git@c9ef4d879f5b4d10f62eca9e824c38a16ab40978#egg=screepsapi
 six==1.10.0
 SQLAlchemy==1.0.15
 sqlalchemy-migrate==0.10.0
 sqlparse==0.2.1
 Tempita==0.5.2
+uWSGI==2.0.14
 webencodings==0.5
 websocket==0.2.1
 websocket-client==0.37.0

@@ -2,3 +2,5 @@ env
 *.pyc
 settings
 .#*
+.vagrant
+/src
