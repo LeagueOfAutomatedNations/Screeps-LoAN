@@ -1,4 +1,4 @@
-const DEFAULT_COLORS = [
+var DEFAULT_COLORS = [
     '#FF0',
     '#E0FFFF',
     '#ADFF2F',
@@ -24,8 +24,6 @@ var ScreepsMap = (function() {
         this.region = config.region;
 
         this.style = config.style || {};
-
-        this.nextColorIndex = 0;
     }
 
     ScreepsMap.prototype.setData = function (roomData, allianceData) {
@@ -38,8 +36,11 @@ var ScreepsMap = (function() {
             'color': '#555'
         };
 
+        this.allianceData[undefined] = this.allianceData['unaffiliated'];
+
+        
         // build user -> alliance lookup
-        this.userAlliance = {};        
+        this.userAlliance = {};
         for (let allianceName in this.allianceData) {
             let alliance = this.allianceData[allianceName];
             for (let userIndex in alliance.members) {
@@ -80,7 +81,8 @@ var ScreepsMap = (function() {
                 maxZoom: 1,
                 zoomSnap: 0.1,
                 maxBounds: mapBounds,
-                maxBoundsViscosity: 1.0
+                maxBoundsViscosity: 1.0,
+                attributionControl: false
             });
 
             let controlLayer = (new L.LayerGroup()).addTo(this.map);
@@ -89,9 +91,9 @@ var ScreepsMap = (function() {
 
             this.drawRoomLayer(controlLayer);
             this.drawLabelLayer(labelLayer);
-            
+
             let overlays = {
-                "Terrain": terrainLayer, 
+                "Terrain": terrainLayer,
                 "Rooms": controlLayer,
                 "Alliance Labels": labelLayer
             };
@@ -116,7 +118,7 @@ var ScreepsMap = (function() {
                 this.style.left = String(e.originalEvent.clientX + 15) + "px";
                 this.style.top = String(e.originalEvent.clientY - Math.floor(toolRect.height/2)) + "px";
                 this.style.display = "block";
-                
+
                 if (this.currentRoom === roomName) return;
                 self.populateTooltip(this, roomName);
 
@@ -216,7 +218,7 @@ var ScreepsMap = (function() {
     }
 
     ScreepsMap.prototype.drawRoomLayer = function (controlLayer) {
-        let allianceLayers = {};   
+        let allianceLayers = {};
         for (let allianceName in this.allianceData) {
             allianceLayers[allianceName] = new L.LayerGroup();
             controlLayer.addLayer(allianceLayers[allianceName]);
@@ -229,13 +231,11 @@ var ScreepsMap = (function() {
 
             if (room.owner) {
                 let allianceName = this.userAlliance[room.owner];
-                if (!allianceName) {
-                    allianceName = "unaffiliated";
-                }
+
                 let targetLayer = allianceLayers[allianceName];
                 let fillColor = this.getAllianceColor(allianceName);
                 let fillOpacity = (room.level !== 0) ? 0.75 : 0.5;
-                
+
                 L.rectangle(bounds, { stroke: false, fillColor: fillColor, fillOpacity: fillOpacity, interactive: false }).addTo(targetLayer);
             }
         }
@@ -243,7 +243,7 @@ var ScreepsMap = (function() {
 
     ScreepsMap.prototype.drawLabelLayer = function (labelLayer) {
         let groups = this.findGroups(10);
-        
+
         for (let group of groups) {
             let alliance = this.allianceData[group.allianceName];
             let center = this.geometricCenter(group.rooms);
@@ -276,7 +276,7 @@ var ScreepsMap = (function() {
 
         return sum;
     }
-    
+
     ScreepsMap.prototype.findGroups = function (radius) {
         let results = [];
         let checked = {};
@@ -299,19 +299,19 @@ var ScreepsMap = (function() {
 
                 // ignore rooms owned by unaffiliated players
                 let allianceName = this.userAlliance[room.owner];
-                if (allianceName === "unaffiliated" || !allianceName) continue;
+                if (allianceName === "unaffiliated") continue;
 
                 // start building a new group
                 let rooms = [roomName];
 
                 // Check every room in a (2*radius+1)x(2*radius+1) square around the current room. If
-                // we find a room owned by the current alliance, push it onto the stack to be searched next. 
+                // we find a room owned by the current alliance, push it onto the stack to be searched next.
                 let groupChecked = {};
                 let toCheck = [roomName];
                 while (toCheck.length > 0) {
                     let checkName = toCheck.pop();
                     let xy = this.region.roomNameToXY(checkName);
-                    
+
                     let minXY = {"x": Math.max(topLeft.x, xy.x - radius), "y": Math.max(topLeft.y, xy.y - radius)};
                     let maxXY = {"x": Math.min(bottomRight.x, xy.x + radius), "y": Math.min(bottomRight.y, xy.y + radius)};
                     for (let y = minXY.y; y <= maxXY.y; y++) {
@@ -326,7 +326,7 @@ var ScreepsMap = (function() {
                             groupChecked[curName] = true;
 
                             let curAlliance = this.userAlliance[curRoom.owner];
-                            if (curAlliance === "unaffiliated" || !curAlliance) continue;
+                            if (curAlliance === "unaffiliated") continue;
 
                             if (curAlliance === allianceName) {
                                 checked[curName] = true;
@@ -336,7 +336,7 @@ var ScreepsMap = (function() {
                         }
                     }
                 }
-                
+
                 // save the completed group
                 results.push({
                     allianceName,
@@ -344,7 +344,7 @@ var ScreepsMap = (function() {
                 });
             }
         }
-        
+
         return results;
     }
 
@@ -363,12 +363,11 @@ var ScreepsMap = (function() {
             y: ~latlng.lat
         };
     }
-    
+
     ScreepsMap.prototype.getAllianceColor = function (allianceName) {
         if (!this.allianceData[allianceName].color) {
-            if (DEFAULT_COLORS.length > this.nextColorIndex) {
-                this.allianceData[allianceName].color = DEFAULT_COLORS.length[this.nextColorIndex];
-                this.nextColorIndex++;
+            if (DEFAULT_COLORS.length > 0) {
+                this.allianceData[allianceName].color = DEFAULT_COLORS.shift()
             } else {
                 var colorInt = Math.floor(Math.random() * (4096 - 0 + 1)) + 0;
                 this.allianceData[allianceName].color = '#' + colorInt.toString(16)
