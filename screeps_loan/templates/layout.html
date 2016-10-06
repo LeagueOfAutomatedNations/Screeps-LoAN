@@ -3,9 +3,22 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title> {% block title %} {% endblock %}| League of Automated Nations</title>
+    <title> {% block title %} {% endblock %} | League of Automated Nations</title>
     <link rel="stylesheet" href="{{url_for('static', filename='css/foundation.css')}}">
     <link rel="stylesheet" href="{{url_for('static', filename='css/app.css')}}">
+    <link rel="icon" type="image/png" href="{{url_for('static', filename='img/favicon.png')}}">
+
+    <meta name="twitter:title" content="{{ self.title() }} | League of Automated Nations" />
+    <meta name="keywords" content="screeps, mmo, programming" />
+    <meta property="og:site_name" content="League of Automated Nations" />
+    <meta property="og:type" content="website" />
+    <meta name="description" content="Alliance tracking for Screeps, the game that plays itself.">
+    <meta property="og:description" content="Alliance tracking for Screeps, the game that plays itself." />
+    <meta name="twitter:description" content="Alliance tracking for Screeps, the game that plays itself." />
+    <meta property="og:image" content="http://www.leagueofautomatednations.com/img/leaguelogo.png" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:image" content="http://www.leagueofautomatednations.com/img/leaguelogo.png" />
+
     <script src="https://use.fontawesome.com/b48ca1ccb9.js"></script>
     {% block head %}
     {% endblock %}
@@ -17,9 +30,12 @@
         <div class="off-canvas position-left reveal-for-large " id="my-info" data-off-canvas data-position="left">
           <div class="row column">
             <br>
-            <a href="{{url_for('index')}}">
-                <img class="thumbnail" src="{{url_for('static', filename='img/leaguelogo.png')}}">
-            </a>
+            <div id="menulogo" class="small-centered columns">
+                <a href="{{url_for('index')}}">
+                    <img class="small-centered" src="{{url_for('static', filename='img/leaguelogo.png')}}">
+                </a>
+            </div>
+            <br>
             <h5 class="navbar-sitename">League of Automated Nations</h5>
             <hr>
             <ul class="off-canvas-list navbar">
@@ -34,11 +50,14 @@
                     <i class="fa fa-map-marker"></i>
                     <a href="{{url_for('map')}}">Alliance Map </a></li>
                 <li>
+                    <i class="fa fa-slack"></i>
+                    <a href="https://screeps.slack.com/messages/loan/details/" target="_blank">Slack </a></li>
+                <li>
                     <i class="fa fa-terminal"></i>
                     <a href="https://www.screeps.com" target="_blank">Screeps </a></li>
                 <li>
-                    <i class="fa fa-slack"></i>
-                    <a href="https://screeps.slack.com/messages/loan/details/" target="_blank">Slack </a></li>
+                    <i class="fa fa-github-alt"></i>
+                    <a href="https://github.com/LeagueOfAutomatedNations" target="_blank">Github </a></li>
             </ul>
           </div>
         </div>
@@ -59,7 +78,7 @@
         </div>
       </div>
     </div>
-    
+
     <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
     <script src="http://dhbhdrzi4tiry.cloudfront.net/cdn/sites/foundation.js"></script>
     {% block js_include %}
@@ -73,4 +92,4 @@
 </html>
 
 
-    
+
