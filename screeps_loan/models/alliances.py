@@ -2,7 +2,7 @@ from screeps_loan.models import db
 
 class AllianceQuery():
     def getAll(self):
-        query = "SELECT shortname, fullname, slack_channel, color, logo FROM alliances"
+        query = "SELECT shortname, fullname, slack_channel, color, logo FROM alliances ORDER BY shortname"
         result = db.find_all(query)
         return [{"shortname":i[0], "fullname": i[1],
                  "slack_channel": i[2], "color": i[3], "logo": i[4]} for i in result]
