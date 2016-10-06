@@ -1,29 +1,61 @@
 {% extends "layout.html" %}
 {% block title %} Screeps Alliance Map {% endblock %}
 {% block head %}
-<script type="text/javascript" language="javascript" src="{{url_for ('static', filename = 'js/ScreepsMap.js')}}">
-</script>
+		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.0.1/dist/leaflet.js"></script>
+    <script type="text/javascript" language="javascript" src="{{url_for ('static', filename = 'js/headroom.min.js')}}"></script>
+    <script type="text/javascript" language="javascript" src="{{url_for ('static', filename = 'js/ScreepsMap.js')}}"></script>
+    <script type="text/javascript" language="javascript" src="{{url_for ('static', filename = 'js/ScreepsRegion.js')}}"></script>
+    <script type="text/javascript" language="javascript" src="{{url_for ('static', filename = 'js/ScreepsConstants.js')}}">
+    </script>
+
 <link rel="stylesheet" href="{{url_for('static', filename='css/map.css')}}">
 {{ super() }}
 {% endblock %}
 
 {% block content %}
 <div class="unit whole">
-  <div id="ScreepsMapFlex">
-    <div id="ScreepsMapContainer"></div>
-    <div id="ScreepsColorKeyContainer"></div>
-  </div>
+    <div id="ScreepsMapFlex">
+        <div id="ScreepsMapContainer"></div>
+        <div id="ScreepsColorKeyContainer"></div>
+    </div>
+    <div id="ScreepsMapTooltip" style="display: none;">
+        <dl>
+            <dt>Room:</dt>
+            <div class="roomName"></div>
+            <dt>Type:</dt>
+            <div class="roomType"></div>
+            <dt>RCL:</dt>
+            <div class="roomLevel"></div>
+            <dt>Owner:</dt>
+            <div class="roomOwner"></div>
+            <dt>Alliance:</dt>
+            <div class="roomAlliance"></div>
+        </dl>
+    </div>
+
   <script type="text/javascript" language="javascript">
+
     window.onload = function() {
-      let map = new ScreepsMap();
-      map.setRoomSize(5,5);
-      map.setMapBounds("W60N60","E60S60");
-      map.setPadding(5);
-      map.setRoomData({{room_data | safe}});
-      map.setAllianceData({{alliance_data | safe}});
-      map.drawAllianceMap({"roomStyle": "box"});
-      map.drawColorKey();
+      let region = new ScreepsRegion("W70N70", "E70S70");
+      let mapView = new ScreepsMap(
+        {
+          spinnerHostId: "ScreepsMapFlex",
+          mapHostId: "ScreepsMapContainer",
+          legendHostId: "ScreepsColorKeyContainer",
+          roomTooltipHostId: "ScreepsMapTooltip",
+          terrainUri: "static/img/screeps_terrain.png",
+          region: region,
+          style: { 'room-padding': 10 }
+        });
+
+      mapView.setData(
+        {{ room_data | safe}},
+        {{ alliance_data | safe }}
+      );
+      mapView.render();
     }
+
   </script>
 </div>
 
