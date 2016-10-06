@@ -69,30 +69,6 @@ def map():
     import json
     return render_template("map.html", room_data = json.dumps(room_data_aux), alliance_data = json.dumps(alliances_aux))
 
-@app.route('/invite', methods=["POST"])
-def invite_to_alliance():
-    import screeps_loan.models.users as users_model
-    import screeps_loan.services.users as users_service
-    import hashlib
-
-    my_id = session['my_id']
-    alliance = users_model.alliance_of_user(my_id)
-    if (alliance is None):
-        return "You are not in an alliance, can't invite anyone"
-
-    username = request.form['username']
-    api = screeps_client.get_client()
-
-    auth = AuthPlayer(api)
-    id = auth.id_from_name(username)
-    users_model.update_alliance_by_screeps_id(id, alliance['shortname'])
-    #(id, token) = auth.auth_token(username)
-
-    #if (id is not None):
-    #    api.msg_send(id, "You are invited to join %s, click for more info: \n\n" % alliance+
-    #                 url_for('accept_alliance_invite', token=token, _external=True))
-    flash('Successfully add user to your alliance')
-    return redirect(request.referrer)
 
 @app.route('/invite/accept/<token>')
 def accept_alliance_invite(token):
@@ -117,6 +93,7 @@ def alliance_listing():
 def logout():
     # remove the username from the session if it's there
     session.pop('username', None)
+    session.pop('my_id', None)
     return redirect(url_for('index'))
 
 # set the secret key.  keep this really secret:
