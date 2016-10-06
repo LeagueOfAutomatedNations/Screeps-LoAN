@@ -21,19 +21,29 @@ class Map(object):
 
     def isNPC(self, room):
         data = self.getRoomData(room)
-        if data['x'] % 10 == 0 or data['x'] == 0:
-            if data['y'] % 10 == 0 or data['y'] == 0:
-                return True
-        if data['x'] % 5 == 0:
-            if data['y'] % 5 == 0:
-                return True
-        if data['x'] % 10 > 3 and data['y'] % 10 > 3:
-            x_offset = data['x'] % 5
-            y_offset = data['y'] % 5
-            if x_offset == 1 or x_offset == 4 or x_offset == 0:
-                if y_offset == 1 or y_offset == 4 or y_offset == 0:
-                    return True
-        return False
+
+        x = data['x']
+        y = data['y']
+
+        if x == 0 or y == 0:
+            return True
+
+        if x % 10 == 0:
+            return True
+
+        if y % 10 == 0:
+            return True
+
+        if x % 5 == 0 and y % 5 == 0:
+            return True
+
+        if x % 10 <= 3 or x % 10 >= 7:
+            return False
+
+        if y % 10 <= 3 or y % 10 >= 7:
+            return False
+
+        return True
 
     def run(self):
         api = get_client()
