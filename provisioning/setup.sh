@@ -25,11 +25,11 @@ flask import_alliances #Importing alliance from alliances.js file
 
 
 
-
+rm /etc/nginx/sites-enabled/default
+rm /etc/nginx/nginx.conf
 ln -s /vagrant/provisioning/screeps_loan.service /etc/systemd/system/screeps_loan.service
 ln -s /vagrant/provisioning/nginx/screeps_loan /etc/nginx/sites-enabled/screeps_loan
-rm /etc/nginx/sites-enabled/default
-
+ln -s /vagrant/provisioning/nginx/nginx.conf /etc/nginx/nginx.conf
 
 systemctl start screeps_loan.service
 systemctl enable screeps_loan.service
