@@ -1,6 +1,10 @@
 server {
     listen 80;
 
+    location /static {
+        root /vagrant/screeps_loan/;
+    }
+
     location / {
         include proxy_params;
         proxy_pass http://unix:/tmp/screeps_loan.sock;
