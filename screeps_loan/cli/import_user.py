@@ -46,6 +46,7 @@ class Map(object):
         return True
 
     def run(self):
+        self.clear()
         api = get_client()
         queue = []
         user_map = {}
@@ -78,6 +79,14 @@ class Map(object):
                             level = statistics['own']['level']
                             self.update(user_id, user_map[user_id], room, level)
 
+        conn = get_conn()
+        conn.commit()
+
+
+    def clear(self):
+        conn = get_conn()
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM rooms;")
 
     def update(self, user_id, username, room, level):
         # Store info in db
@@ -96,7 +105,7 @@ class Map(object):
         query = """INSERT INTO rooms(name, level, owner) VALUES(%s, %s, %s) ON CONFLICT(name)
                    DO UPDATE SET level = %s, owner=%s"""
         cursor.execute(query, (room, level, id, level, id))
-        conn.commit()
+
 
 @app.cli.command()
 def import_users():
