@@ -36,9 +36,6 @@ var ScreepsMap = (function() {
             'color': '#555'
         };
 
-        this.allianceData[undefined] = this.allianceData['unaffiliated'];
-
-        
         // build user -> alliance lookup
         this.userAlliance = {};
         for (let allianceName in this.allianceData) {
@@ -180,10 +177,10 @@ var ScreepsMap = (function() {
             tooltip.querySelector(".roomOwner").innerHTML = this.roomData[roomName].owner;
 
             let allianceName = this.userAlliance[this.roomData[roomName].owner];
-            if (allianceName) {
+            if (allianceName && this.allianceData[allianceName]) {
                 tooltip.querySelector(".roomAlliance").innerHTML = this.allianceData[allianceName].name;
             } else {
-                tooltip.querySelector(".roomAlliance").innerHTML = "N/A";
+                tooltip.querySelector(".roomAlliance").innerHTML = "unaffiliated";
             }
         } else {
             tooltip.querySelector(".roomType").innerHTML = "Unowned";
@@ -231,7 +228,9 @@ var ScreepsMap = (function() {
 
             if (room.owner) {
                 let allianceName = this.userAlliance[room.owner];
-
+                if(!allianceName) {
+                  allianceName = 'unaffiliated'
+                }
                 let targetLayer = allianceLayers[allianceName];
                 let fillColor = this.getAllianceColor(allianceName);
                 let fillOpacity = (room.level !== 0) ? 0.75 : 0.5;
@@ -246,6 +245,10 @@ var ScreepsMap = (function() {
 
         for (let group of groups) {
             let alliance = this.allianceData[group.allianceName];
+            if(!alliance || alliance.name == 'unaffiliated') {
+              continue;
+            }
+
             let center = this.geometricCenter(group.rooms);
             let title = (alliance.abbreviation ? alliance.abbreviation : alliance.name);
             let color = this.getAllianceColor(group.allianceName);
@@ -365,6 +368,11 @@ var ScreepsMap = (function() {
     }
 
     ScreepsMap.prototype.getAllianceColor = function (allianceName) {
+
+       if (!allianceName || !this.allianceData[allianceName]) {
+         allianceName = 'unaffiliated'
+       }
+
         if (!this.allianceData[allianceName].color) {
             if (DEFAULT_COLORS.length > 0) {
                 this.allianceData[allianceName].color = DEFAULT_COLORS.shift()
