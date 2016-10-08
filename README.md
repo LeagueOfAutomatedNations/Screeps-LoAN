@@ -6,9 +6,11 @@
 
 Update the info in settings.example
 
-```
+```bash
+cp settings.example settings
+nano settings # add api settings.
 pip install -r requirements.txt
-export SETTINGS=/path//to/settings
+export SETTINGS="`pwd`/settings"
 export FLASK_APP=screeps_loan/screeps_loan.py
 python db/manage.py version_control
 python db/manage.py upgrade
@@ -16,6 +18,16 @@ flask run
 flask import_users  #This actually will run map stats to get all users on the map
 flask import_alliances #Importing alliance from alliances.js file
 ```
+
+# Update Data
+
+Bash wrapper scripts are provided to make updating easier.
+
+```bash
+./bin/import_users
+./bin/import_alliances
+```
+
 
 # Testing with Vagrant
 
