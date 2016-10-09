@@ -6,6 +6,20 @@ import json
 from flask import render_template
 
 
+@app.route('/alliances')
+def alliance_listing():
+    import screeps_loan.models.alliances as alliances
+    import screeps_loan.models.users as users
+
+    alliance_query = alliances.AllianceQuery()
+    all_alliances = alliance_query.getAll()
+    alliances_name = [item["shortname"] for item in all_alliances]
+    users_with_alliance = users.UserQuery().find_name_by_alliances(alliances_name)
+    for alliance in all_alliances:
+        alliance['users'] = [user for user in users_with_alliance if user['alliance'] == alliance['shortname']]
+    return render_template("alliance_listing.html", alliances = all_alliances)
+
+
 @app.route('/a/<shortname>')
 def alliance_profile(shortname):
 
