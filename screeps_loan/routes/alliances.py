@@ -2,6 +2,7 @@ from screeps_loan import app
 import screeps_loan.models.alliances as alliances_model
 from screeps_loan.models.rooms import get_all_rooms
 import screeps_loan.models.users as users_model
+from screeps_loan.routes.decorators import httpresponse
 import json
 from flask import render_template
 
@@ -57,6 +58,7 @@ def alliance_profile(shortname):
     return render_template("alliance_profile.html", alliance_url = alliance_url, charter= charter);
 
 @app.route('/a/<shortname>.json')
+@httpresponse(expires=300, content_type='application/json')
 def alliance_profile_json(shortname):
     users = users_model.find_name_by_alliance(shortname)
     users_aux = {}

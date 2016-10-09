@@ -1,10 +1,12 @@
 from screeps_loan import app
 from screeps_loan.models.rooms import get_all_rooms
+from screeps_loan.routes.decorators import httpresponse
 import json
 from flask import render_template
 
 
 @app.route('/map/rooms.js')
+@httpresponse(expires=300, content_type='application/json')
 def alliance_room_json():
     room_data = get_all_rooms()
     room_data_aux = {}
