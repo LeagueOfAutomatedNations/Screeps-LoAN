@@ -11,7 +11,7 @@ import screeps_loan.models.users as users_model
 import screeps_loan.services.users as users_service
 import hashlib
 import screeps_loan.screeps_client as screeps_client
-
+import re
 
 def allowed_file(filename):
     ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
@@ -61,10 +61,10 @@ def update_my_alliance_charter():
 
 @app.route('/my/updateprofile', methods=["POST"])
 def update_my_alliance_profile():
-    fullname = request.form['fullname']
-    shortname = request.form['shortname']
-    slack_channel = request.form['slack_channel']
-    color = request.form['color']
+    fullname = re.sub(r'([^\s\w]|_)+', '', request.form['fullname'])
+    shortname = re.sub(r'([^\s\w]|_)+', '', request.form['shortname'])
+    slack_channel = re.sub(r'([^\s\w]|_)+', '', request.form['slack_channel'])
+    color = re.sub(r'([^\s\w]|_|#)+', '', request.form['color'])
     my_id = session['my_id']
     alliance = users_model.alliance_of_user(my_id)
     alliances_model.update_all_alliances_info(alliance['shortname'], shortname, fullname, slack_channel, color)

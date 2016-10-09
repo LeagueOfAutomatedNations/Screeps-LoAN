@@ -46,7 +46,7 @@ class Map(object):
         return True
 
     def run(self):
-        self.clear()
+        self.start()
         api = get_client()
         queue = []
         user_map = {}
@@ -80,8 +80,22 @@ class Map(object):
                             self.update(user_id, user_map[user_id], room, level)
 
         conn = get_conn()
+        self.finish()
         conn.commit()
 
+    def start(self):
+        query = "INSERT INTO room_imports(status) VALUES ('in progress') RETURNING id"
+        conn = get_conn()
+        cursor = conn.cursor()
+        cursor.execute(query)
+        self.id = cursor.fetchone()[0]
+
+    def finish(self):
+        # import, timestamp, status
+        query = "UPDATE room_imports SET status='complete' WHERE id=(%s)"
+        conn = get_conn()
+        cursor = conn.cursor()
+        cursor.execute(query, (self.id, ))
 
     def clear(self):
         conn = get_conn()
@@ -102,9 +116,8 @@ class Map(object):
         else:
             id = row[0]
 
-        query = """INSERT INTO rooms(name, level, owner) VALUES(%s, %s, %s) ON CONFLICT(name)
-                   DO UPDATE SET level = %s, owner=%s"""
-        cursor.execute(query, (room, level, id, level, id))
+        query = "INSERT INTO rooms(import, name, level, owner) VALUES(%s, %s, %s, %s)"
+        cursor.execute(query, (self.id, room, level, id))
 
 
 @app.cli.command()

@@ -77,6 +77,7 @@ var ScreepsMap = (function() {
                 minZoom: -3.5,
                 maxZoom: 1,
                 zoomSnap: 0.1,
+                zoomDelta: 0.75,
                 maxBounds: mapBounds,
                 maxBoundsViscosity: 1.0,
                 attributionControl: false
@@ -198,7 +199,7 @@ var ScreepsMap = (function() {
             output += '<div id=#colorkey_alliance_' + allianceName + '>'
             output += '  <li class="colorKeyItem">';
             output += '    <span class="colorBox" style="background-color: ' + this.getAllianceColor(allianceName) + ';"></span>';
-            output += '    <a href="index.html#alliance_' + allianceName + '">'
+            output += '    <a href="a/' + this.allianceData[allianceName].abbreviation + '">'
             output += '      <span class="colorLabel">' + this.allianceData[allianceName].name + '</span>';
             output += '    </a>';
             output += '  </li>';
