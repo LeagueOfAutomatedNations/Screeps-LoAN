@@ -78,8 +78,6 @@ var ScreepsMap = (function() {
                 maxZoom: 1,
                 zoomSnap: 0.1,
                 zoomDelta: 0.75,
-                maxBounds: mapBounds,
-                maxBoundsViscosity: 1.0,
                 attributionControl: false
             });
 
