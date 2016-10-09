@@ -1,3 +1,4 @@
+{% from "macros/map.html" import map with context %}
 {% extends "layout.html" %}
 {% block head %}
 
@@ -20,47 +21,7 @@
         <div class="tabs-content" data-tabs-content="example-tabs">
 
             <div class="tabs-panel is-active" id="panel1">
-                <div class="unit whole">
-                  <div id="ScreepsMapFlex">
-                      <div id="ScreepsMapContainer"></div>
-                      <div id="ScreepsColorKeyContainer"></div>
-                  </div>
-                  <div id="ScreepsMapTooltip" style="display: none;">
-                      <dl>
-                          <dt>Room:</dt>
-                          <div class="roomName"></div>
-                          <dt>Type:</dt>
-                          <div class="roomType"></div>
-                          <dt>RCL:</dt>
-                          <div class="roomLevel"></div>
-                          <dt>Owner:</dt>
-                          <div class="roomOwner"></div>
-                          <dt>Alliance:</dt>
-                          <div class="roomAlliance"></div>
-                      </dl>
-                  </div>
-                  <script type="text/javascript" language="javascript">
-                   window.onload = function() {
-                     let region = new ScreepsRegion("W70N70", "E70S70");
-                     let mapView = new ScreepsMap(
-                       {
-                         spinnerHostId: "ScreepsMapFlex",
-                         mapHostId: "ScreepsMapContainer",
-                         legendHostId: "ScreepsColorKeyContainer",
-                         roomTooltipHostId: "ScreepsMapTooltip",
-                         terrainUri: "/static/img/screeps_terrain.png",
-                         legendUrlPrefix: 'https://screeps.com/a/#!/profile/',
-                         region: region,
-                         style: { 'room-padding': 0 }
-                       });
-                     mapView.setData(
-                       {{ room_data | safe}},
-                       {{ alliance_data | safe }}
-                     );
-                     mapView.render();
-                   }
-                  </script>
-                </div>
+              {{ map(alliance_url) }}
             </div>
             <div class="tabs-panel" id="panel2">
                 {{charter | safe}}
