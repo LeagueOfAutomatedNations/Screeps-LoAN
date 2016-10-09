@@ -49,12 +49,18 @@
           region: region,
           style: { 'room-padding': 10 }
         });
-
-      mapView.setData(
-        {{ room_data | safe}},
-        {{ alliance_data | safe }}
-      );
-      mapView.render();
+      $.ajax({
+        'global': false,
+        'url': '/alliances.js',
+        'dataType': "json",
+        'success': function (data) {
+        	mapView.setData(
+        	  {{ room_data | safe}},
+        	  data
+        	);
+        	mapView.render();
+        }
+			});
     }
 
   </script>

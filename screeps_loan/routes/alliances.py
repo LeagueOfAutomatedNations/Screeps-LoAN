@@ -6,6 +6,28 @@ import json
 from flask import render_template
 
 
+@app.route('/alliances.js')
+def alliance_listing_json():
+    import screeps_loan.models.alliances as alliances
+    import screeps_loan.models.users as users
+
+    alliance_query = alliances.AllianceQuery()
+    all_alliances = alliance_query.getAll()
+    alliances_name = [item["shortname"] for item in all_alliances]
+    users_with_alliance = users.UserQuery().find_name_by_alliances(alliances_name)
+
+    alliances_aux = {}
+    for alliance in all_alliances:
+        alliance['members'] = [user['name'] for user in users_with_alliance
+                             if user['alliance'] == alliance['shortname']]
+        alliances_aux[alliance['shortname']]=alliance
+        alliance['name'] = alliance['fullname']
+        alliance['abbreviation'] = alliance['shortname']
+        alliance.pop('fullname', None)
+        alliance.pop('shortname', None)
+    return json.dumps(alliances_aux)
+
+
 @app.route('/alliances')
 def alliance_listing():
     import screeps_loan.models.alliances as alliances
@@ -22,7 +44,6 @@ def alliance_listing():
 
 @app.route('/a/<shortname>')
 def alliance_profile(shortname):
-
     room_data = get_all_rooms()
     room_data_aux = {}
     for room in room_data:
