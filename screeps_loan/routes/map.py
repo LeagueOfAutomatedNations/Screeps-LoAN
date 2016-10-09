@@ -4,7 +4,7 @@ import json
 from flask import render_template
 
 
-@app.route('/rooms.js')
+@app.route('/map/rooms.js')
 def alliance_room_json():
     room_data = get_all_rooms()
     room_data_aux = {}
@@ -16,4 +16,4 @@ def alliance_room_json():
 
 @app.route('/map')
 def map():
-    return render_template("map.html")
+    return render_template("map.html", alliance_url='/alliances.js')
