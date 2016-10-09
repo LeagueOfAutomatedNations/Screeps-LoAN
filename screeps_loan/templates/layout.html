@@ -39,10 +39,19 @@
             <h5 class="navbar-sitename">League of Automated Nations</h5>
             <hr>
             <ul class="off-canvas-list navbar">
+
+              {% if not session.username %}
+                  <li>
+                      <i class="fa-sign-in fa"></i>
+                      <a href="{{url_for('login')}}"> Log In </a>
+                  </li>
+              {% else %}
                 <li>
-                    <i class=" fa-star-o fa"></i>
+                    <i class="fa-star-o fa"></i>
                     <a href="{{url_for('my_alliance')}}"> My Alliance </a>
                 </li>
+              {% endif %}
+
                 <li>
                     <i class="fa fa-home"></i>
                     <a href="{{url_for('alliance_listing')}}"> Alliance Index </a></li>
@@ -58,6 +67,14 @@
                 <li>
                     <i class="fa fa-github-alt"></i>
                     <a href="https://github.com/LeagueOfAutomatedNations" target="_blank">Github </a></li>
+
+                {% if session.username %}
+                  <li>
+                      <i class="fa-sign-out fa"></i>
+                      <a href="{{url_for('logout')}}"> Log Out </a>
+                  </li>
+                {% endif %}
+
             </ul>
           </div>
         </div>

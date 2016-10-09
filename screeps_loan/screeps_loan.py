@@ -16,12 +16,7 @@ def get_obj(filename):
 
 @app.route('/')
 def index():
-    #if 'username' in session:
-    #    return 'Logged in as %s' % escape(session['username'])
-    #return 'You are not logged in'
-    if ('username' in session):
-        return redirect(url_for('alliance_listing'))
-    return redirect(url_for('login'))
+    return redirect(url_for('map'))
 
 @app.route('/map')
 def map():
