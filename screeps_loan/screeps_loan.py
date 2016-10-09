@@ -3,11 +3,13 @@ from screeps_loan import app
 app.config.from_envvar('SETTINGS')
 
 import screepsapi.screepsapi as screepsapi
+import screeps_loan.services.session
 from screeps_loan.auth_user import AuthPlayer
 import socket
 from screeps_loan.models.db import get_conn
 import screeps_loan.screeps_client as screeps_client
 import screeps_loan.cli.import_user
+import screeps_loan.cli.maintenance
 
 import screeps_loan.routes.auth
 import screeps_loan.routes.alliances
