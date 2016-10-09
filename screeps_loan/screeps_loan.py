@@ -2,12 +2,7 @@ from flask import Flask, session, redirect, url_for, escape, request, render_tem
 from screeps_loan import app
 app.config.from_envvar('SETTINGS')
 
-import screepsapi.screepsapi as screepsapi
-import screeps_loan.services.session
-from screeps_loan.auth_user import AuthPlayer
 import socket
-from screeps_loan.models.db import get_conn
-import screeps_loan.screeps_client as screeps_client
 import screeps_loan.cli.import_user
 import screeps_loan.cli.maintenance
 
@@ -21,26 +16,7 @@ def get_obj(filename):
 
 @app.route('/')
 def index():
-    #if 'username' in session:
-    #    return 'Logged in as %s' % escape(session['username'])
-    #return 'You are not logged in'
-    if ('username' in session):
-        return redirect(url_for('alliance_listing'))
-    return redirect(url_for('login'))
-
-
-@app.route('/login/', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        #TODO: Authenticate via url
-        username = request.form['username']
-        api = screeps_client.get_client()
-        auth = AuthPlayer(api)
-        (id, token) = auth.auth_token(username)
-        if (id is not None):
-            api.msg_send(id, url_for('auth', token=token, _external=True))
-        return redirect(url_for('auth_request'))
-    return render_template("login.html")
+    return redirect(url_for('map'))
 
 @app.route('/map')
 def map():
@@ -71,32 +47,6 @@ def map():
     import json
     return render_template("map.html", room_data = json.dumps(room_data_aux), alliance_data = json.dumps(alliances_aux))
 
-
-@app.route('/invite/accept/<token>')
-def accept_alliance_invite(token):
-    pass
-
-@app.route('/alliances')
-def alliance_listing():
-    import screeps_loan.models.alliances as alliances
-    import screeps_loan.models.users as users
-
-    alliance_query = alliances.AllianceQuery()
-    all_alliances = alliance_query.getAll()
-    alliances_name = [item["shortname"] for item in all_alliances]
-    users_with_alliance = users.UserQuery().find_name_by_alliances(alliances_name)
-    for alliance in all_alliances:
-        alliance['users'] = [user for user in users_with_alliance if user['alliance'] == alliance['shortname']]
-    return render_template("alliance_listing.html", alliances = all_alliances)
-
-
-
-@app.route('/logout', methods = ["GET", "POST"])
-def logout():
-    # remove the username from the session if it's there
-    session.pop('username', None)
-    session.pop('my_id', None)
-    return redirect(url_for('index'))
 
 # set the secret key.  keep this really secret:
 app.secret_key = app.config['SECRET_KEY']
