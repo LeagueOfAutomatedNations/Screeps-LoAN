@@ -37,32 +37,37 @@
   <script type="text/javascript" language="javascript">
 
     window.onload = function() {
-      let region = new ScreepsRegion("W70N70", "E70S70");
-      let mapView = new ScreepsMap(
-        {
-          spinnerHostId: "ScreepsMapFlex",
-          mapHostId: "ScreepsMapContainer",
-          legendHostId: "ScreepsColorKeyContainer",
-          roomTooltipHostId: "ScreepsMapTooltip",
-          terrainUri: "static/img/screeps_terrain.png",
-          legendUrlPrefix: '/a/',
-          region: region,
-          style: { 'room-padding': 10 }
-        });
-      $.ajax({
-        'global': false,
-        'url': '/alliances.js',
-        'dataType': "json",
-        'success': function (data) {
-        	mapView.setData(
-        	  {{ room_data | safe}},
-        	  data
-        	);
-        	mapView.render();
-        }
+			alliance_data = {}
+			room_data = {}
+			$.when(
+				$.getJSON('/alliances.js', {}, function(data){
+					console.log('alliance data loaded')
+					alliance_data = data
+				}),
+				$.getJSON('/rooms.js', {}, function(data){
+					console.log('room data loaded')
+					room_data = data
+				})
+			).then(function() {
+				let region = new ScreepsRegion("W70N70", "E70S70");
+				let mapView = new ScreepsMap(
+					{
+						spinnerHostId: "ScreepsMapFlex",
+						mapHostId: "ScreepsMapContainer",
+						legendHostId: "ScreepsColorKeyContainer",
+						roomTooltipHostId: "ScreepsMapTooltip",
+						terrainUri: "/static/img/screeps_terrain.png",
+						legendUrlPrefix: '/a/',
+						region: region,
+						style: { 'room-padding': 10 }
+					});
+					mapView.setData(
+						room_data,
+						alliance_data
+					);
+					mapView.render();
 			});
     }
-
   </script>
 </div>
 

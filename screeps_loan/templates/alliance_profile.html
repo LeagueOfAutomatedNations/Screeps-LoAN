@@ -41,24 +41,32 @@
                   </div>
                   <script type="text/javascript" language="javascript">
                    window.onload = function() {
-                     let region = new ScreepsRegion("W70N70", "E70S70");
-                     let mapView = new ScreepsMap(
-                       {
-                         spinnerHostId: "ScreepsMapFlex",
-                         mapHostId: "ScreepsMapContainer",
-                         legendHostId: "ScreepsColorKeyContainer",
-                         roomTooltipHostId: "ScreepsMapTooltip",
-                         terrainUri: "/static/img/screeps_terrain.png",
-                         legendUrlPrefix: 'https://screeps.com/a/#!/profile/',
-                         region: region,
-                         style: { 'room-padding': 0 }
-                       });
-                     mapView.setData(
-                       {{ room_data | safe}},
-                       {{ alliance_data | safe }}
-                     );
-                     mapView.render();
-                   }
+                      alliance_data = {}
+                      room_data = {}
+                      $.when(
+                      	$.getJSON('/rooms.js', {}, function(data){
+                      		room_data = data
+                      	})
+                      ).then(function() {
+                      	let region = new ScreepsRegion("W70N70", "E70S70");
+                      	let mapView = new ScreepsMap(
+                      		{
+                      			spinnerHostId: "ScreepsMapFlex",
+                      			mapHostId: "ScreepsMapContainer",
+                      			legendHostId: "ScreepsColorKeyContainer",
+                      			roomTooltipHostId: "ScreepsMapTooltip",
+                      			terrainUri: "/static/img/screeps_terrain.png",
+                      			legendUrlPrefix: 'https://screeps.com/a/#!/profile/',
+                      			region: region,
+                      			style: { 'room-padding': 10 }
+                      		});
+                      		mapView.setData(
+                      			room_data,
+                      			{{ alliance_data | safe }}
+                      		);
+                      		mapView.render();
+                      });
+                    }
                   </script>
                 </div>
             </div>
