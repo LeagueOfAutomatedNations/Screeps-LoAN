@@ -23,6 +23,8 @@ var ScreepsMap = (function() {
         this.terrainUri = config.terrainUri;
         this.region = config.region;
 
+        this.legendUrlPrefix = config.legendUrlPrefix
+
         this.style = config.style || {};
     }
 
@@ -197,7 +199,7 @@ var ScreepsMap = (function() {
             output += '<div id=#colorkey_alliance_' + allianceName + '>'
             output += '  <li class="colorKeyItem">';
             output += '    <span class="colorBox" style="background-color: ' + this.getAllianceColor(allianceName) + ';"></span>';
-            output += '    <a href="a/' + this.allianceData[allianceName].abbreviation + '">'
+            output += '    <a href="' + this.legendUrlPrefix + this.allianceData[allianceName].abbreviation + '">'
             output += '      <span class="colorLabel">' + this.allianceData[allianceName].name + '</span>';
             output += '    </a>';
             output += '  </li>';

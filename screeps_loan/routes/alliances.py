@@ -17,7 +17,7 @@ def alliance_profile(shortname):
     users = users_model.find_name_by_alliance(shortname)
     users_aux = {}
     for user in users:
-        users_aux[user] = {"members": [user], "name": user}
+        users_aux[user] = {"members": [user], "name": user, "abbreviation": user}
 
     alliance = alliances_model.find_by_shortname(shortname)
     from markdown2 import Markdown
