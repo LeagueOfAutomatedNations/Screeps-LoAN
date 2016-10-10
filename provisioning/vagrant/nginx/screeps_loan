@@ -2,6 +2,8 @@ server {
     listen 80;
 
     location /static {
+        expires 1h;
+        add_header Cache-Control "public";
         root /vagrant/screeps_loan/;
     }
 
