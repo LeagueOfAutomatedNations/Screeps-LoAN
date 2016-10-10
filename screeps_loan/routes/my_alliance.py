@@ -64,7 +64,7 @@ def update_my_alliance_profile():
     fullname = re.sub(r'([^\s\w]|_)+', '', request.form['fullname'])
     shortname = re.sub(r'([^\s\w]|_)+', '', request.form['shortname'])
     slack_channel = re.sub(r'([^\s\w]|_)+', '', request.form['slack_channel'])
-    color = re.sub(r'^(#[0-9a-f]{6}|[0-9a-f]{3})', '', request.form['color'])
+    color = re.sub(r'([^\s\w]|_)+', '', request.form['color'])
     my_id = session['my_id']
     alliance = users_model.alliance_of_user(my_id)
     alliances_model.update_all_alliances_info(alliance['shortname'], shortname, fullname, slack_channel, color)
