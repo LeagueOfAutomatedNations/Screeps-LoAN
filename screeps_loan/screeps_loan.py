@@ -19,5 +19,14 @@ def get_obj(filename):
 def index():
     return redirect(url_for('map'))
 
+
+@app.after_request
+def add_header(response):
+    if 'Cache-Control' not in response.headers:
+        response.headers['Cache-Control'] = 'private, no-store, no-cache, must-revalidate'
+        response.headers['Pragma'] = 'no-cache'
+    return response
+
+
 # set the secret key.  keep this really secret:
 app.secret_key = app.config['SECRET_KEY']
