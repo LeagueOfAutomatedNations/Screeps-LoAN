@@ -3,8 +3,8 @@ Description=Gunicorn instance to serve screeps_loan
 After=network.target
 
 [Service]
-User=ubuntu
-Group=ubuntu
+User=screeps_loan
+Group=screeps_loan
 WorkingDirectory=/opt/screeps_loan
 Environment="PATH=/opt/screeps_loan/env/bin"
 Environment="SETTINGS=/opt/screeps_loan/settings"

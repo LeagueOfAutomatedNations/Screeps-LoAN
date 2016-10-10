@@ -26,7 +26,7 @@ flask import_alliances #Importing alliance from alliances.js file
 rm /etc/nginx/sites-enabled/default
 rm /etc/nginx/nginx.conf
 ln -s /opt/screeps_loan/provisioning/etc/systemd/system/screeps_loan.service /etc/systemd/system/screeps_loan.service
-ln -s /opt/screeps_loan/provisioning/etc/nginx/screeps_loan /etc/nginx/sites-enabled/screeps_loan
+ln -s /opt/screeps_loan/provisioning/etc/nginx/sites-available/screeps_loan /etc/nginx/sites-enabled/screeps_loan
 ln -s /opt/screeps_loan/provisioning/etc/nginx/nginx.conf /etc/nginx/nginx.conf
 
 systemctl start screeps_loan.service
