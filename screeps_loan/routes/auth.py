@@ -47,6 +47,8 @@ def login():
         auth = AuthPlayer(api)
         (id, token) = auth.auth_token(username)
         if (id is not None):
-            api.msg_send(id, url_for('auth', token=token, _external=True))
+            url = url_for('auth', token=token, _external=True)
+            message = "Login to the League of Automated Nations %s" % url
+            api.msg_send(id, message)
         return redirect(url_for('auth_request'))
     return render_template("login.html")
