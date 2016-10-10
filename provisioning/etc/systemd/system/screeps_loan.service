@@ -9,7 +9,7 @@ WorkingDirectory=/opt/screeps_loan
 Environment="PATH=/opt/screeps_loan/env/bin"
 Environment="SETTINGS=/opt/screeps_loan/settings"
 Environment="FLASK_APP=/opt/screeps_loan/screeps_loan/screeps_loan.py"
-ExecStart=/vagrant/env/bin/gunicorn --workers 3 --bind unix:/tmp/screeps_loan.sock -m 000 screeps_loan:app
+ExecStart=/opt/screeps_loan/env/bin/gunicorn --workers 3 --bind unix:/tmp/screeps_loan.sock -m 000 screeps_loan:app
 
 [Install]
 WantedBy=multi-user.target
