@@ -56,6 +56,14 @@ var ScreepsMap = (function() {
       this.alliance = alliance
     }
 
+    ScreepsMap.prototype.allowUnaffiliated = function () {
+      this.allowUnaffiliated = true
+    }
+
+    ScreepsMap.prototype.disableLabels = function () {
+      this.disableLabels = true
+    }
+
     ScreepsMap.prototype.setGroupType = function (type) {
       this.groupType = type
       if(type == 'user') {
@@ -296,7 +304,9 @@ var ScreepsMap = (function() {
             let allianceName = this.groupType == 'user' ? this.userAlliance[group.labelName] : group.labelName
             let alliance = this.allianceData[allianceName];
             if(!alliance || alliance.name == 'unaffiliated') {
-              continue;
+              if(!this.allowUnaffiliated) {
+                continue
+              }
             }
             if(!!this.alliance && this.alliance !== alliance.abbreviation) {
               continue
@@ -359,7 +369,7 @@ var ScreepsMap = (function() {
 
                 // ignore rooms owned by unaffiliated players
                 let allianceName = this.userAlliance[room.owner];
-                if (allianceName === "unaffiliated") continue;
+                if (allianceName === "unaffiliated" && !this.allowUnaffiliated) continue;
 
                 if(this.groupType == 'user') {
                   var labelName = room.owner
@@ -395,7 +405,7 @@ var ScreepsMap = (function() {
                             var curLabel = this.groupType == 'user' ? curRoom.owner : this.userAlliance[curRoom.owner];
                             if(this.groupType != 'user') {
                               let curAlliance = this.userAlliance[curRoom.owner];
-                              if (curAlliance === "unaffiliated") continue;
+                              if (curAlliance === "unaffiliated" && !this.allowUnaffiliated) continue;
                             }
                             if (curLabel === labelName) {
                                 checked[curName] = true;
@@ -435,12 +445,15 @@ var ScreepsMap = (function() {
 
     ScreepsMap.prototype.getUserColor = function (user) {
       let allianceName = this.userAlliance[user];
-      if(!allianceName) {
-        return DEFAULT_UNCATEGORIZED
+      if(!this.allowUnaffiliated) {
+        if(!allianceName) {
+          return DEFAULT_UNCATEGORIZED
+        }
+        if(!!this.alliance && this.alliance != allianceName) {
+          return DEFAULT_UNCATEGORIZED
+        }
       }
-      if(!!this.alliance && this.alliance != allianceName) {
-        return DEFAULT_UNCATEGORIZED
-      }
+
       if(this.groupType == 'user') {
         if(!this.userColors[user]) {
           this.userColors[user] = this.getRandomColor()
@@ -451,19 +464,18 @@ var ScreepsMap = (function() {
     }
 
     ScreepsMap.prototype.getAllianceColor = function (allianceName) {
+      if (!allianceName || !this.allianceData[allianceName]) {
+       allianceName = 'unaffiliated'
+      }
 
-       if (!allianceName || !this.allianceData[allianceName]) {
-         allianceName = 'unaffiliated'
-       }
-
-        if (!this.allianceData[allianceName].color) {
-            if (DEFAULT_COLORS.length > 0) {
-                this.allianceData[allianceName].color = DEFAULT_COLORS.shift()
-            } else {
-                this.allianceData[allianceName].color = this.getRandomColor()
-            }
-        }
-        return this.allianceData[allianceName].color
+      if (!this.allianceData[allianceName].color) {
+          if (DEFAULT_COLORS.length > 0) {
+              this.allianceData[allianceName].color = DEFAULT_COLORS.shift()
+          } else {
+              this.allianceData[allianceName].color = this.getRandomColor()
+          }
+      }
+      return this.allianceData[allianceName].color
     }
 
     ScreepsMap.prototype.getRandomColor = function () {
@@ -486,7 +498,7 @@ var ScreepsMap = (function() {
     return ScreepsMap;
 })();
 
-/* 
+/*
  * Workaround for 1px lines appearing in some browsers due to fractional transforms
  * and resulting anti-aliasing.
  * https://github.com/Leaflet/Leaflet/issues/3575
