@@ -108,17 +108,7 @@ var ScreepsMap = (function() {
 
             let controlLayer = (new L.LayerGroup()).addTo(this.map);
             let labelLayer = (new L.LayerGroup()).addTo(this.map);
-            let terrainLayer = L.tileLayer(
-                "/static/img/map/{z}/tile_{x}_{y}.png",
-                {
-                    minZoom: -4,
-                    maxNativeZoom: 0,
-                    tileSize: 200,
-                    bounds: regionBounds,
-                    noWrap: true,
-                    tms: false
-                }
-            ).addTo(this.map);
+            let terrainLayer = L.imageOverlay(this.terrainUri, regionBounds).addTo(this.map);
 
             this.drawRoomLayer(controlLayer);
             this.drawLabelLayer(labelLayer);
