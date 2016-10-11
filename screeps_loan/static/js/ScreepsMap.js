@@ -1,17 +1,4 @@
-var DEFAULT_COLORS = [
-    '#FF0',
-    '#E0FFFF',
-    '#ADFF2F',
-    '#F0E68C',
-    '#FF00FF',
-    '#FFE4E1',
-    '#F6A',
-    '#FF4500',
-    '#00FF00',
-    '#DDA0DD',
-    '#D00000',
-    '#60A'
-];
+var DEFAULT_COLORS = [];
 
 var DEFAULT_UNCATEGORIZED = '#555'
 
@@ -492,9 +479,8 @@ var ScreepsMap = (function() {
         seed = this.seed
       }
 
-      let luminosity = seed % 4 == 0 ? 'bright' : 'light'
       return randomColor({
-        luminosity: luminosity,
+        luminosity: 'light',
         hue: 'random',
         seed: seed
       });
