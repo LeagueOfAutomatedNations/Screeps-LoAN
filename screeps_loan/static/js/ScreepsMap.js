@@ -454,7 +454,7 @@ var ScreepsMap = (function() {
 
       if(this.groupType == 'user') {
         if(!this.userColors[user]) {
-          this.userColors[user] = this.getRandomColor()
+          this.userColors[user] = this.getRandomColor(user)
         }
         return this.userColors[user]
       }
@@ -470,26 +470,33 @@ var ScreepsMap = (function() {
           if (DEFAULT_COLORS.length > 0) {
               this.allianceData[allianceName].color = DEFAULT_COLORS.shift()
           } else {
-              this.allianceData[allianceName].color = this.getRandomColor()
+              this.allianceData[allianceName].color = this.getRandomColor(allianceName)
           }
       }
       return this.allianceData[allianceName].color
     }
 
-    ScreepsMap.prototype.getRandomColor = function () {
+    ScreepsMap.prototype.getRandomColor = function (seed=false) {
       if (DEFAULT_COLORS.length > 0) {
           return DEFAULT_COLORS.shift()
       }
-      if(!this.seed) {
-        this.seed = 1000
+
+      if(!!seed) {
+        seed = parseInt(seed.replace(/[^0-9a-z]/gi, ''), 36) % 10000000
       } else {
-        this.seed += 5001
+        if(!this.seed) {
+          this.seed = 1000
+        } else {
+          this.seed += 1
+        }
+        seed = this.seed
       }
-      let luminosity = this.seed % 2 == 0 ? 'light' : 'bright'
+
+      let luminosity = seed % 4 == 0 ? 'bright' : 'light'
       return randomColor({
         luminosity: luminosity,
         hue: 'random',
-        seed: this.seed
+        seed: seed
       });
     }
 
