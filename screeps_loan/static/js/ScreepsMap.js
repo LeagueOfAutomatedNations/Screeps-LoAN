@@ -316,7 +316,10 @@ var ScreepsMap = (function() {
               var title = group.labelName
               var color = this.getUserColor(group.labelName)
             } else {
-              var title = alliance.abbreviation ? alliance.abbreviation : alliance.name;
+              if(!alliance) {
+                continue
+              }
+              var title = !!alliance.abbreviation ? alliance.abbreviation : alliance.name;
               var color = this.getAllianceColor(group.labelName)
             }
             L.marker([~center.y, center.x], {
