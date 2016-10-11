@@ -458,13 +458,20 @@ var ScreepsMap = (function() {
     }
 
     ScreepsMap.prototype.getRandomColor = function () {
-
       if (DEFAULT_COLORS.length > 0) {
           return DEFAULT_COLORS.shift()
       }
-
-      var colorInt = Math.floor(Math.random() * (4096 - 0 + 1)) + 0;
-      return '#' + colorInt.toString(16)
+      if(!this.seed) {
+        this.seed = 1000
+      } else {
+        this.seed += 5001
+      }
+      let luminosity = this.seed % 2 == 0 ? 'light' : 'bright'
+      return randomColor({
+        luminosity: luminosity,
+        hue: 'random',
+        seed: this.seed
+      });
     }
 
     return ScreepsMap;
