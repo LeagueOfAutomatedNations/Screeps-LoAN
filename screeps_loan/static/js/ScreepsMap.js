@@ -13,6 +13,8 @@ var DEFAULT_COLORS = [
     '#60A'
 ];
 
+var DEFAULT_UNCATEGORIZED = '#555'
+
 var ScreepsMap = (function() {
     function ScreepsMap (config) {
         this.spinnerHostId = config.spinnerHostId;
@@ -24,7 +26,8 @@ var ScreepsMap = (function() {
         this.region = config.region;
 
         this.legendUrlPrefix = config.legendUrlPrefix
-
+        this.groupType = 'alliance'
+        this.userColors = {}
         this.style = config.style || {};
     }
 
@@ -35,7 +38,7 @@ var ScreepsMap = (function() {
         this.allianceData['unaffiliated'] = {
             'name': 'unaffiliated',
             'members': ["neutral"],
-            'color': '#555'
+            'color': DEFAULT_UNCATEGORIZED
         };
 
         // build user -> alliance lookup
@@ -47,6 +50,17 @@ var ScreepsMap = (function() {
                 this.userAlliance[userName] = allianceName;
             }
         }
+    }
+
+    ScreepsMap.prototype.setAlliance = function (alliance) {
+      this.alliance = alliance
+    }
+
+    ScreepsMap.prototype.setGroupType = function (type) {
+      this.groupType = type
+      if(type == 'user') {
+        this.legendUrlPrefix = 'https://screeps.com/a/#!/profile/'
+      }
     }
 
     ScreepsMap.prototype.setSpinnerVisibile = function (show) {
@@ -99,7 +113,11 @@ var ScreepsMap = (function() {
 
             this.map.fitBounds(mapBounds);
 
-            this.drawAllianceLegend();
+            if(this.groupType == 'user') {
+              this.drawUserLegend();
+            } else {
+              this.drawAllianceLegend();
+            }
 
             this.createRoomInfoControl();
 
@@ -209,6 +227,28 @@ var ScreepsMap = (function() {
         container.innerHTML = output;
     }
 
+    ScreepsMap.prototype.drawUserLegend = function () {
+        let container = document.getElementById(this.legendHostId);
+        let output = '<h3>Legend:</h3>';
+        output += '<ul class="colorKeyList">';
+        for (let user in this.userAlliance) {
+            if(!!this.alliance && this.alliance != this.userAlliance[user]) {
+              continue
+            }
+            output += '<div id=#colorkey_alliance_' + user + '>'
+            output += '  <li class="colorKeyItem">';
+            output += '    <span class="colorBox" style="background-color: ' + this.getUserColor(user) + ';"></span>';
+            output += '    <a href="' + this.legendUrlPrefix + user + '">'
+            output += '      <span class="colorLabel">' + user + '</span>';
+            output += '    </a>';
+            output += '  </li>';
+            output += '</div>';
+        }
+        output += '</ul>';
+        container.innerHTML = output;
+    }
+
+
     ScreepsMap.prototype.loadTerrainAsync = function (callback) {
         this.terrainImage = new Image();
         this.terrainImage.src = this.terrainUri;
@@ -233,7 +273,7 @@ var ScreepsMap = (function() {
                   allianceName = 'unaffiliated'
                 }
                 let targetLayer = allianceLayers[allianceName];
-                let fillColor = this.getAllianceColor(allianceName);
+                let fillColor = this.getUserColor(room.owner);
                 let fillOpacity = (room.level !== 0) ? 0.75 : 0.5;
 
                 L.rectangle(bounds, { stroke: false, fillColor: fillColor, fillOpacity: fillOpacity, interactive: false }).addTo(targetLayer);
@@ -243,16 +283,23 @@ var ScreepsMap = (function() {
 
     ScreepsMap.prototype.drawLabelLayer = function (labelLayer) {
         let groups = this.findGroups(10);
-
         for (let group of groups) {
-            let alliance = this.allianceData[group.allianceName];
+            let allianceName = this.groupType == 'user' ? this.userAlliance[group.labelName] : group.labelName
+            let alliance = this.allianceData[allianceName];
             if(!alliance || alliance.name == 'unaffiliated') {
               continue;
             }
-
+            if(!!this.alliance && this.alliance !== alliance.abbreviation) {
+              continue
+            }
             let center = this.geometricCenter(group.rooms);
-            let title = (alliance.abbreviation ? alliance.abbreviation : alliance.name);
-            let color = this.getAllianceColor(group.allianceName);
+            if(this.groupType == 'user') {
+              var title = group.labelName
+              var color = this.getUserColor(group.labelName)
+            } else {
+              var title = alliance.abbreviation ? alliance.abbreviation : alliance.name;
+              var color = this.getAllianceColor(group.labelName)
+            }
             L.marker([~center.y, center.x], {
                 icon: L.divIcon({
                     className: 'alliance-label',
@@ -305,6 +352,13 @@ var ScreepsMap = (function() {
                 let allianceName = this.userAlliance[room.owner];
                 if (allianceName === "unaffiliated") continue;
 
+                if(this.groupType == 'user') {
+                  var labelName = room.owner
+                } else {
+                  var labelName = allianceName
+                }
+
+
                 // start building a new group
                 let rooms = [roomName];
 
@@ -329,10 +383,12 @@ var ScreepsMap = (function() {
                             if (groupChecked[curName] || checked[curName]) continue;
                             groupChecked[curName] = true;
 
-                            let curAlliance = this.userAlliance[curRoom.owner];
-                            if (curAlliance === "unaffiliated") continue;
-
-                            if (curAlliance === allianceName) {
+                            var curLabel = this.groupType == 'user' ? curRoom.owner : this.userAlliance[curRoom.owner];
+                            if(this.groupType != 'user') {
+                              let curAlliance = this.userAlliance[curRoom.owner];
+                              if (curAlliance === "unaffiliated") continue;
+                            }
+                            if (curLabel === labelName) {
                                 checked[curName] = true;
                                 toCheck.push(curName);
                                 rooms.push(curName);
@@ -343,7 +399,7 @@ var ScreepsMap = (function() {
 
                 // save the completed group
                 results.push({
-                    allianceName,
+                    labelName,
                     rooms
                 });
             }
@@ -368,6 +424,23 @@ var ScreepsMap = (function() {
         };
     }
 
+    ScreepsMap.prototype.getUserColor = function (user) {
+      let allianceName = this.userAlliance[user];
+      if(!allianceName) {
+        return DEFAULT_UNCATEGORIZED
+      }
+      if(!!this.alliance && this.alliance != allianceName) {
+        return DEFAULT_UNCATEGORIZED
+      }
+      if(this.groupType == 'user') {
+        if(!this.userColors[user]) {
+          this.userColors[user] = this.getRandomColor()
+        }
+        return this.userColors[user]
+      }
+      return this.getAllianceColor(allianceName)
+    }
+
     ScreepsMap.prototype.getAllianceColor = function (allianceName) {
 
        if (!allianceName || !this.allianceData[allianceName]) {
@@ -378,11 +451,20 @@ var ScreepsMap = (function() {
             if (DEFAULT_COLORS.length > 0) {
                 this.allianceData[allianceName].color = DEFAULT_COLORS.shift()
             } else {
-                var colorInt = Math.floor(Math.random() * (4096 - 0 + 1)) + 0;
-                this.allianceData[allianceName].color = '#' + colorInt.toString(16)
+                this.allianceData[allianceName].color = this.getRandomColor()
             }
         }
         return this.allianceData[allianceName].color
+    }
+
+    ScreepsMap.prototype.getRandomColor = function () {
+
+      if (DEFAULT_COLORS.length > 0) {
+          return DEFAULT_COLORS.shift()
+      }
+
+      var colorInt = Math.floor(Math.random() * (4096 - 0 + 1)) + 0;
+      return '#' + colorInt.toString(16)
     }
 
     return ScreepsMap;
