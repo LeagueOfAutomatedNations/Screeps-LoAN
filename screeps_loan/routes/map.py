@@ -19,3 +19,8 @@ def alliance_room_json():
 @app.route('/map')
 def map():
     return render_template("map.html", alliance_url='/alliances.js')
+
+
+@app.route('/map/users')
+def map_users():
+    return render_template("map_users.html")

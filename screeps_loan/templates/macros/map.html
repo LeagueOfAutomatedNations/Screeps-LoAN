@@ -1,5 +1,5 @@
 
-{% macro map(alliance_url='/alliances.js', shortname=none) -%}
+{% macro map(alliance_url='/alliances.js', shortname=none, grouptype=none, unaffiliated=none, disablelabels=none) -%}
 
   <div class="unit whole">
       <div id="ScreepsMapFlex">
@@ -55,6 +55,15 @@
 					{% if shortname %}
 					mapView.setAlliance('{{ shortname }}');
 					mapView.setGroupType('user')
+					{% endif %}
+          {% if grouptype %}
+					mapView.setGroupType('{{ grouptype }}');
+					{% endif %}
+          {% if unaffiliated %}
+					mapView.allowUnaffiliated();
+					{% endif %}
+          {% if disablelabels %}
+					mapView.disableLabels();
 					{% endif %}
 					mapView.render();
   			});
