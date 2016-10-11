@@ -55,7 +55,8 @@ def alliance_profile(shortname):
     from lxml.html.clean import clean_html
     charter = clean_html(charter)
     alliance_url = '/a/%s.json' % (shortname)
-    return render_template("alliance_profile.html", alliance_url = alliance_url, charter= charter);
+    alliance_url = '/alliances.js'
+    return render_template("alliance_profile.html", shortname = shortname, charter= charter);
 
 @app.route('/a/<shortname>.json')
 @httpresponse(expires=300, content_type='application/json')

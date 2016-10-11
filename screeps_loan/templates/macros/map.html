@@ -1,5 +1,5 @@
 
-{% macro map(alliance_url='/alliances.js') -%}
+{% macro map(alliance_url='/alliances.js', shortname=none) -%}
 
   <div class="unit whole">
       <div id="ScreepsMapFlex">
@@ -52,6 +52,10 @@
   						room_data,
   						alliance_data
   					);
+            {% if shortname %}
+            mapView.setAlliance('{{ shortname }}');
+            mapView.setGroupType('user')
+            {% endif %}
   					mapView.render();
   			});
       }
