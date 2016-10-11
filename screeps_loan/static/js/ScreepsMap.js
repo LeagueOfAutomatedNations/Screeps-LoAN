@@ -308,8 +308,13 @@ var ScreepsMap = (function() {
                 continue
               }
             }
-            if(!!this.alliance && this.alliance !== alliance.abbreviation) {
-              continue
+            if(!!this.alliance) {
+              if(!alliance) {
+                continue
+              }
+              if(this.alliance !== alliance.abbreviation) {
+                continue
+              }
             }
             let center = this.geometricCenter(group.rooms);
             if(this.groupType == 'user') {
@@ -452,9 +457,9 @@ var ScreepsMap = (function() {
         if(!allianceName) {
           return DEFAULT_UNCATEGORIZED
         }
-        if(!!this.alliance && this.alliance != allianceName) {
-          return DEFAULT_UNCATEGORIZED
-        }
+      }
+      if(!!this.alliance && this.alliance != allianceName) {
+        return DEFAULT_UNCATEGORIZED
       }
 
       if(this.groupType == 'user') {
