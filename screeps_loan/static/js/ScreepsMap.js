@@ -122,10 +122,10 @@ var ScreepsMap = (function() {
             };
             L.control.layers({}, overlays).addTo(this.map);
 
-            if(this.groupType == 'user') {
-              this.drawUserLegend();
+            if (this.groupType == 'user') {
+                this.drawUserLegend();
             } else {
-              this.drawAllianceLegend();
+                this.drawAllianceLegend();
             }
 
             this.createRoomInfoControl();
