@@ -126,7 +126,7 @@ var ScreepsMap = (function() {
             let overlays = {
                 "Terrain": terrainLayer,
                 "Rooms": controlLayer,
-                "Alliance Labels": labelLayer
+                "Labels": labelLayer
             };
             L.control.layers({}, overlays).addTo(this.map);
 
