@@ -48,15 +48,15 @@
   						region: region,
   						style: { 'room-padding': 10 }
   					});
-  					mapView.setData(
-  						room_data,
-  						alliance_data
-  					);
-            {% if shortname %}
-            mapView.setAlliance('{{ shortname }}');
-            mapView.setGroupType('user')
-            {% endif %}
-  					mapView.render();
+					mapView.setData(
+						room_data,
+						alliance_data
+					);
+					{% if shortname %}
+					mapView.setAlliance('{{ shortname }}');
+					mapView.setGroupType('user')
+					{% endif %}
+					mapView.render();
   			});
       }
     </script>

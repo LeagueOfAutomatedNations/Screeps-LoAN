@@ -96,10 +96,21 @@ var ScreepsMap = (function() {
                 zoomDelta: 0.75,
                 attributionControl: false
             });
+            this.map.fitBounds(mapBounds);
 
             let controlLayer = (new L.LayerGroup()).addTo(this.map);
             let labelLayer = (new L.LayerGroup()).addTo(this.map);
-            let terrainLayer = L.imageOverlay(this.terrainUri, regionBounds).addTo(this.map);
+            let terrainLayer = L.tileLayer(
+                "/static/img/map/{z}/tile_{x}_{y}.png",
+                {
+                    minZoom: -4,
+                    maxNativeZoom: 0,
+                    tileSize: 200,
+                    bounds: regionBounds,
+                    noWrap: true,
+                    tms: false
+                }
+            ).addTo(this.map);
 
             this.drawRoomLayer(controlLayer);
             this.drawLabelLayer(labelLayer);
@@ -111,12 +122,10 @@ var ScreepsMap = (function() {
             };
             L.control.layers({}, overlays).addTo(this.map);
 
-            this.map.fitBounds(mapBounds);
-
-            if(this.groupType == 'user') {
-              this.drawUserLegend();
+            if (this.groupType == 'user') {
+                this.drawUserLegend();
             } else {
-              this.drawAllianceLegend();
+                this.drawAllianceLegend();
             }
 
             this.createRoomInfoControl();
@@ -469,3 +478,22 @@ var ScreepsMap = (function() {
 
     return ScreepsMap;
 })();
+
+/* 
+ * Workaround for 1px lines appearing in some browsers due to fractional transforms
+ * and resulting anti-aliasing.
+ * https://github.com/Leaflet/Leaflet/issues/3575
+ */
+(function(){
+    var originalInitTile = L.GridLayer.prototype._initTile
+    L.GridLayer.include({
+        _initTile: function (tile) {
+            originalInitTile.call(this, tile);
+
+            var tileSize = this.getTileSize();
+
+            tile.style.width = tileSize.x + 1 + 'px';
+            tile.style.height = tileSize.y + 1 + 'px';
+        }
+    });
+})()
