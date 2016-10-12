@@ -136,6 +136,12 @@
       case 'light':
         sMax = 55;
         break;
+
+      case 'ondark':
+        sMax = 65;
+        sMin = sMin/2
+        break;
+
    }
 
     return randomWithin([sMin, sMax]);
@@ -153,11 +159,14 @@
         bMax = bMin + 20;
         break;
 
+
+      case 'ondark':
       case 'light':
         bMin = (bMax + bMin)/2;
         break;
 
       case 'random':
+      default:
         bMin = 0;
         bMax = 100;
         break;

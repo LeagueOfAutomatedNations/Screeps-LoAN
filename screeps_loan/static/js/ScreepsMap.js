@@ -1,4 +1,28 @@
-var DEFAULT_COLORS = [];
+
+// Yellow, Blue, Green, Purple, Pink, Red, Orange
+var DEFAULT_COLORS = [
+    '#FFFF00',
+    '#63f0e5',
+    '#00FF00',
+    '#C055DD',
+    '#FF66AA',
+    '#D00000',
+    '#FF8500',
+    '#0055DD',
+    '#54D579',
+    '#FF00FF',
+    '#FD2222',
+    '#FFA500',
+    '#CCFF88',
+    '#0088AA',
+    '#00EE88',
+    '#BB00BB',
+    '#FF33EE',
+    '#FF0000',
+    '#FFCC44',
+    '#DDA0DD',
+    '#54D579',
+];
 
 var DEFAULT_UNCATEGORIZED = '#555'
 
@@ -15,6 +39,8 @@ var ScreepsMap = (function() {
         this.legendUrlPrefix = config.legendUrlPrefix
         this.groupType = 'alliance'
         this.userColors = {}
+        this.allianceColors = {}
+        this.allianceColors['unaffiliated'] = DEFAULT_UNCATEGORIZED
         this.style = config.style || {};
     }
 
@@ -453,18 +479,14 @@ var ScreepsMap = (function() {
        allianceName = 'unaffiliated'
       }
 
-      if (!this.allianceData[allianceName].color) {
-          if (DEFAULT_COLORS.length > 0) {
-              this.allianceData[allianceName].color = DEFAULT_COLORS.shift()
-          } else {
-              this.allianceData[allianceName].color = this.getRandomColor(allianceName)
-          }
+      if(!this.allianceColors[allianceName]) {
+        this.allianceColors[allianceName] = this.getRandomColor(allianceName)
       }
-      return this.allianceData[allianceName].color
+      return this.allianceColors[allianceName]
     }
 
     ScreepsMap.prototype.getRandomColor = function (seed=false) {
-      if (DEFAULT_COLORS.length > 0) {
+      if (this.groupType == 'alliance' && DEFAULT_COLORS.length > 0) {
           return DEFAULT_COLORS.shift()
       }
 
