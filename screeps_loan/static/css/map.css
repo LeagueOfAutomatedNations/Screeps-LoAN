@@ -78,3 +78,87 @@
       2px 2px 0 #666;
   user-select: none;
 }
+
+.leaflet-slider input[type="range"] {
+    -webkit-appearance: none;
+    padding: 0;
+    margin: 0;
+    display: inline-block;
+    vertical-align: top;
+}
+.leaflet-slider input[type=range]:focus {
+    outline: none;
+}
+
+.leaflet-slider-label {
+    display: inline-block;
+    margin-top: 2px;
+    vertical-align: middle;
+    padding-right: 10px;
+}
+
+.leaflet-slider input[type="range"].alpha {
+    position: absolute;
+}
+
+.leaflet-slider input[type="range"].beta {
+    position: relative;
+    --outer-color: rgb(192, 192, 192);
+    --range-color: rgb(104, 162, 195);
+    --slider-bar: linear-gradient(
+            to right,
+            var(--outer-color) var(--low),
+            var(--range-color) 0,
+            var(--range-color) var(--high),
+            var(--outer-color) 0
+        ) no-repeat 0 45% / 100% 40%;
+}
+
+.leaflet-slider input[type="range"].beta::-webkit-slider-runnable-track {
+    background: var(--slider-bar);
+}
+.leaflet-slider input[type="range"].beta::-moz-range-track {
+    background: var(--slider-bar);
+}
+
+.leaflet-slider input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    border: 1px solid black;
+    border-radius: 3px;
+    box-shadow: 1px 1px 1px #828282;
+    background: white;
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
+    height: 24px;
+    width: 20px;
+}
+.leaflet-slider input[type=range]::-moz-range-thumb {
+    border: 1px solid black;
+    border-radius: 3px;
+    box-shadow: 1px 1px 1px #828282;
+    background: white;
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
+    height: 24px;
+    width: 20px;
+}
+
+.leaflet-slider input[type=range]::after {
+    content: attr(value);
+    left: var(--thumb-label-pos);
+    position: absolute;
+    z-index: 2;
+    pointer-events: none;
+    top: 6px;
+}
+
+.rcl-control {
+    background: #fff;
+    border-radius: 5px;
+    border: 2px solid rgba(0,0,0,0.2);
+    background-clip: padding-box;
+    padding: 10px;
+    clear: none;
+}
