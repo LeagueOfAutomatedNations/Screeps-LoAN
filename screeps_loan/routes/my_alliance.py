@@ -100,6 +100,14 @@ def create_an_alliance():
     return redirect(url_for("my_alliance"))
 
 
+@app.route('/my/leave', methods=["POST"])
+@login_required
+def leave_alliance():
+    users_model.update_alliance_by_screeps_id(session['screeps_id'], None)
+    return redirect(url_for("my_alliance"))
+
+
+
 @app.route('/invite', methods=["POST"])
 @login_required
 def invite_to_alliance():

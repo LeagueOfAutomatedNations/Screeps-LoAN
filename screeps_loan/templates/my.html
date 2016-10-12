@@ -25,6 +25,7 @@
             </div>
             <li class="tabs-title is-active"><a href="#panel1" aria-selected="true">Management</a></li>
             <li class="tabs-title"><a href="#panel2" onclick="activateCharterBox()">Charter</a></li>
+            <li class="tabs-title"><a href="#panel3">Leave Alliance</a></li>
         </ul>
         <div class="tabs-content" data-tabs-content="example-tabs">
             <div class="tabs-panel is-active" id="panel1">
@@ -89,8 +90,12 @@
                     <input type=submit value="Submit">
                 </form>
             </div>
+            <div class="tabs-panel" id="panel3">
+                <form id="leave-form" action="/my/leave" method="POST">
+                    <input class="button" type=submit value="Leave Alliance">
+                </form>
+            </div>
         </div>
-
     </div>
 </div>
 {% endblock %}
