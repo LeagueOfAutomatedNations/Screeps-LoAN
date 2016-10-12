@@ -10,7 +10,7 @@ fi
 source $DIR/envvar
 cd ..
 
-git pull
+sudo git pull
 sudo systemctl stop screeps_loan.service
 pg_dump -w -c -U screeps screeps -h localhost | gzip --best > ~/screeps_loan-$(date +%d-%m-%Y_%H_%M_%S).gz.sql
 echo $DIR
