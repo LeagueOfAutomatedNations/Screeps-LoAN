@@ -42,6 +42,8 @@ var ScreepsMap = (function() {
         this.allianceColors = {}
         this.allianceColors['unaffiliated'] = DEFAULT_UNCATEGORIZED
         this.style = config.style || {};
+
+        this.config = config;
     }
 
     ScreepsMap.prototype.setData = function (roomData, allianceData) {
@@ -119,9 +121,9 @@ var ScreepsMap = (function() {
             });
             this.map.fitBounds(mapBounds);
 
-            let controlLayer = (new L.LayerGroup()).addTo(this.map);
-            let labelLayer = (new L.LayerGroup()).addTo(this.map);
-            let terrainLayer = L.imageOverlay(this.terrainUri, regionBounds).addTo(this.map);
+            let controlLayer = (new L.LayerGroup());
+            let labelLayer = (new L.LayerGroup());
+            let terrainLayer = L.imageOverlay(this.terrainUri, regionBounds);
 
             this.drawRoomLayer(controlLayer);
             this.drawLabelLayer(labelLayer);
@@ -132,6 +134,16 @@ var ScreepsMap = (function() {
                 "Labels": labelLayer
             };
             L.control.layers({}, overlays).addTo(this.map);
+
+            if (this.config.showTerrain === undefined || this.config.showTerrain === true) {
+                terrainLayer.addTo(this.map);
+            }
+            if (this.config.showControl === undefined || this.config.showControl === true) {
+                controlLayer.addTo(this.map);
+            }
+            if (this.config.showLabels === undefined || this.config.showLabels === true) {
+                labelLayer.addTo(this.map);
+            }
 
             if (this.groupType == 'user') {
                 this.drawUserLegend();
