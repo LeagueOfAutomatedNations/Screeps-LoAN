@@ -18,6 +18,11 @@
         <ul class="tabs" data-tabs id="example-tabs">
             <li class="tabs-title is-active"><a href="#panel1" aria-selected="true">Location</a></li>
             <li class="tabs-title"><a href="#panel2">Charter</a></li>
+            {% if alliance['slack_channel'] %}
+            <li class="tabs-title" onclick="location.href='https://screeps.slack.com/messages/{{ alliance['slack_channel'] }}'">
+              <a href="https://screeps.slack.com/messages/{{ alliance['slack_channel'] }}" title="#{{ alliance['slack_channel'] }}" target="_blank">Slack</a>
+            </li>
+            {% endif %}
         </ul>
         <div class="tabs-content" data-tabs-content="example-tabs">
 
