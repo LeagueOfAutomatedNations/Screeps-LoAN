@@ -140,6 +140,7 @@ var ScreepsMap = (function() {
             }
 
             this.createRoomInfoControl();
+            this.bindRclFilter(controlLayer);
 
             this.setSpinnerVisibile(false);
         }.bind(this));
@@ -167,6 +168,8 @@ var ScreepsMap = (function() {
 
         this.map.on({
             click: function(e) {
+                if (this.map.disableMouse) return;
+
                 let worldPosition = this.worldPositionFromMapCoords(e.latlng);
 
                 if (this.region.worldPositionInBounds(worldPosition.x, worldPosition.y)) {
@@ -176,6 +179,8 @@ var ScreepsMap = (function() {
             }.bind(this),
 
             mouseover: function(e) {
+                if (this.map.disableMouse) return;
+
                 let worldPosition = this.worldPositionFromMapCoords(e.latlng);
 
                 let roomName;
@@ -187,6 +192,8 @@ var ScreepsMap = (function() {
             }.bind(this),
 
             mousemove: function(e) {
+                if (this.map.disableMouse) return;
+
                 let worldPosition = this.worldPositionFromMapCoords(e.latlng);
 
                 let roomName;
@@ -200,6 +207,40 @@ var ScreepsMap = (function() {
             mouseout: function(e) {
                 roomInfoControl.update(e, null);
             }.bind(this),
+        });
+    }
+
+    ScreepsMap.prototype.bindRclFilter = function (controlLayer) {
+        let rclControl = new L.Control.SliderControl({
+            minValue: 0,
+            maxValue: 8,
+            className: "rcl-control",
+            label: "RCL"
+        });
+
+        $(rclControl).on("update", () => {
+            let minRcl = rclControl.lowValue;
+            let maxRcl = rclControl.highValue;
+            for (let rcl = 0; rcl <= 8; rcl++) {
+                if (rcl < minRcl || rcl > maxRcl) {
+                    controlLayer.removeLayer(this.rclLayers[rcl]);
+                } else {
+                    controlLayer.addLayer(this.rclLayers[rcl]);
+                }
+            }
+        });
+
+        rclControl.addTo(this.map);
+
+        this.map.on('overlayremove', (overlay) => {
+            if (overlay.layer === controlLayer) {
+                rclControl.getContainer().style.display = "none";
+            }
+        });
+        this.map.on('overlayadd', (overlay) => {
+            if (overlay.layer === controlLayer) {
+                rclControl.getContainer().style.display = "block";
+            }
         });
     }
 
@@ -276,10 +317,10 @@ var ScreepsMap = (function() {
     }
 
     ScreepsMap.prototype.drawRoomLayer = function (controlLayer) {
-        let allianceLayers = {};
-        for (let allianceName in this.allianceData) {
-            allianceLayers[allianceName] = new L.LayerGroup();
-            controlLayer.addLayer(allianceLayers[allianceName]);
+        let rclLayers = {};
+        for (let i = 0; i <= 8; i++) {
+            rclLayers[i] = new L.LayerGroup();
+            controlLayer.addLayer(rclLayers[i]);
         }
 
         for (let roomName in this.roomData) {
@@ -292,13 +333,15 @@ var ScreepsMap = (function() {
                 if(!allianceName) {
                   allianceName = 'unaffiliated'
                 }
-                let targetLayer = allianceLayers[allianceName];
+                let targetLayer = rclLayers[room.level];
                 let fillColor = this.getUserColor(room.owner);
                 let fillOpacity = (room.level !== 0) ? 0.75 : 0.5;
 
                 L.rectangle(bounds, { stroke: false, fillColor: fillColor, fillOpacity: fillOpacity, interactive: false }).addTo(targetLayer);
             }
         }
+
+        this.rclLayers = rclLayers;
     }
 
     ScreepsMap.prototype.drawLabelLayer = function (labelLayer) {
