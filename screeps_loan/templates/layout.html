@@ -6,6 +6,8 @@
     <title> {% block title %} {% endblock %} | League of Automated Nations</title>
     <link rel="stylesheet" href="{{url_for('static', filename='css/foundation.css')}}">
     <link rel="stylesheet" href="{{url_for('static', filename='css/app.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/vendor/font-awesome.min.css')}}">
+
     <link rel="icon" type="image/png" href="{{url_for('static', filename='img/favicon.png')}}">
 
     <meta name="twitter:title" content="{{ self.title() }} | League of Automated Nations" />
@@ -18,8 +20,6 @@
     <meta property="og:image" content="http://www.leagueofautomatednations.com/img/leaguelogo.png" />
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:image" content="http://www.leagueofautomatednations.com/img/leaguelogo.png" />
-
-    <script src="https://use.fontawesome.com/b48ca1ccb9.js"></script>
     {% block head %}
     {% endblock %}
   </head>
