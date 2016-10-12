@@ -56,7 +56,7 @@ def alliance_profile(shortname):
     charter = clean_html(charter)
     alliance_url = '/a/%s.json' % (shortname)
     alliance_url = '/alliances.js'
-    return render_template("alliance_profile.html", shortname = shortname, charter= charter);
+    return render_template("alliance_profile.html", shortname = shortname, charter= charter, alliance=alliance);
 
 @app.route('/a/<shortname>.json')
 @httpresponse(expires=300, content_type='application/json')
