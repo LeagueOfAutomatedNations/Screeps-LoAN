@@ -3,8 +3,8 @@
 {% block head %}
 
     <link rel="stylesheet" href="{{url_for('static', filename='css/map.css')}}">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.1/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.0.1/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="{{url_for ('static', filename = 'css/vendor/leaflet.css')}}" />
+    <script src="{{url_for ('static', filename = 'js/vendor/leaflet.js')}}"></script>
     <script type="text/javascript" language="javascript" src="{{url_for ('static', filename = 'js/headroom.min.js')}}"></script>
     <script type="text/javascript" language="javascript" src="{{url_for ('static', filename = 'js/vendor/randomColor.js')}}"></script>
     <script type="text/javascript" language="javascript" src="{{url_for ('static', filename = 'js/ScreepsMap.js')}}"></script>
