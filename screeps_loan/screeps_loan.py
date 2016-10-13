@@ -8,6 +8,7 @@ import screeps_loan.cli.maintenance
 
 import screeps_loan.routes.auth
 import screeps_loan.routes.alliances
+import screeps_loan.routes.errors
 import screeps_loan.routes.map
 import screeps_loan.routes.my_alliance
 

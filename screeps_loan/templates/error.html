@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block title %}Screeps Alliance Index{% endblock %}
+{% block content %}
+  <div class="callout primary">
+      <div class="row column">
+          <h1 class='text-center'>{{ error_code }} Error</h1>
+          <p  class="lead"></p>
+      </div>
+  </div>
+  <div class="row">
+    <p>{{ message }}</p>
+  </div>
+{% endblock %}
