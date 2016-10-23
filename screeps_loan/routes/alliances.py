@@ -20,8 +20,11 @@ def alliance_listing_json():
     alliances_aux = {}
     for alliance in all_alliances:
         alliance['members'] = [user['name'] for user in users_with_alliance
-                             if user['alliance'] == alliance['shortname']]
-        alliances_aux[alliance['shortname']]=alliance
+                               if user['alliance'] == alliance['shortname']]
+
+        if len(alliance['members']) < 2:
+            continue
+        alliances_aux[alliance['shortname']] = alliance
         alliance['name'] = alliance['fullname']
         alliance['abbreviation'] = alliance['shortname']
         alliance.pop('fullname', None)
