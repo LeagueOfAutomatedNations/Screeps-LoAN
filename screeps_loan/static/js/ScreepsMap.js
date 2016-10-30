@@ -289,7 +289,23 @@ var ScreepsMap = (function() {
         let container = document.getElementById(this.legendHostId);
         let output = '<h3>Legend:</h3>';
         output += '<ul class="colorKeyList">';
-        for (let allianceName in this.allianceData) {
+
+        let alliance_shortnames = Object.keys(this.allianceData)
+        alliance_shortnames.sort(function(a,b){
+          if(this.allianceData[a].name == 'unaffiliated') {
+            return 1;
+          }
+          if(this.allianceData[b].name == 'unaffiliated') {
+            return -1;
+          }
+          if (this.allianceData[a].name < this.allianceData[b].name)
+            return -1;
+          if (this.allianceData[a].name > this.allianceData[b].name)
+            return 1;
+          return 0;
+        }.bind({allianceData:this.allianceData}))
+
+        for (let allianceName of alliance_shortnames) {
             output += '<div id=#colorkey_alliance_' + allianceName + '>'
             output += '  <li class="colorKeyItem">';
             output += '    <span class="colorBox" style="background-color: ' + this.getAllianceColor(allianceName) + ';"></span>';
