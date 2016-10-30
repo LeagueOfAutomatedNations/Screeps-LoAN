@@ -41,9 +41,14 @@ def alliance_listing():
     all_alliances = alliance_query.getAll()
     alliances_name = [item["shortname"] for item in all_alliances]
     users_with_alliance = users.UserQuery().find_name_by_alliances(alliances_name)
+    display_alliances = []
     for alliance in all_alliances:
+        if not alliance['shortname']:
+            continue
         alliance['users'] = [user for user in users_with_alliance if user['alliance'] == alliance['shortname']]
-    return render_template("alliance_listing.html", alliances = all_alliances)
+        display_alliances.append(alliance)
+    display_alliances = sorted(display_alliances, key=lambda k: k['fullname'])
+    return render_template("alliance_listing.html", alliances = display_alliances)
 
 
 @app.route('/a/<shortname>')
