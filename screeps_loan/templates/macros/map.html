@@ -2,7 +2,7 @@
 {% macro map(alliance_url='/alliances.js', shortname=none, grouptype=none, unaffiliated=none, disablelabels=none) -%}
 
   <div class="unit whole">
-      <div id="ScreepsMapFlex">
+      <div id="ScreepsMapFlex" class="spinner">
           <div id="ScreepsMapContainer"></div>
           <div id="ScreepsColorKeyContainer"></div>
       </div>
@@ -26,6 +26,22 @@
       window.onload = function() {
   			alliance_data = {}
   			room_data = {}
+        region = new ScreepsRegion("W70N70", "E70S70");
+        mapView = new ScreepsMap(
+          {
+            spinnerHostId: "ScreepsMapFlex",
+            mapHostId: "ScreepsMapContainer",
+            legendHostId: "ScreepsColorKeyContainer",
+            roomTooltipHostId: "ScreepsMapTooltip",
+            terrainUri: "/static/img/screeps_terrain.png",
+            legendUrlPrefix: '/a/',
+            region: region,
+            {% if disablelabels %}
+            showLabels: false,
+            {% endif %}
+            style: { 'room-padding': 10 }
+          });
+        mapView.setSpinnerVisibile(true);
   			$.when(
   				$.getJSON('{{ alliance_url }}', {}, function(data){
   					console.log('alliance data loaded')
@@ -36,21 +52,6 @@
   					room_data = data
   				})
   			).then(function() {
-  				let region = new ScreepsRegion("W70N70", "E70S70");
-  				let mapView = new ScreepsMap(
-  					{
-  						spinnerHostId: "ScreepsMapFlex",
-  						mapHostId: "ScreepsMapContainer",
-  						legendHostId: "ScreepsColorKeyContainer",
-  						roomTooltipHostId: "ScreepsMapTooltip",
-  						terrainUri: "/static/img/screeps_terrain.png",
-  						legendUrlPrefix: '/a/',
-  						region: region,
-							{% if disablelabels %}
-							showLabels: false,
-							{% endif %}
-  						style: { 'room-padding': 10 }
-  					});
 					mapView.setData(
 						room_data,
 						alliance_data
