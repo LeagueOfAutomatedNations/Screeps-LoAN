@@ -1,6 +1,9 @@
 from screeps_loan import app
 from flask import render_template
 
+@app.errorhandler(400)
+def error_unauthorized(e):
+    return show_error(400, 'Bad Request')
 
 @app.errorhandler(401)
 def error_unauthorized(e):
