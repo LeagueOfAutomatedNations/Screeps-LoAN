@@ -56,7 +56,7 @@ def alliance_profile(shortname):
     alliance = alliances_model.find_by_shortname(shortname)
     from markdown2 import Markdown
     markdowner = Markdown()
-    if (alliance['charter'] is None):
+    if "charter" not in alliance or alliance['charter'] is None:
         alliance['charter'] = "We don't have a charter yet."
     charter = markdowner.convert(alliance['charter'])
     # To sanitize and prevent XSS attack. To be decide if this will be too slow

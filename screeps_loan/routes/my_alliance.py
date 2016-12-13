@@ -71,12 +71,9 @@ def update_my_alliance_profile():
     if re.match('^\w+$', request.form['slack_channel']):
         slack_channel = request.form['slack_channel']
 
-    if re.match('^[a-fA-F0-9#]+$', request.form['color']):
-        color = request.form['color']
-
     my_id = session['my_id']
     alliance = users_model.alliance_of_user(my_id)
-    alliances_model.update_all_alliances_info(alliance['shortname'], shortname, fullname, slack_channel, color)
+    alliances_model.update_all_alliances_info(alliance['shortname'], shortname, fullname, slack_channel)
     return (redirect(url_for('my_alliance')))
 
 @app.route('/my')

@@ -30,7 +30,7 @@ def update_charter_of_alliance(shortname, charter):
     db.execute(query, (charter, shortname))
 
 
-def update_all_alliances_info(shortname, new_shortname, fullname, slack_channel, color):
+def update_all_alliances_info(shortname, new_shortname, fullname, slack_channel, color='#000000'):
     color=str(color)
     query = "UPDATE alliances SET color = %s, shortname = %s, fullname = %s, slack_channel = %s WHERE shortname = %s"
     db.execute(query, (color, new_shortname, fullname, slack_channel, shortname))
