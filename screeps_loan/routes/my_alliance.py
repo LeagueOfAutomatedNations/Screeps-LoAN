@@ -68,8 +68,10 @@ def update_my_alliance_profile():
     if re.match('^\w+$', request.form['shortname']):
         shortname = request.form['shortname']
 
-    if re.match('^\w+$', request.form['slack_channel']):
+    if re.match('^[\w|-]+$', request.form['slack_channel']):
         slack_channel = request.form['slack_channel']
+    else:
+        slack_channel = None
 
     my_id = session['my_id']
     alliance = users_model.alliance_of_user(my_id)
