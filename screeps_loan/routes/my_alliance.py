@@ -14,9 +14,9 @@ import screeps_loan.screeps_client as screeps_client
 import re
 
 def allowed_file(filename):
-    ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+    ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
     return '.' in filename and \
-           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 @app.route('/my/uploadlogo', methods =['POST'])
