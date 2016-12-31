@@ -46,7 +46,8 @@ def alliance_listing():
         if not alliance['shortname']:
             continue
         alliance['users'] = [user for user in users_with_alliance if user['alliance'] == alliance['shortname']]
-        display_alliances.append(alliance)
+        if alliance['users']:
+            display_alliances.append(alliance)
     display_alliances = sorted(display_alliances, key=lambda k: k['fullname'])
     return render_template("alliance_listing.html", alliances = display_alliances)
 
