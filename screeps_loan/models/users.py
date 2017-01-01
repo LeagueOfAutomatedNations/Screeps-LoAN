@@ -26,7 +26,7 @@ def update_alliance_by_screeps_id(id, alliance):
 
 @cache.cache()
 def player_id_from_db(name):
-    query = "SELECT screeps_id FROM users WHERE ign=%s"
+    query = "SELECT screeps_id FROM users WHERE LOWER(ign)=LOWER(%s)"
     row = db.find_one(query, (name,))
     if (row is not None):
         return row[0]
