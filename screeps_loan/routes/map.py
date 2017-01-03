@@ -6,6 +6,7 @@ from flask import render_template
 @cross_origin()
 
 @app.route('/map/rooms.js')
+@cross_origin()
 @httpresponse(expires=300, content_type='application/json')
 def alliance_room_json():
     room_data = get_all_rooms()
