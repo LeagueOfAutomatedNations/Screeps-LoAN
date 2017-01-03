@@ -5,6 +5,7 @@ import screeps_loan.models.users as users_model
 from screeps_loan.routes.decorators import httpresponse
 import json
 from flask import render_template
+from flask_cors import cross_origin
 
 
 @app.route('/alliances.js')

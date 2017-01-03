@@ -1,5 +1,6 @@
 from flask import Flask, session, redirect, url_for, escape, request, render_template, flash, send_from_directory
 from screeps_loan import app
+from flask_cors import cross_origin
 app.config.from_envvar('SETTINGS')
 
 import socket

@@ -3,7 +3,7 @@ from screeps_loan.models.rooms import get_all_rooms
 from screeps_loan.routes.decorators import httpresponse
 import json
 from flask import render_template
-@cross_origin()
+from flask_cors import cross_origin
 
 @app.route('/map/rooms.js')
 @cross_origin()
