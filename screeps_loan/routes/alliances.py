@@ -8,6 +8,7 @@ from flask import render_template
 
 
 @app.route('/alliances.js')
+@cross_origin()
 def alliance_listing_json():
     import screeps_loan.models.alliances as alliances
     import screeps_loan.models.users as users
@@ -68,6 +69,7 @@ def alliance_profile(shortname):
     return render_template("alliance_profile.html", shortname = shortname, charter= charter, alliance=alliance);
 
 @app.route('/a/<shortname>.json')
+@cross_origin()
 @httpresponse(expires=300, content_type='application/json')
 def alliance_profile_json(shortname):
     users = users_model.find_name_by_alliance(shortname)

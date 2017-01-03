@@ -13,6 +13,7 @@ import screeps_loan.routes.map
 import screeps_loan.routes.my_alliance
 
 @app.route('/obj/<filename>')
+@cross_origin()
 def get_obj(filename):
     return send_from_directory(app.config['OBJECT_STORAGE'], filename)
 
