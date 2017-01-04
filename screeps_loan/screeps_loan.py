@@ -5,6 +5,7 @@ app.config.from_envvar('SETTINGS')
 import socket
 import screeps_loan.cli.import_user
 import screeps_loan.cli.maintenance
+import screeps_loan.cli.maintenance
 
 import screeps_loan.routes.auth
 import screeps_loan.routes.alliances
