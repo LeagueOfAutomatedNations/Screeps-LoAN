@@ -24,6 +24,10 @@ def alliance_listing_json():
 
         if len(alliance['members']) < 2:
             continue
+
+        if alliances_model.get_room_count(alliance['shortname']) < 2:
+            continue
+
         alliances_aux[alliance['shortname']] = alliance
         alliance['name'] = alliance['fullname']
         alliance['abbreviation'] = alliance['shortname']
@@ -45,6 +49,10 @@ def alliance_listing():
     for alliance in all_alliances:
         if not alliance['shortname']:
             continue
+
+        if alliances_model.get_room_count(alliance['shortname']) < 2:
+            continue
+
         alliance['users'] = [user for user in users_with_alliance if user['alliance'] == alliance['shortname']]
         if alliance['users']:
             display_alliances.append(alliance)
