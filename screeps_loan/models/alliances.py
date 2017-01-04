@@ -1,4 +1,5 @@
 from screeps_loan.models import db
+from screeps_loan.services.cache import cache
 
 class AllianceQuery():
     def getAll(self):
@@ -46,6 +47,7 @@ def find_by_shortname(name):
     result = cursor.fetchone()
     return result
 
+
 def create_an_alliance(user_id, fullname, shortname, color):
     conn = db.get_conn()
     try:
@@ -59,3 +61,20 @@ def create_an_alliance(user_id, fullname, shortname, color):
         conn.commit()
     except (e):
         conn.rollback()
+
+
+@cache.cache()
+def get_room_count(shortname):
+    query = '''
+    SELECT COUNT(DISTINCT rooms.name)
+        FROM rooms,users
+        WHERE rooms.owner=users.id
+            AND users.alliance=%s
+            AND rooms.import = (SELECT id
+                                    FROM room_imports
+                                    ORDER BY id desc
+                                    LIMIT 1
+                                );
+    '''
+    result = db.find_one(query, (shortname,))
+    return int(result[0])
