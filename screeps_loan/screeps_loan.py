@@ -1,5 +1,6 @@
 from flask import Flask, session, redirect, url_for, escape, request, render_template, flash, send_from_directory
 from screeps_loan import app
+from flask_cors import cross_origin
 app.config.from_envvar('SETTINGS')
 
 import socket
@@ -14,6 +15,7 @@ import screeps_loan.routes.map
 import screeps_loan.routes.my_alliance
 
 @app.route('/obj/<filename>')
+@cross_origin(origins="*", send_wildcard=True, methods="GET")
 def get_obj(filename):
     return send_from_directory(app.config['OBJECT_STORAGE'], filename)
 
