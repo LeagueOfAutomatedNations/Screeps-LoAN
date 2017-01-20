@@ -3,9 +3,10 @@ from screeps_loan.models.rooms import get_all_rooms
 from screeps_loan.routes.decorators import httpresponse
 import json
 from flask import render_template
-
+from flask_cors import cross_origin
 
 @app.route('/map/rooms.js')
+@cross_origin(origins="*", send_wildcard=True, methods="GET")
 @httpresponse(expires=300, content_type='application/json')
 def alliance_room_json():
     room_data = get_all_rooms()
