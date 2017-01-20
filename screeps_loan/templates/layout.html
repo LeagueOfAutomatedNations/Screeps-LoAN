@@ -20,6 +20,10 @@
     <meta property="og:image" content="http://www.leagueofautomatednations.com/img/leaguelogo.png" />
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:image" content="http://www.leagueofautomatednations.com/img/leaguelogo.png" />
+
+    <script src="{{url_for('static', filename='js/vendor/jquery.js')}}"></script>
+    <script src="{{url_for('static', filename='js/vendor/foundation.min.js')}}"></script>
+
     {% block head %}
     {% endblock %}
   </head>
@@ -58,6 +62,9 @@
                 <li>
                     <i class="fa fa-globe"></i>
                     <a href="{{url_for('map')}}">Alliance Map </a></li>
+                <li>
+                    <i class="fa fa-globe"></i>
+                    <a href="{{url_for('alliance_rankings')}}">Alliance Rankings </a></li>
                 <li>
                     <i class="fa fa-map-marker"></i>
                     <a href="{{url_for('map_users')}}">Player Map </a></li>
@@ -99,15 +106,14 @@
       </div>
     </div>
 
-    <script src="{{url_for('static', filename='js/vendor/jquery.js')}}"></script>
-    <script src="{{url_for('static', filename='js/vendor/foundation.min.js')}}"></script>
     {% block js_include %}
     {% endblock %}
     <script>
       $(document).foundation();
-    </script>
     {% block script %}
     {% endblock %}
+
+    </script>
     {% if config.GA is defined %}
       <!-- Google Analytics -->
       <script>

@@ -10,7 +10,7 @@ class AllianceQuery():
 
 
     def find_by_shortname(self, name):
-        query = "SELECT shortname from alliances where shortname=%s"
+        query = "SELECT fullname from alliances where shortname=%s"
         result = db.find_one(query, (name,))
         if result is not None:
             return result[0]

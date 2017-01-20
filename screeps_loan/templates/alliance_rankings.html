@@ -1,0 +1,59 @@
+{% from "macros/map.html" import map with context %}
+{% extends "layout.html" %}
+
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{url_for('static', filename='datatables/datatables.css')}}">
+    <script type="text/javascript" language="javascript" src="{{url_for ('static', filename = 'datatables/datatables.js')}}"></script>
+{% endblock %}
+
+{% block script %}
+    {{ super() }}
+    $('.datatable').DataTable({
+       "paging":   false,
+       "searching":   false,
+       "order": [[ 1, "desc" ]]
+     });
+{% endblock %}
+
+{% block content %}
+
+<div>
+
+  <div class="callout primary">
+      <div class="row column">
+          <h1 class='text-center'>Alliances Rankings</h1>
+          <p  class="lead"></p>
+      </div>
+  </div>
+
+  <div class='row rankings'>
+    <table role="grid" class="datatable">
+      <thead>
+        <tr>
+          <th>Alliance</th>
+          <th>Alliance GCL</th>
+          <th>Combined GCL</th>
+          <th>Max Spawns</th>
+          <th>Members</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for ranking in rankings %}
+        <tr>
+          {% set longname = get_name_from_shortname(ranking['alliance']) %}
+          <td><a href="{{url_for('alliance_profile', shortname = ranking['alliance']) }}">{{longname}}</a></td>
+          <td>{{ranking['alliance_gcl']}}</td>
+          <td>{{ranking['combined_gcl']}}</td>
+          <td>{{ranking['spawns']}}</td>
+          <td>{{ranking['members']}}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+{% endblock %}
