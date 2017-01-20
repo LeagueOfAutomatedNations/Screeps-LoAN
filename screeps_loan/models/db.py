@@ -14,8 +14,6 @@ def get_conn():
 
 def runQuery(query, params= None):
     conn = get_conn()
-    if (conn.status == STATUS_BEGIN): #Note: this read like it might cause weird race condition
-        conn.rollback()
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     if (params is not None):
         cursor.execute(query, params)
