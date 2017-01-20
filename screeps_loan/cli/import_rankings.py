@@ -99,7 +99,6 @@ class Rankings(object):
         result = cursor.fetchone()[0]
         if result is not None:
             if result:
-                print(result)
                 count += result*3
 
         query = "SELECT COUNT(*) FROM rooms, users WHERE rooms.owner = users.id AND users.alliance=%s AND level=7 AND rooms.import=%s"
@@ -108,7 +107,6 @@ class Rankings(object):
         result = cursor.fetchone()[0]
         if result is not None:
             if result:
-                print(result)
                 count += result*2
 
         query = "SELECT COUNT(*) FROM rooms, users WHERE rooms.owner = users.id AND users.alliance=%s AND level>=1 AND level<7 AND rooms.import=%s"
@@ -117,7 +115,6 @@ class Rankings(object):
         result = cursor.fetchone()[0]
         if result is not None:
             if result:
-                print(result)
                 count += result
 
         return count

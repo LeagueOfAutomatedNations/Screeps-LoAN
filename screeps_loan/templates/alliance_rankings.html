@@ -27,6 +27,7 @@
       </div>
   </div>
 
+
   <div class='row rankings'>
     <table role="grid" class="datatable">
       <thead>
@@ -51,6 +52,26 @@
         {% endfor %}
       </tbody>
     </table>
+  </div>
+  <br>
+  <div class='row columns'>
+    <h4>Ranking Types</h4>
+    <dl>
+      <dt>Alliance GCL</dt>
+      <dd>This metric combines the raw control points of all members of an alliance and calculates the GCL as if they were a single user. This method gives the best understanding of the alliance experience level.</dd>
+    </dl>
+    <dl>
+      <dt>Combined GCL</dt>
+      <dd>This metric adds all of the individual GCL levels together to get one number. With this metric a new user, regardless of skill level, will always add at least one to the score.</dd>
+    </dl>
+    <dl>
+      <dt>Max Spawns</dt>
+      <dd>Each claimed room in an alliance is scored by the number of spawns it can support. In other words, RCL8 rooms are worth three, RCL7 rooms two, and all remaining claimed rooms one. Unlike the GCL based metrics this score will go up and down based off of the state of world at the time.</dd>
+    </dl>
+    <dl>
+      <dt>Members</dt>
+      <dd>This is the total number of members in the alliance.</dd>
+    </dl>
   </div>
 
 
