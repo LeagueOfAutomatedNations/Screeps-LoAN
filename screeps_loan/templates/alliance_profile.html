@@ -1,5 +1,6 @@
 {% from "macros/map.html" import map with context %}
 {% extends "layout.html" %}
+{% block title %} {{ alliance['fullname'] }} {% endblock %}
 {% block head %}
 
     <link rel="stylesheet" href="{{url_for('static', filename='css/map.css')}}">
