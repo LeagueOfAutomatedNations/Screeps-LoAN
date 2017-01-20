@@ -9,7 +9,7 @@ def get_all_rankings(import_id=None):
     return get_all_rankings_by_import(import_id)
 
 
-
+@cache.cache()
 def get_all_rankings_by_import(import_id):
     query = "SELECT * FROM rankings WHERE import=(%s) ORDER BY alliance_gcl DESC"
     return db.find_all(query, (import_id, ))
