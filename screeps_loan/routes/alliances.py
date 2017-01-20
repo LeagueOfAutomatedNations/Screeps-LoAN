@@ -1,5 +1,6 @@
 from screeps_loan import app
 import screeps_loan.models.alliances as alliances_model
+import screeps_loan.models.rankings as rankings_model
 from screeps_loan.models.rooms import get_all_rooms
 import screeps_loan.models.users as users_model
 from screeps_loan.routes.decorators import httpresponse
@@ -87,3 +88,9 @@ def alliance_profile_json(shortname):
         users_aux[user] = {"members": [user], "name": user, "abbreviation": user}
 
     return json.dumps(users_aux)
+
+
+@app.route('/alliances/rankings')
+def alliance_rankings():
+    rankings = rankings_model.get_all_rankings()
+    return render_template("alliance_rankings.html", rankings=rankings)

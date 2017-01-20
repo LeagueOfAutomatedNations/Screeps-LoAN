@@ -15,6 +15,8 @@ import screeps_loan.routes.errors
 import screeps_loan.routes.map
 import screeps_loan.routes.my_alliance
 
+import screeps_loan.extensions.jinja
+
 @app.route('/obj/<filename>')
 @cross_origin(origins="*", send_wildcard=True, methods="GET")
 def get_obj(filename):
