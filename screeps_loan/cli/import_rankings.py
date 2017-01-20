@@ -99,7 +99,7 @@ class Rankings(object):
 
     def getAllianceSpawns(self, alliance):
         count = 0
-        query = "SELECT SUM(level) FROM rooms, users WHERE rooms.owner = users.id AND users.alliance=%s AND rooms.import=%s"
+        query = "SELECT SUM(level) FROM rooms, users WHERE rooms.owner = users.id AND users.alliance=%s AND LEVEL=8 AND rooms.import=%s"
         cursor = self.conn.cursor()
         cursor.execute(query, (alliance, self.room_import_id))
         result = cursor.fetchone()[0]
