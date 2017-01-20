@@ -40,10 +40,6 @@ class Rankings(object):
         print(self.id)
 
 
-        all_alliances = [
-            {'shortname': 'SUN'},
-        ]
-
         for alliance in all_alliances:
             users_with_alliance = self.find_name_by_alliances(alliances_names)
             members = [user['name'] for user in users_with_alliance if user['alliance'] == alliance['shortname']]
