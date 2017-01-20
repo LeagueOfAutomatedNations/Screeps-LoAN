@@ -39,12 +39,10 @@ class Rankings(object):
         self.start()
         print(self.id)
 
-        '''
+
         all_alliances = [
-            {'shortname': 'uca'},
-            {'shortname': 'lss'},
+            {'shortname': 'SUN'},
         ]
-        '''
 
         for alliance in all_alliances:
             users_with_alliance = self.find_name_by_alliances(alliances_names)
@@ -99,12 +97,13 @@ class Rankings(object):
 
     def getAllianceSpawns(self, alliance):
         count = 0
-        query = "SELECT SUM(level) FROM rooms, users WHERE rooms.owner = users.id AND users.alliance=%s AND LEVEL=8 AND rooms.import=%s"
+        query = "SELECT COUNT(*) FROM rooms, users WHERE rooms.owner = users.id AND users.alliance=%s AND level>=8 AND rooms.import=%s"
         cursor = self.conn.cursor()
         cursor.execute(query, (alliance, self.room_import_id))
         result = cursor.fetchone()[0]
         if result is not None:
             if result:
+                print(result)
                 count += result*3
 
         query = "SELECT COUNT(*) FROM rooms, users WHERE rooms.owner = users.id AND users.alliance=%s AND level=7 AND rooms.import=%s"
@@ -113,6 +112,7 @@ class Rankings(object):
         result = cursor.fetchone()[0]
         if result is not None:
             if result:
+                print(result)
                 count += result*2
 
         query = "SELECT COUNT(*) FROM rooms, users WHERE rooms.owner = users.id AND users.alliance=%s AND level>=1 AND level<7 AND rooms.import=%s"
@@ -121,6 +121,7 @@ class Rankings(object):
         result = cursor.fetchone()[0]
         if result is not None:
             if result:
+                print(result)
                 count += result
 
         return count
