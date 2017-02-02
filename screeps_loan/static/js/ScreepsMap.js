@@ -554,19 +554,14 @@ var ScreepsMap = (function() {
       }
 
       if(!this.allianceColors[allianceName]) {
-        this.allianceColors[allianceName] = this.getRandomColor(allianceName)
+        this.allianceColors[allianceName] = this.getRandomColor(allianceName.name)
       }
       return this.allianceColors[allianceName]
     }
 
     ScreepsMap.prototype.getRandomColor = function (seed=false) {
-      if (this.groupType == 'alliance' && DEFAULT_COLORS.length > 0) {
-          return DEFAULT_COLORS.shift()
-      }
 
-      if(!!seed) {
-        seed = parseInt(seed.replace(/[^0-9a-z]/gi, ''), 36) % 10000000
-      } else {
+      if(!seed) {
         if(!this.seed) {
           this.seed = 1000
         } else {
