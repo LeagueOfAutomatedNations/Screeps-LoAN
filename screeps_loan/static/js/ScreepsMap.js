@@ -554,7 +554,7 @@ var ScreepsMap = (function() {
       }
 
       if(!this.allianceColors[allianceName]) {
-        this.allianceColors[allianceName] = this.getRandomColor(allianceName.name)
+        this.allianceColors[allianceName] = this.getRandomColor(this.allianceData[allianceName].name)
       }
       return this.allianceColors[allianceName]
     }
