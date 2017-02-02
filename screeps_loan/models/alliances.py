@@ -16,7 +16,7 @@ class AllianceQuery():
             return result[0]
         return None
 
-    def insert_alliance(self, shortname, fullname, color, slack_channel = None):
+    def insert_alliance(self, shortname, fullname, color = '#000000', slack_channel = None):
         query = """INSERT INTO alliances(shortname, fullname, color, slack_channel) \
                  VALUES(%s, %s, %s, %s)"""
         result = db.execute(query, (shortname, fullname, color, slack_channel))

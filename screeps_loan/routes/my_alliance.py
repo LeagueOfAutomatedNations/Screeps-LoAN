@@ -93,9 +93,13 @@ def my_alliance():
 def create_an_alliance():
     my_id = session['my_id']
     fullname = request.form['fullname']
-    shortname = request.form['shortname']
-    color = request.form['color']
-    alliances_model.create_an_alliance(my_id, fullname, shortname, color)
+
+    if re.match(r'^\w+$', request.form['shortname']):
+        shortname = request.form['shortname']
+    else:
+        re.sub(r'\w+', '', request.form['shortname'])
+
+    alliances_model.create_an_alliance(my_id, fullname, shortname)
     return redirect(url_for("my_alliance"))
 
 
