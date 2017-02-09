@@ -23,6 +23,7 @@
 
     <script src="{{url_for('static', filename='js/vendor/jquery.js')}}"></script>
     <script src="{{url_for('static', filename='js/vendor/foundation.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/jquery.quickconfirm.js')}}"></script>
 
     {% block head %}
     {% endblock %}
@@ -54,6 +55,16 @@
                     <i class="fa-star-o fa"></i>
                     <a href="{{url_for('my_alliance')}}"> My Alliance </a>
                 </li>
+
+                {% if has_invites() %}
+                <li>
+                    <i class="fa-envelope-open-o fa"></i>
+                    <a href="{{url_for('list_invites')}}"> My Invites </a>
+                </li>
+
+                {% endif %}
+
+
               {% endif %}
 
                 <li>

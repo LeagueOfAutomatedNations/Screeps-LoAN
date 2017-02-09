@@ -1,0 +1,64 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="callout primary">
+    <div class="row column">
+        <h1 class='text-center'>Invites</h1>
+        <p  class="lead"></p>
+    </div>
+</div>
+<div>
+  <div id="confirmationModalAccept" class="reveal-modal reveal small" data-reveal aria-labelledby="confirmationModelAcceptedTitle" area-hidden="true" role="dialog">
+    <h2 class="confirmation_title text-center" id="confirmationModelAcceptedTitle">Invite Accepted</h2>
+    <p class="lead text-center">You've accepted the invite and have joined your new alliance. All other invites have been cleared.</p>
+  </div>
+
+  <div id="confirmationModalDecline" class="reveal-modal reveal small" data-reveal aria-labelledby="confirmationModelDeclinedTitle" area-hidden="true" role="dialog">
+    <h2 class="confirmation_title text-center" id="confirmationModelDeclinedTitle">Invite Declined</h2>
+    <p class="lead text-center">You've declined an invite.</p>
+  </div>
+
+  <div id="errorModal" class="reveal-modal reveal small" data-reveal aria-labelledby="confirmationErrorModal" area-hidden="true" role="dialog">
+    <h2 class="confirmation_title text-center" id="confirmationModelDeclinedTitle">An error occurred</h2>
+    <p class="lead text-center">You should probably refresh the page.</p>
+  </div>
+
+
+
+</div>
+
+{% if invites %}
+  <div class="row">
+    <div class="large-12 columns">
+      <div class="row columns"></div>
+      <div class="row">
+        <table role="grid" class="datatable invitelist">
+          <thead>
+            <tr>
+              <th>Alliance</th>
+              <th>User</th>
+              <th> </th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for invite in invites %}
+              <td>{{ get_name_from_shortname(invite['alliance']) }}</td>
+              <td>{{ get_name_from_user_id(invite['sender']) }}</td>
+              <td>
+                <a href="{{url_for('invite_accept', inviteid=invite['id'])}}" data-confirmation-modal="#confirmationModalAccept" class="oneclickconfirm">
+                  Accept
+                </a>
+                <a href="{{url_for('invite_decline', inviteid=invite['id'])}}" data-confirmation-modal="#confirmationModalDecline" class="oneclickconfirm">
+                  Decline
+                </a>
+
+              </td>
+            {% endfor %}
+          </tbody>
+      </div>
+    </div>
+  </div>
+{% endif %}
+{% endblock %}
+{% block script %}
+  $('a.oneclickconfirm').quickConfirm()
+{% endblock %}
