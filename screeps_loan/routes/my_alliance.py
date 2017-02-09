@@ -4,10 +4,10 @@ from werkzeug.utils import secure_filename
 import os
 import hashlib
 import screeps_loan.models.alliances as alliances_model
+import screeps_loan.models.invites as invites
 import screeps_loan.models.users as users_model
 from screeps_loan.routes.decorators import login_required
 from screeps_loan.auth_user import AuthPlayer
-import screeps_loan.models.users as users_model
 import screeps_loan.services.users as users_service
 import hashlib
 import screeps_loan.screeps_client as screeps_client
@@ -121,15 +121,33 @@ def invite_to_alliance():
         return "You are not in an alliance, can't invite anyone"
 
     username = request.form['username']
+
+    # Make sure user is in database and game world.
     api = screeps_client.get_client()
-
     auth = AuthPlayer(api)
-    id = auth.id_from_name(username)
-    users_model.update_alliance_by_screeps_id(id, alliance['shortname'])
-    #(id, token) = auth.auth_token(username)
+    ign = auth.id_from_name(username)
 
-    #if (id is not None):
-    #    api.msg_send(id, "You are invited to join %s, click for more info: \n\n" % alliance+
-    #                 url_for('accept_alliance_invite', token=token, _external=True))
-    flash('Successfully add user to your alliance')
-    return redirect(request.referrer)
+    if not ign:
+        flash('User not present in game - remember usernames are case sensitive.')
+        return redirect(url_for("my_alliance"))
+
+
+    # Get database id
+    id = users_model.user_id_from_db(username)
+
+    if not id:
+        flash('User not present in system - please try again later.')
+        return redirect(url_for("my_alliance"))
+
+    # Is user already in an alliance?
+    current_alliance = users_model.alliance_of_user(id)
+    if current_alliance:
+        flash('User is already in an alliance.')
+        return redirect(url_for("my_alliance"))
+
+
+    invites.add_invite(id, alliance['shortname'], my_id)
+    api.msg_send(ign, "You are invited to join %s \n\n%s" % (alliance['fullname'], url_for('list_invites', _external=True)))
+
+    flash('Successfully invited user to your alliance')
+    return redirect(url_for("my_alliance"))

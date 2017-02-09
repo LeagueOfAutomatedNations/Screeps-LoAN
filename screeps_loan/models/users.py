@@ -24,6 +24,11 @@ def update_alliance_by_screeps_id(id, alliance):
     db.execute(query, (alliance, id))
 
 
+def update_alliance_by_user_id(id, alliance):
+    query = "UPDATE users SET alliance = %s WHERE id=%s"
+    db.execute(query, (alliance, id))
+
+
 @cache.cache()
 def player_id_from_db(name):
     query = "SELECT screeps_id FROM users WHERE LOWER(ign)=LOWER(%s)"
@@ -31,6 +36,26 @@ def player_id_from_db(name):
     if (row is not None):
         return row[0]
     return None
+
+
+@cache.cache()
+def user_id_from_db(name):
+    query = "SELECT id FROM users WHERE LOWER(ign)=LOWER(%s)"
+    row = db.find_one(query, (name,))
+    if (row is not None):
+        return row[0]
+    return None
+
+
+@cache.cache()
+def user_name_from_db_id(id):
+    query = "SELECT ign FROM users WHERE id=%s"
+    row = db.find_one(query, (id,))
+    if (row is not None):
+        return row[0]
+    return None
+
+
 
 
 def insert_username_with_id(name, id):

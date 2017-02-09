@@ -161,8 +161,8 @@ def import_alliances():
             alliance_query.insert_alliance(shortname, fullname, color, slack)
             alliance = shortname
 
-        existing_member = [i['name'] for i in users_query.find_name_by_alliances([alliance])]
+        existing_member = [i['name'] for i in users_query.find_name_by_alliances([shortname])]
         new_members = [name for name in members if name not in existing_member]
         for member in new_members:
             id = users_service.player_id_from_api(member)
-            users_query.update_alliance_by_screeps_id(id, alliance)
+            users_query.update_alliance_by_screeps_id(id, shortname)
