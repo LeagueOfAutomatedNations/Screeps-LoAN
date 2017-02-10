@@ -48,7 +48,7 @@ def find_by_shortname(name):
     return result
 
 
-def create_an_alliance(user_id, fullname, shortname, color):
+def create_an_alliance(user_id, fullname, shortname,  color='#000000'):
     conn = db.get_conn()
     try:
         query = "INSERT INTO alliances(fullname, shortname, color) VALUES(%s, %s, %s)"
