@@ -97,7 +97,7 @@ def create_an_alliance():
     if re.match(r'^\w+$', request.form['shortname']):
         shortname = request.form['shortname']
     else:
-        re.sub(r'\w+', '', request.form['shortname'])
+        shortname = re.sub(r'\w+', '', request.form['shortname'])
 
     alliances_model.create_an_alliance(my_id, fullname, shortname)
     return redirect(url_for("my_alliance"))
