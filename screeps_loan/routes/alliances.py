@@ -20,6 +20,11 @@ def alliance_listing_json():
     alliances_name = [item["shortname"] for item in all_alliances]
     users_with_alliance = users.UserQuery().find_name_by_alliances(alliances_name)
 
+    ranking_types = rankings_model.get_rankings_list()
+    ranking_data = {}
+    for ranking_type in ranking_types:
+        ranking_data[ranking_type] = rankings_model.get_rankings_by_import_and_type(ranking_type)
+
     alliances_aux = {}
     for alliance in all_alliances:
         alliance['members'] = [user['name'] for user in users_with_alliance
@@ -36,6 +41,12 @@ def alliance_listing_json():
         alliance['abbreviation'] = alliance['shortname']
         alliance.pop('fullname', None)
         alliance.pop('shortname', None)
+
+        for ranking_type in ranking_types:
+            if alliance['abbreviation'] in ranking_data[ranking_type]:
+                data = ranking_data[ranking_type][alliance['abbreviation']]
+                alliance[ranking_type + '_rank'] = data
+
     return json.dumps(alliances_aux)
 
 
@@ -94,3 +105,11 @@ def alliance_profile_json(shortname):
 def alliance_rankings():
     rankings = rankings_model.get_all_rankings()
     return render_template("alliance_rankings.html", rankings=rankings)
+
+
+@app.route('/alliances/rankings/<ranking_type>.js')
+@cross_origin(origins="*", send_wildcard=True, methods="GET")
+@httpresponse(expires=300, content_type='application/json')
+def alliance_rankings_json(ranking_type):
+    rankings = rankings_model.get_rankings_by_import_and_type(ranking_type)
+    return json.dumps(rankings)
