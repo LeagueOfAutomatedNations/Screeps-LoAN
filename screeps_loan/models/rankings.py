@@ -3,7 +3,7 @@ from screeps_loan.services.cache import cache
 
 
 def get_rankings_list():
-    return ['alliance_gcl', 'combined_gcl', 'rcl', 'spawns', 'members']
+    return ['alliance_gcl', 'combined_gcl', 'alliance_power', 'combined_power', 'rcl', 'spawns', 'members']
 
 
 def get_all_rankings(import_id=None):

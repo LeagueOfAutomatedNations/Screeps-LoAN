@@ -35,6 +35,8 @@
           <th>Alliance</th>
           <th>Alliance GCL</th>
           <th>Combined GCL</th>
+          <th>Alliance Power</th>
+          <th>Combined Power</th>
           <th>Max Spawns</th>
           <th>Members</th>
         </tr>
@@ -46,6 +48,8 @@
           <td><a href="{{url_for('alliance_profile', shortname = ranking['alliance']) }}">{{longname}}</a></td>
           <td>{{ranking['alliance_gcl']}}</td>
           <td>{{ranking['combined_gcl']}}</td>
+          <td>{{ranking['alliance_power']}}</td>
+          <td>{{ranking['combined_power']}}</td>
           <td>{{ranking['spawns']}}</td>
           <td>{{ranking['members']}}</td>
         </tr>
