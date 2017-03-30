@@ -29,13 +29,7 @@ for i in range(0, POWER_MAX):
     })
     powerlevels[i] = total
 
-    print('Level %s, %s' % (i, needed))
-
 powertotals = list(reversed(powertotals))
-
-
-import json
-#print(json.dumps(powertotals))
 
 
 @cache.cache('getUserControlPoints')
