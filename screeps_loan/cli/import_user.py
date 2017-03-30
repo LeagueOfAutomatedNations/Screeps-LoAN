@@ -134,6 +134,7 @@ def initdb():
 
 @app.cli.command()
 def import_alliances():
+    click.echo("Start to import alliances from http://www.leagueofautomatednations.com/alliances.js")
     import requests as r
     import json
     import screeps_loan.models.alliances as alliances_model

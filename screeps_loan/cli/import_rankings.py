@@ -9,6 +9,28 @@ from screeps_loan.services.cache import cache
 import screeps_loan.models.alliances as alliances
 import screeps_loan.models.users as users
 
+import math
+
+
+POWER_POW = 1.15
+POWER_MULTIPLY = 1000
+POWER_MAX = 750
+
+powertotals = [{'level': 0, 'total': 0}]
+powerlevels = {}
+total = 0
+
+for i in range(0, POWER_MAX):
+    needed = math.pow(i, POWER_POW) * POWER_MULTIPLY
+    total += needed
+    powertotals.append({
+        'level': i,
+        'total': total
+    })
+    powerlevels[i] = total
+
+powertotals = list(reversed(powertotals))
+
 
 @cache.cache('getUserControlPoints')
 def getUserControlPoints(username):
@@ -18,6 +40,16 @@ def getUserControlPoints(username):
         if 'gcl' in user_info['user']:
             return user_info['user']['gcl']
     return 1
+
+
+@cache.cache('getUserPowerPoints')
+def getUserPowerPoints(username):
+    screeps = get_client()
+    user_info = screeps.user_find(username)
+    if 'user' in user_info:
+        if 'power' in user_info['user']:
+            return user_info['user']['power']
+    return 0
 
 
 class Rankings(object):
@@ -53,14 +85,19 @@ class Rankings(object):
                 continue
 
             rcl = self.getAllianceRCL(alliance['shortname'])
+
             combined_gcl = sum(self.getUserGCL(user) for user in members)
             control = sum(getUserControlPoints(user) for user in members)
             alliance_gcl = self.convertGcl(control)
+
+            combined_power = sum(self.getUserPowerLevel(user) for user in members)
+            power = sum(getUserPowerPoints(user) for user in members)
+            alliance_power = self.convertPowerToLevel(power)
+
             spawns = self.getAllianceSpawns(alliance['shortname'])
+            print('%s- %s, %s, %s, %s, %s, %s, %s' % (alliance['shortname'], combined_gcl, alliance_gcl, rcl, spawns, len(members), alliance_power, combined_power))
 
-            print('%s- %s, %s, %s, %s, %s' % (alliance['shortname'], combined_gcl, alliance_gcl, rcl, spawns, len(members)))
-
-            self.update(alliance['shortname'], alliance_gcl, combined_gcl, rcl, spawns, len(members))
+            self.update(alliance['shortname'], alliance_gcl, combined_gcl, rcl, spawns, len(members), alliance_power, combined_power)
 
         self.finish()
         self.conn.commit()
@@ -76,11 +113,11 @@ class Rankings(object):
         cursor = self.conn.cursor()
         cursor.execute(query, (self.id, ))
 
-    def update(self, alliance, alliance_gcl, combined_gcl, rcl, spawns, members):
+    def update(self, alliance, alliance_gcl, combined_gcl, rcl, spawns, members, alliance_power, combined_power):
         # Store info in db
         cursor = self.conn.cursor()
-        query = "INSERT INTO rankings(import, alliance, alliance_gcl, combined_gcl, rcl, spawns, members) VALUES(%s, %s, %s, %s, %s, %s, %s)"
-        cursor.execute(query, (self.id, alliance, alliance_gcl, combined_gcl, rcl, spawns, members))
+        query = "INSERT INTO rankings(import, alliance, alliance_gcl, combined_gcl, rcl, spawns, members, alliance_power, combined_power) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        cursor.execute(query, (self.id, alliance, alliance_gcl, combined_gcl, rcl, spawns, members, alliance_power, combined_power))
 
     def getAllianceRCL(self, alliance):
         query = "SELECT SUM(level) FROM rooms, users WHERE rooms.owner = users.id AND users.alliance=%s AND rooms.import=%s"
@@ -119,15 +156,22 @@ class Rankings(object):
 
         return count
 
-
-
     def convertGcl(self, control):
         return int((control/1000000) ** (1/2.4))+1
-
 
     def getUserGCL(self, username):
         return self.convertGcl(getUserControlPoints(username))
 
+    def convertPowerToLevel(self, power):
+        if power <= 0:
+            return 0
+        for powerdata in powertotals:
+            if powerdata['total'] < power:
+                return powerdata['level']
+        return 0
+
+    def getUserPowerLevel(self, username):
+        return self.convertPowerToLevel(getUserPowerPoints(username))
 
     def find_name_by_alliances(self, alliance):
         query = "SELECT ign, alliance FROM users where alliance = ANY(%s)"
@@ -135,7 +179,6 @@ class Rankings(object):
         cursor.execute(query, (alliance,))
         result = cursor.fetchall()
         return [{"name": row[0], "alliance": row[1]} for row in result]
-
 
     def get_room_count(self, alliance):
         query = '''
@@ -153,7 +196,6 @@ class Rankings(object):
         cursor.execute(query, (alliance,))
         result = cursor.fetchone()
         return int(result[0])
-
 
 
 @app.cli.command()

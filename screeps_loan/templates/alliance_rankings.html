@@ -35,6 +35,8 @@
           <th>Alliance</th>
           <th>Alliance GCL</th>
           <th>Combined GCL</th>
+          <th>Alliance Power</th>
+          <th>Combined Power</th>
           <th>Max Spawns</th>
           <th>Members</th>
         </tr>
@@ -46,6 +48,8 @@
           <td><a href="{{url_for('alliance_profile', shortname = ranking['alliance']) }}">{{longname}}</a></td>
           <td>{{ranking['alliance_gcl']}}</td>
           <td>{{ranking['combined_gcl']}}</td>
+          <td>{{ranking['alliance_power']}}</td>
+          <td>{{ranking['combined_power']}}</td>
           <td>{{ranking['spawns']}}</td>
           <td>{{ranking['members']}}</td>
         </tr>
@@ -63,6 +67,14 @@
     <dl>
       <dt>Combined GCL</dt>
       <dd>This metric adds all of the individual GCL levels together to get one number. With this metric a new user, regardless of skill level, will always add at least one to the score.</dd>
+    </dl>
+    <dl>
+      <dt>Alliance Power</dt>
+      <dd>This metric combines the raw power points of all members of an alliance and calculates the Power Creep level the alliance would be able to spawn if they were a single player.</dd>
+    </dl>
+    <dl>
+      <dt>Combined Power</dt>
+      <dd>This combines the Power Creep levels for all players in an alliance. This number should correspond to the number of power creep levels the alliance can currently spawn.</dd>
     </dl>
     <dl>
       <dt>Max Spawns</dt>
