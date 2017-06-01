@@ -32,7 +32,6 @@ def export_to_segments():
         alliances_aux[alliance['shortname']] = members
 
     alliance_json = json.dumps(alliances_aux)
-    print(alliance_json)
     screeps = get_client()
     screeps.set_segment(alliance_segment, alliance_json)
 
