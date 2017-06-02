@@ -75,6 +75,8 @@ class Rankings(object):
         for alliance in all_alliances:
             users_with_alliance = self.find_name_by_alliances(alliances_names)
             members = [user['name'] for user in users_with_alliance if user['alliance'] == alliance['shortname']]
+            filtered_members = [user for user in members if self.get_player_room_count(user) > 0]
+
 
             # Not enough members.
             if len(members) < 2:
@@ -86,18 +88,18 @@ class Rankings(object):
 
             rcl = self.getAllianceRCL(alliance['shortname'])
 
-            combined_gcl = sum(self.getUserGCL(user) for user in members)
-            control = sum(getUserControlPoints(user) for user in members)
+            combined_gcl = sum(self.getUserGCL(user) for user in filtered_members)
+            control = sum(getUserControlPoints(user) for user in filtered_members)
             alliance_gcl = self.convertGcl(control)
 
-            combined_power = sum(self.getUserPowerLevel(user) for user in members)
-            power = sum(getUserPowerPoints(user) for user in members)
+            combined_power = sum(self.getUserPowerLevel(user) for user in filtered_members)
+            power = sum(getUserPowerPoints(user) for user in filtered_members)
             alliance_power = self.convertPowerToLevel(power)
 
             spawns = self.getAllianceSpawns(alliance['shortname'])
-            print('%s- %s, %s, %s, %s, %s, %s, %s' % (alliance['shortname'], combined_gcl, alliance_gcl, rcl, spawns, len(members), alliance_power, combined_power))
+            print('%s- %s, %s, %s, %s, %s, %s, %s' % (alliance['shortname'], combined_gcl, alliance_gcl, rcl, spawns, len(filtered_members), alliance_power, combined_power))
 
-            self.update(alliance['shortname'], alliance_gcl, combined_gcl, rcl, spawns, len(members), alliance_power, combined_power)
+            self.update(alliance['shortname'], alliance_gcl, combined_gcl, rcl, spawns, len(filtered_members), alliance_power, combined_power)
 
         self.finish()
         self.conn.commit()
@@ -196,6 +198,25 @@ class Rankings(object):
         cursor.execute(query, (alliance,))
         result = cursor.fetchone()
         return int(result[0])
+
+
+    def get_player_room_count(self, player):
+        query = '''
+        SELECT COUNT(DISTINCT rooms.name)
+              FROM rooms,users
+              WHERE rooms.owner=users.id
+                  AND users.ign=%s
+                  AND rooms.import = (SELECT id
+                                          FROM room_imports
+                                          ORDER BY id desc
+                                          LIMIT 1
+                                      );
+        '''
+        cursor = self.conn.cursor()
+        cursor.execute(query, (player,))
+        result = cursor.fetchone()
+        return int(result[0])
+
 
 
 @app.cli.command()
