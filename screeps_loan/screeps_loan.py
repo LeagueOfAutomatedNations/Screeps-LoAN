@@ -4,6 +4,7 @@ from flask_cors import cross_origin
 app.config.from_envvar('SETTINGS')
 
 import socket
+import screeps_loan.cli.game_export
 import screeps_loan.cli.import_rankings
 import screeps_loan.cli.import_user
 import screeps_loan.cli.maintenance
