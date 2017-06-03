@@ -79,7 +79,7 @@ class Rankings(object):
 
 
             # Not enough members.
-            if len(members) < 2:
+            if len(filtered_members) < 2:
                 continue
 
             # Not enough rooms
