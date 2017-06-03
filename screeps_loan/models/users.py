@@ -1,6 +1,6 @@
 from screeps_loan.models import db
 from screeps_loan.services.cache import cache
-
+from screeps_loan.models.db import get_conn
 
 class UserQuery():
     def find_name_by_alliances(self, alliances):
@@ -55,6 +55,25 @@ def user_name_from_db_id(id):
         return row[0]
     return None
 
+
+@cache.cache()
+def get_player_room_count(player):
+    query = '''
+    SELECT COUNT(DISTINCT rooms.name)
+          FROM rooms,users
+          WHERE rooms.owner=users.id
+              AND users.ign=%s
+              AND rooms.import = (SELECT id
+                                      FROM room_imports
+                                      ORDER BY id desc
+                                      LIMIT 1
+                                  );
+    '''
+    conn = get_conn()
+    cursor = conn.cursor()
+    cursor.execute(query, (player,))
+    result = cursor.fetchone()
+    return int(result[0])
 
 
 

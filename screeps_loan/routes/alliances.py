@@ -30,7 +30,10 @@ def alliance_listing_json():
         alliance['members'] = [user['name'] for user in users_with_alliance
                                if user['alliance'] == alliance['shortname']]
 
-        if len(alliance['members']) < 2:
+
+        filtered_members = [user for user in alliance['members'] if users_model.get_player_room_count(user) > 0]
+
+        if len(filtered_members) < 2:
             continue
 
         if alliances_model.get_room_count(alliance['shortname']) < 2:
