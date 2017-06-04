@@ -11,6 +11,7 @@ from flask_cors import cross_origin
 
 @app.route('/alliances.js')
 @cross_origin(origins="*", send_wildcard=True, methods="GET")
+@httpresponse(expires=300, content_type='application/json')
 def alliance_listing_json():
     import screeps_loan.models.alliances as alliances
     import screeps_loan.models.users as users
