@@ -33,7 +33,7 @@ def httpresponse(expires=None, round_to_minute=False, content_type='text/html'):
                 if round_to_minute:
                     expires_time = expires_time.replace(second=0, microsecond=0)
 
-                response.headers['Cache-Control'] = 'public'
+                response.headers['Cache-Control'] = 'public, max-age=%s' % (expires*4,)
                 response.headers['Expires'] = format_date_time(time.mktime(expires_time.timetuple()))
 
             return response
