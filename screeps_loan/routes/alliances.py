@@ -31,6 +31,9 @@ def alliance_listing_json():
 
     alliances_aux = {}
     for alliance in all_alliances:
+        if not alliance["shortname"] in alliance_user_data:
+            continue
+
         if alliance_user_data[alliance["shortname"]]["active_member_count"] < 2:
             continue
 
