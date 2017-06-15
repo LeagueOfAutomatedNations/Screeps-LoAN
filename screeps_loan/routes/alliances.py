@@ -18,8 +18,11 @@ def alliance_listing_json():
 
     alliance_query = alliances.AllianceQuery()
     all_alliances = alliance_query.getAll()
-    alliances_name = [item["shortname"] for item in all_alliances]
-    users_with_alliance = users.UserQuery().find_name_by_alliances(alliances_name)
+
+    alliance_users = alliance_query.getMembershipData()
+    alliance_user_data = {}
+    for users_row in alliance_users:
+      alliance_user_data[users_row["shortname"]] = users_row
 
     ranking_types = rankings_model.get_rankings_list()
     ranking_data = {}
@@ -28,16 +31,13 @@ def alliance_listing_json():
 
     alliances_aux = {}
     for alliance in all_alliances:
-        alliance['members'] = [user['name'] for user in users_with_alliance
-                               if user['alliance'] == alliance['shortname']]
-
-        if len(alliance['members']) < 2:
+        if alliance_user_data[alliance["shortname"]]["active_member_count"] < 2:
             continue
 
-        if alliances_model.get_room_count(alliance['shortname']) < 2:
+        if alliance_user_data[alliance["shortname"]]["room_count"] < 2:
             continue
 
-        alliances_aux[alliance['shortname']] = alliance
+        alliance["members"] = alliance_user_data[alliance["shortname"]]["members"]
         alliance['name'] = alliance['fullname']
         alliance['abbreviation'] = alliance['shortname']
         alliance.pop('fullname', None)
@@ -47,6 +47,7 @@ def alliance_listing_json():
             if alliance['abbreviation'] in ranking_data[ranking_type]:
                 data = ranking_data[ranking_type][alliance['abbreviation']]
                 alliance[ranking_type + '_rank'] = data
+        alliances_aux[alliance['abbreviation']] = alliance
 
     return json.dumps(alliances_aux)
 

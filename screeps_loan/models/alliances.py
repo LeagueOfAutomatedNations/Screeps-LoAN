@@ -8,6 +8,52 @@ class AllianceQuery():
         return [{"shortname":i[0], "fullname": i[1],
                  "slack_channel": i[2], "color": i[3], "logo": i[4]} for i in result]
 
+    def getMembershipData(self):
+        query = "SELECT id FROM room_imports ORDER BY id desc LIMIT 1"
+        result = db.find_one(query)
+        if result is None:
+            return []
+        import_id = result[0]
+
+        query = """
+          SELECT
+            t.alliance,
+            string_agg(t.ign, ',') AS members,
+            SUM(CASE WHEN t.room_count > 0 THEN 1 ELSE 0 END) AS active_member_count,
+            SUM(t.room_count) AS room_count
+            FROM
+              (
+                SELECT
+                  COUNT(DISTINCT rooms.name) AS room_count,
+                  users.ign,
+                  users.alliance
+                  FROM
+                      users
+                    JOIN
+                      alliances
+                    ON
+                      users.alliance = alliances.shortname
+                    LEFT JOIN
+                      rooms
+                    ON
+                        rooms.owner = users.id
+                      AND
+                        rooms.import = %s
+                  GROUP BY
+                    users.ign,
+                    users.alliance
+                  ORDER BY
+                    users.ign
+            ) t
+          GROUP BY
+            t.alliance
+          ORDER BY
+            t.alliance;
+        """
+        result = db.find_all(query, (import_id,))
+        return_value = []
+        return [{"shortname": row[0], "members": row[1].split(","),
+            "active_member_count": int(row[2]), "room_count": int(row[3])} for row in result]
 
     def find_by_shortname(self, name):
         query = "SELECT fullname from alliances where shortname=%s"
