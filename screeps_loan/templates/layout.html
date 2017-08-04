@@ -71,14 +71,21 @@
                     <i class="fa fa-list-ul"></i>
                     <a href="{{url_for('alliance_listing')}}"> Alliance Index </a></li>
                 <li>
-                    <i class="fa fa-globe"></i>
-                    <a href="{{url_for('map')}}">Alliance Map </a></li>
-                <li>
                     <i class="fa fa-trophy"></i>
                     <a href="{{url_for('alliance_rankings')}}">Alliance Rankings </a></li>
+
+              {% for shard in shard_list() %}
                 <li>
-                    <i class="fa fa-map-marker"></i>
-                    <a href="{{url_for('map_users')}}">Player Map </a></li>
+                  <i class="fa fa-globe"></i>
+                  <a href="{{url_for('map', shard=shard)}}">{{ shard }} Alliance Map </a>
+                </li>
+                <li>
+                  <i class="fa fa-globe"></i>
+                  <a href="{{url_for('map_users', shard=shard)}}">{{ shard }} Player Map </a></li>
+                </li>
+              {% endfor %}
+
+
                 <li>
                     <i class="fa fa-cog"></i>
                     <a href="{{url_for('static_tools')}}">Tools</a></li>
