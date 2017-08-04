@@ -10,5 +10,8 @@ fi
 cd $DIR
 
 source $DIR/../env/bin/activate
+
+export LC_ALL=C.UTF-8
+export LANG=C.UTF-8
 export SETTINGS=$DIR/../settings
 export FLASK_APP=$DIR/../screeps_loan/screeps_loan.py
