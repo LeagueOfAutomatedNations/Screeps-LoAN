@@ -27,7 +27,7 @@ def get_obj(filename):
 
 @app.route('/')
 def index():
-    return redirect(url_for('map'))
+    return redirect(url_for('alliance_rankings'))
 
 
 @app.after_request

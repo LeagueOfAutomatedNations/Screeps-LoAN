@@ -2,13 +2,13 @@ import click
 from screeps_loan import app
 import screepsapi.screepsapi as screepsapi
 import re
+import json
 from screeps_loan.models.db import get_conn
 from screeps_loan.screeps_client import get_client
 
 class Map(object):
     roomRegex = re.compile(r'(E|W)(\d+)(N|S)(\d+)')
     queueLimit = 1000
-    worldSize = 100
 
     def getRoomData(self, room):
         match = self.roomRegex.match(room)
@@ -48,36 +48,42 @@ class Map(object):
     def run(self):
         self.start()
         api = get_client()
-        queue = []
-        user_map = {}
-        roomCount = 0;
-        for x in range(1, self.worldSize + 1):
-            for y in range(1, self.worldSize + 1):
-                for horizontal in ['E', 'W']:
-                    for vertical in ['N', 'S']:
-                        room = "%s%s%s%s" % (horizontal, x, vertical, y)
-                        if self.isNPC(room):
+        shards = api.get_shards()
+
+        for shard in shards:
+            click.echo('Importing from %s' % (shard,))
+            queue = []
+            user_map = {}
+            roomCount = 0
+            api_worldsize = api.worldsize(shard)
+            maxroom = int((api_worldsize['width']-2)/2)
+            for x in range(1, maxroom + 1):
+                for y in range(1, maxroom + 1):
+                    for horizontal in ['E', 'W']:
+                        for vertical in ['N', 'S']:
+                            room = "%s%s%s%s" % (horizontal, x, vertical, y)
+                            if self.isNPC(room):
+                                continue
+                            queue.append(room)
+                    if len(queue) < self.queueLimit:
+                        if y < maxroom or x < maxroom:
                             continue
-                        queue.append(room)
-                if len(queue) < self.queueLimit:
-                    if y < self.worldSize or x < self.worldSize:
-                        continue
-                room_statistics = api.map_stats(queue, 'claim0')
-                roomCount += self.queueLimit
-                click.echo(str(roomCount) + " rooms requested")
-                #self.calls = self.calls + 1
-                queue = []
+                    room_statistics = api.map_stats(queue, 'claim0', shard)
+                    roomCount += self.queueLimit
+                    click.echo(str(roomCount) + " rooms requested")
+                    #self.calls = self.calls + 1
+                    queue = []
 
-                for id, user_info in room_statistics['users'].items():
-                    username = user_info['username']
-                    user_map[id] = username
+                    for id, user_info in room_statistics['users'].items():
+                        username = user_info['username']
+                        user_map[id] = username
 
-                for room, statistics in room_statistics['stats'].items():
-                    if 'own' in statistics:
-                        if 'user' in statistics['own']:
-                            user_id = statistics['own']['user']
-                            level = statistics['own']['level']
-                            self.update(user_id, user_map[user_id], room, level)
+                    for room, statistics in room_statistics['stats'].items():
+                        if 'own' in statistics:
+                            if 'user' in statistics['own']:
+                                user_id = statistics['own']['user']
+                                level = statistics['own']['level']
+                                self.update(user_id, user_map[user_id], room, level, shard)
 
         conn = get_conn()
         self.finish()
@@ -102,7 +108,7 @@ class Map(object):
         cursor = conn.cursor()
         cursor.execute("DELETE FROM rooms;")
 
-    def update(self, user_id, username, room, level):
+    def update(self, user_id, username, room, level, shard):
         # Store info in db
         query = "SELECT id FROM users WHERE screeps_id = %s"
         conn = get_conn()
@@ -116,8 +122,10 @@ class Map(object):
         else:
             id = row[0]
 
-        query = "INSERT INTO rooms(import, name, level, owner) VALUES(%s, %s, %s, %s)"
-        cursor.execute(query, (self.id, room, level, id))
+        s = re.search("\d+$", shard)
+        shard_id = s.group(0)
+        query = "INSERT INTO rooms(import, name, level, owner, shard) VALUES(%s, %s, %s, %s, %s)"
+        cursor.execute(query, (self.id, room, level, id, shard_id))
 
 
 @app.cli.command()
@@ -136,7 +144,6 @@ def initdb():
 def import_alliances():
     click.echo("Start to import alliances from http://www.leagueofautomatednations.com/alliances.js")
     import requests as r
-    import json
     import screeps_loan.models.alliances as alliances_model
     import screeps_loan.models.users as users_model
     import screeps_loan.auth_user
@@ -149,6 +156,7 @@ def import_alliances():
     resp = r.get('http://www.leagueofautomatednations.com/alliances.js')
     data = json.loads(resp.text)
     for shortname, info in data.items():
+        print(shortname)
         members = info['members']
         fullname = info['name']
         color = None
@@ -165,5 +173,6 @@ def import_alliances():
         existing_member = [i['name'] for i in users_query.find_name_by_alliances([shortname])]
         new_members = [name for name in members if name not in existing_member]
         for member in new_members:
+            print(member)
             id = users_service.player_id_from_api(member)
             users_query.update_alliance_by_screeps_id(id, shortname)

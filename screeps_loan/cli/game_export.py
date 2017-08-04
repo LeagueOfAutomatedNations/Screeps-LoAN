@@ -32,7 +32,8 @@ def export_to_segments():
         alliances_aux[alliance['shortname']] = members
 
     alliance_json = json.dumps(alliances_aux)
+
     screeps = get_client()
-    screeps.set_segment(alliance_segment, alliance_json)
-
-
+    shards = screeps.get_shards()
+    for shard in shards:
+        screeps.set_segment(alliance_segment, alliance_json, shard)

@@ -1,5 +1,5 @@
 
-{% macro map(alliance_url='/alliances.js', shortname=none, grouptype=none, unaffiliated=none, disablelabels=none) -%}
+{% macro map(alliance_url='/alliances.js', shard='shard0', maxroom=100, shortname=none, grouptype=none, unaffiliated=none, disablelabels=none) -%}
 
   <div class="unit whole">
       <div id="ScreepsMapFlex" class="spinner">
@@ -26,14 +26,14 @@
       window.onload = function() {
   			alliance_data = {}
   			room_data = {}
-        region = new ScreepsRegion("W100N100", "E100S100");
+        region = new ScreepsRegion("W{{ maxroom }}N{{ maxroom }}", "E{{ maxroom }}S{{ maxroom }}");
         mapView = new ScreepsMap(
           {
             spinnerHostId: "ScreepsMapFlex",
             mapHostId: "ScreepsMapContainer",
             legendHostId: "ScreepsColorKeyContainer",
             roomTooltipHostId: "ScreepsMapTooltip",
-            terrainUri: "/static/img/screeps_terrain.png",
+            terrainUri: "/static/img/screeps_{{ shard }}_terrain.png",
             legendUrlPrefix: '/a/',
             region: region,
             {% if disablelabels %}
@@ -47,7 +47,7 @@
   					console.log('alliance data loaded')
   					alliance_data = data
   				}),
-  				$.getJSON('/map/rooms.js', {}, function(data){
+  				$.getJSON('/map/{{ shard }}/rooms.js', {}, function(data){
   					console.log('room data loaded')
   					room_data = data
   				})
