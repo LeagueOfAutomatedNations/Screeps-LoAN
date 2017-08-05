@@ -38,7 +38,7 @@ var ScreepsMap = (function() {
 
         this.terrainUri = config.terrainUri;
         this.region = config.region;
-
+        this.shard = config.shard ? config.shard : 'shard0';
         this.legendUrlPrefix = config.legendUrlPrefix
         this.groupType = 'alliance'
         this.userColors = {}
@@ -189,7 +189,7 @@ var ScreepsMap = (function() {
 
                 if (this.region.worldPositionInBounds(worldPosition.x, worldPosition.y)) {
                     let roomName = this.region.worldPositionToRoomName(worldPosition.x, worldPosition.y);
-                    window.open("https://screeps.com/a/#!/room/" + roomName, "loan-launch-tab");
+                    window.open("https://screeps.com/a/#!/room/" + this.shard + "/" + roomName, "loan-launch-tab");
                 }
             }.bind(this),
 
