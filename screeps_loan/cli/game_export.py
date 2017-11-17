@@ -46,4 +46,4 @@ def export_to_segments():
     for shard in shards:
         screeps.set_segment(alliance_segment, alliance_json, shard)
         if clone_data:
-            screeps.set_segment(alliance_segment, clone_data, shard)
+            screeps.set_segment(clone_segment, clone_data, shard)
