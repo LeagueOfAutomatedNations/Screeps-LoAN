@@ -44,6 +44,13 @@ def map_users(shard):
     return render_template("map_users.html", shard=shard, maxroom=maxroom)
 
 
+botmapurl = 'http://www.leagueofautomatednations.com/vk/bots/league.json'
+@app.route('/map/<shard>/bots')
+def map_bots(shard):
+    maxroom = get_shard_size(shard)
+    return render_template("map.html", alliance_url=botmapurl, shard=shard, maxroom=maxroom)
+
+
 @cache.cache()
 def get_shard_size(shard):
     api = get_client()
