@@ -6,13 +6,21 @@ import screeps_loan.models.alliances as alliances
 import screeps_loan.models.users as users
 
 import json
+import requests
+
 
 alliance_segment = 99
+clone_segment = 98
 
 @app.cli.command()
 def export_to_segments():
-    click.echo("Exporting Alliance Data To Segment")
+    click.echo("Exporting Alliance and Bot Data To Segment")
 
+    r = requests.get('http://www.leagueofautomatednations.com/vk/bots/league.json')
+    if r.status_code == requests.codes.ok:
+        clone_data = r.text
+    else:
+        clone_data = False
 
     import screeps_loan.models.alliances as alliances
     import screeps_loan.models.users as users
@@ -37,3 +45,5 @@ def export_to_segments():
     shards = screeps.get_shards()
     for shard in shards:
         screeps.set_segment(alliance_segment, alliance_json, shard)
+        if clone_data:
+            screeps.set_segment(alliance_segment, clone_data, shard)
