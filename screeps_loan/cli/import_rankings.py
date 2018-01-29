@@ -9,6 +9,7 @@ from screeps_loan.services.cache import cache
 import screeps_loan.models.alliances as alliances
 import screeps_loan.models.users as users
 
+from time import sleep
 import math
 
 
@@ -34,8 +35,7 @@ powertotals = list(reversed(powertotals))
 
 @cache.cache('getUserControlPoints')
 def getUserControlPoints(username):
-    screeps = get_client()
-    user_info = screeps.user_find(username)
+    user_info = getUserInfo(username)
     if 'user' in user_info:
         if 'gcl' in user_info['user']:
             return user_info['user']['gcl']
@@ -44,12 +44,18 @@ def getUserControlPoints(username):
 
 @cache.cache('getUserPowerPoints')
 def getUserPowerPoints(username):
-    screeps = get_client()
-    user_info = screeps.user_find(username)
+    user_info = getUserInfo(username)
     if 'user' in user_info:
         if 'power' in user_info['user']:
             return user_info['user']['power']
     return 0
+
+
+@cache.cache('getUserInfo')
+def getUserInfo(username):
+    screeps = get_client()
+    sleep(1)
+    return screeps.user_find(username)
 
 
 class Rankings(object):
