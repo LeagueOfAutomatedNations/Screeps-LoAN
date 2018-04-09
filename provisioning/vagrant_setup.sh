@@ -23,6 +23,7 @@ python db/manage.py upgrade
 flask import_users  # This actually will run map stats to get all users on the map
 flask import_alliances # Importing alliance from alliances.js file
 flask import_rankings # Generate stats about alliances.
+flask import_user_rankings # Generate stats about all users.
 
 
 
