@@ -236,8 +236,11 @@ def import_user_rankings():
     click.echo("Generating User Rankings")
     dbusers = users.get_all_users()
     for dbuser in dbusers:
-        gcl = getUserControlPoints(dbuser['ign'])
-        power = getUserPowerPoints(dbuser['ign'])
-        print('%s has %s gcl and %s power' % (dbuser['ign'], gcl, power))
-        users.update_gcl_by_user_id(dbuser['id'], getUserControlPoints(dbuser['ign']))
-        users.update_power_by_user_id(dbuser['id'], getUserPowerPoints(dbuser['ign']))
+        # Only retrieve information if we don't have any or the player has some active rooms.
+        if not dbuser['gcl'] or users.get_player_room_count(dbuser['ign']) > 0:
+            gcl = getUserControlPoints(dbuser['ign'])
+            power = getUserPowerPoints(dbuser['ign'])
+            print('%s has %s gcl and %s power' % (dbuser['ign'], gcl, power))
+            users.update_gcl_by_user_id(dbuser['id'], getUserControlPoints(dbuser['ign']))
+            users.update_power_by_user_id(dbuser['id'], getUserPowerPoints(dbuser['ign']))
+            sleep(1.2)

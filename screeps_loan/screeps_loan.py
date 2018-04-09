@@ -17,6 +17,7 @@ import screeps_loan.routes.invites
 import screeps_loan.routes.map
 import screeps_loan.routes.my_alliance
 import screeps_loan.routes.static
+import screeps_loan.routes.userrankings
 
 import screeps_loan.extensions.jinja
 
