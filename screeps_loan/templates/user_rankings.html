@@ -1,0 +1,56 @@
+{% from "macros/map.html" import map with context %}
+{% extends "layout.html" %}
+{% block title %} Screeps User {{ category }} Rankings {% endblock %}
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{url_for('static', filename='datatables/datatables.css')}}">
+    <script type="text/javascript" language="javascript" src="{{url_for ('static', filename = 'datatables/datatables.js')}}"></script>
+{% endblock %}
+
+{% block script %}
+    {{ super() }}
+    $('.datatable').DataTable({
+       "paging":   false,
+       "searching":   false,
+       "order": [[ 0, "asc" ]]
+     });
+{% endblock %}
+
+{% block content %}
+
+<div>
+
+  <div class="callout primary">
+      <div class="row column">
+          <h1 class='text-center'>User {{ category }} Rankings</h1>
+          <p  class="lead"></p>
+      </div>
+  </div>
+
+
+  <div class='row rankings'>
+    <table role="grid" class="datatable">
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>User</th>
+          <th>Field</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% set count = 0 %}
+        {% for ranking in rankings %}
+        {% set count = count + 1 %}
+        <tr>
+          <td>{{count}}</td>
+          <td>{{ranking['ign']}}</td>
+          <td>{{ranking[field]}}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <br>
+</div>
+
+{% endblock %}

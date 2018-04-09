@@ -74,6 +74,17 @@
                     <i class="fa fa-trophy"></i>
                     <a href="{{url_for('alliance_rankings')}}">Alliance Rankings </a></li>
 
+                <li>
+                    <i class="fa fa-trophy"></i>
+                    <a href="{{url_for('player_rankings_combined')}}">Player Rankings </a></li>
+                <li>
+                    <i class="fa fa-trophy"></i>
+                    <a href="{{url_for('player_rankings_gcl')}}">Player GCL Rankings </a></li>
+                <li>
+                    <i class="fa fa-trophy"></i>
+                    <a href="{{url_for('player_rankings_power')}}">Player Power Rankings </a></li>
+
+
               {% for shard in shard_list() %}
                 <li>
                   <i class="fa fa-globe"></i>
