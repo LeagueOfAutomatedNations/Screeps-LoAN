@@ -45,6 +45,10 @@ def get_all_users():
     return db.find_all(query)
 
 
+def get_all_users_for_importing():
+    query = "SELECT * FROM users ORDER BY gcl IS NOT NULL, RANDOM()"
+    return db.find_all(query)
+
 @cache.cache()
 def player_id_from_db(name):
     query = "SELECT screeps_id FROM users WHERE LOWER(ign)=LOWER(%s)"
