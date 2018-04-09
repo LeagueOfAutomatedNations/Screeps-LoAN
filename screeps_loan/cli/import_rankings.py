@@ -9,7 +9,7 @@ from screeps_loan.services.cache import cache
 import screeps_loan.models.alliances as alliances
 import screeps_loan.models.users as users
 
-from random import shuffle
+from random import shuffle, random
 from time import sleep
 import math
 
@@ -49,7 +49,7 @@ def getUserControlPoints(username):
 def getUserPowerPoints(username):
     user_info = getUserInfo(username)
     if not user_info:
-        return 1    
+        return 1
     if 'user' in user_info:
         if 'power' in user_info['user']:
             return user_info['user']['power']
@@ -239,14 +239,15 @@ def import_rankings():
 @app.cli.command()
 def import_user_rankings():
     click.echo("Generating User Rankings")
-    dbusers = users.get_all_users()
-    shuffle(dbusers)
+    dbusers = users.get_all_users_for_importing()
     for dbuser in dbusers:
         # Only retrieve information if we don't have any or the player has some active rooms.
-        if not dbuser['gcl'] or users.get_player_room_count(dbuser['ign']) > 0:
+        if not dbuser['gcl'] or users.get_player_room_count(dbuser['ign']) > 0 or random() < 0.05:
             gcl = getUserControlPoints(dbuser['ign'])
             power = getUserPowerPoints(dbuser['ign'])
             print('%s has %s gcl and %s power' % (dbuser['ign'], gcl, power))
             users.update_gcl_by_user_id(dbuser['id'], getUserControlPoints(dbuser['ign']))
             users.update_power_by_user_id(dbuser['id'], getUserPowerPoints(dbuser['ign']))
-            sleep(1.2)
+            sleep(1.5)
+        else:
+            print('Skipping user %s' % (dbuser['ign']))
