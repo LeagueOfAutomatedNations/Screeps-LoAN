@@ -39,7 +39,7 @@ def update_power_by_user_id(id, power):
     db.execute(query, (power, id))
 
 
-@cache.cache()
+@cache.cache(expire=60)
 def get_all_users():
     query = "SELECT * FROM users"
     return db.find_all(query)
