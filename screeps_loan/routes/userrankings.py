@@ -27,10 +27,10 @@ def player_rankings_combined():
     for user in userlist:
         combined = 0
         if 'power' in user and isinstance(user['power'], int):
-            combined = user['power'] * 50
+            combined += user['power'] * 50
 
         if 'gcl' in user and isinstance(user['gcl'], int):
-            combined = user['gcl']
+            combined += user['gcl']
 
         if combined > combined_min:
             finalusers.append({
