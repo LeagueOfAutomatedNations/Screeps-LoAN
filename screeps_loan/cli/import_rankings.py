@@ -37,6 +37,8 @@ powertotals = list(reversed(powertotals))
 @cache.cache('getUserControlPoints')
 def getUserControlPoints(username):
     user_info = getUserInfo(username)
+    if not user_info:
+        return 1
     if 'user' in user_info:
         if 'gcl' in user_info['user']:
             return user_info['user']['gcl']
@@ -46,6 +48,8 @@ def getUserControlPoints(username):
 @cache.cache('getUserPowerPoints')
 def getUserPowerPoints(username):
     user_info = getUserInfo(username)
+    if not user_info:
+        return 1    
     if 'user' in user_info:
         if 'power' in user_info['user']:
             return user_info['user']['power']
