@@ -12,3 +12,4 @@ cd ..
 source $DIR/envvar
 
 flask import_rankings
+flask import_user_rankings

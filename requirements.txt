@@ -16,8 +16,7 @@ pbr==1.10.0
 psycopg2==2.6.2
 requests==2.11.1
 Requires==0.0.3
-#screepsapi==0.2
--e git+https://github.com/screepers/python-screeps.git@master#egg=screepsapi
+screepsapi==0.5.1
 six==1.10.0
 SQLAlchemy==1.0.15
 sqlalchemy-migrate==0.10.0

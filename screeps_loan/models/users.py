@@ -29,6 +29,22 @@ def update_alliance_by_user_id(id, alliance):
     db.execute(query, (alliance, id))
 
 
+def update_gcl_by_user_id(id, gcl):
+    query = "UPDATE users SET gcl = %s WHERE id=%s"
+    db.execute(query, (gcl, id))
+
+
+def update_power_by_user_id(id, power):
+    query = "UPDATE users SET power = %s WHERE id=%s"
+    db.execute(query, (power, id))
+
+
+@cache.cache()
+def get_all_users():
+    query = "SELECT * FROM users"
+    return db.find_all(query)
+
+
 @cache.cache()
 def player_id_from_db(name):
     query = "SELECT screeps_id FROM users WHERE LOWER(ign)=LOWER(%s)"

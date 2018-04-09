@@ -224,10 +224,20 @@ class Rankings(object):
         return int(result[0])
 
 
-
 @app.cli.command()
 def import_rankings():
     click.echo("Generating Rankings")
     r = Rankings()
     r.run()
 
+
+@app.cli.command()
+def import_user_rankings():
+    click.echo("Generating User Rankings")
+    dbusers = users.get_all_users()
+    for dbuser in dbusers:
+        gcl = getUserControlPoints(dbuser['ign'])
+        power = getUserPowerPoints(dbuser['ign'])
+        print('%s has %s gcl and %s power' % (dbuser['ign'], gcl, power))
+        users.update_gcl_by_user_id(dbuser['id'], getUserControlPoints(dbuser['ign']))
+        users.update_power_by_user_id(dbuser['id'], getUserPowerPoints(dbuser['ign']))
