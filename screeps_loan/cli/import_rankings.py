@@ -9,6 +9,7 @@ from screeps_loan.services.cache import cache
 import screeps_loan.models.alliances as alliances
 import screeps_loan.models.users as users
 
+from random import shuffle
 from time import sleep
 import math
 
@@ -235,6 +236,7 @@ def import_rankings():
 def import_user_rankings():
     click.echo("Generating User Rankings")
     dbusers = users.get_all_users()
+    shuffle(dbusers)
     for dbuser in dbusers:
         # Only retrieve information if we don't have any or the player has some active rooms.
         if not dbuser['gcl'] or users.get_player_room_count(dbuser['ign']) > 0:
