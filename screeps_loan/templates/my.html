@@ -29,8 +29,14 @@
         </ul>
         <div class="tabs-content" data-tabs-content="example-tabs">
             <div class="tabs-panel is-active" id="panel1">
-                <form action="/invite" method="post">
+                <form action="/invite" method="POST">
                     <p> Invite a user to your alliance. NAME IS CASE SENSITIVE</p>
+                    <p><input type=text name=username></p>
+                    <p><input class="button" type=submit value=Submit></p>
+                </form>
+                <hr>
+                <form action="/kick" method="POST">
+                    <p> Remove a user from your alliance. NAME IS CASE SENSITIVE</p>
                     <p><input type=text name=username></p>
                     <p><input class="button" type=submit value=Submit></p>
                 </form>
