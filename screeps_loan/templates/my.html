@@ -23,7 +23,8 @@
                  src="{{url_for('static', filename = 'img/leaguelogo.png') }}">
             {% endif %}
             </div>
-            <li class="tabs-title is-active"><a href="#panel1" aria-selected="true">Management</a></li>
+            <li class="tabs-title is-active"><a href="#panel1" aria-selected="true">Alliance Details</a></li>
+            <li class="tabs-title"><a href="#panel4">Members</a></li>
             <li class="tabs-title"><a href="#panel2" onclick="activateCharterBox()">Charter</a></li>
             <li class="tabs-title"><a href="#panel3">Leave Alliance</a></li>
         </ul>
@@ -34,17 +35,6 @@
                     <p><input type=text name=leader></p>
                     <p><input class="button" type=submit value=Submit></p>
                 </form>
-                <form action="/invite" method="POST">
-                    <p> Invite a user to your alliance. NAME IS CASE SENSITIVE</p>
-                    <p><input type=text name=username></p>
-                    <p><input class="button" type=submit value=Submit></p>
-                </form>
-                <hr>
-                <form action="/kick" method="POST">
-                    <p> Remove a user from your alliance. NAME IS CASE SENSITIVE (Leader Restricted)</p>
-                    <p><input type=text name=username></p>
-                    <p><input class="button" type=submit value=Submit></p>
-                </form>
                 <hr>
                 Upload your logo (around 190x190)
                 <form enctype="multipart/form-data"
@@ -52,7 +42,6 @@
                     <input class="button" type=file name="logo">
                     <input class="button" type=submit value=Submit>
                 </form>
-
                 <hr>
                 <form action="/my/updateprofile" method="POST">
                     <div class="row">
@@ -104,6 +93,19 @@
             <div class="tabs-panel" id="panel3">
                 <form id="leave-form" action="/my/leave" method="POST">
                     <input class="button" type=submit value="Leave Alliance">
+                </form>
+            </div>
+            <div class="tabs-panel" id="panel4">
+                <form id="invite-form" action="/invite" method="POST">
+                    <p> Invite a user to your alliance. NAME IS CASE SENSITIVE</p>
+                    <p><input type=text name=username></p>
+                    <p><input class="button" type=submit value=Submit></p>
+                </form>
+                <hr>
+                <form id="kick-form" action="/kick" method="POST">
+                    <p> Remove a user from your alliance. NAME IS CASE SENSITIVE (Leader Restricted)</p>
+                    <p><input type=text name=username></p>
+                    <p><input class="button" type=submit value=Submit></p>
                 </form>
             </div>
         </div>
