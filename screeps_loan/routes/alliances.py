@@ -1,12 +1,13 @@
-from screeps_loan import app
-import screeps_loan.models.alliances as alliances_model
-import screeps_loan.models.rankings as rankings_model
-from screeps_loan.models.rooms import get_all_rooms
-import screeps_loan.models.users as users_model
-from screeps_loan.routes.decorators import httpresponse
 import json
+
 from flask import render_template
 from flask_cors import cross_origin
+
+import screeps_loan.models.alliances as alliances_model
+import screeps_loan.models.rankings as rankings_model
+import screeps_loan.models.users as users_model
+from screeps_loan import app
+from screeps_loan.routes.decorators import httpresponse
 
 
 @app.route('/alliances.js')
@@ -14,7 +15,6 @@ from flask_cors import cross_origin
 @httpresponse(expires=300, content_type='application/json')
 def alliance_listing_json():
     import screeps_loan.models.alliances as alliances
-    import screeps_loan.models.users as users
 
     alliance_query = alliances.AllianceQuery()
     all_alliances = alliance_query.getAll()
@@ -22,7 +22,7 @@ def alliance_listing_json():
     alliance_users = alliance_query.getMembershipData()
     alliance_user_data = {}
     for users_row in alliance_users:
-      alliance_user_data[users_row["shortname"]] = users_row
+        alliance_user_data[users_row["shortname"]] = users_row
 
     ranking_types = rankings_model.get_rankings_list()
     ranking_data = {}
@@ -76,7 +76,7 @@ def alliance_listing():
         if alliance['users']:
             display_alliances.append(alliance)
     display_alliances = sorted(display_alliances, key=lambda k: k['fullname'])
-    return render_template("alliance_listing.html", alliances = display_alliances)
+    return render_template("alliance_listing.html", alliances=display_alliances)
 
 
 @app.route('/a/<shortname>')
@@ -90,9 +90,8 @@ def alliance_profile(shortname):
     # To sanitize and prevent XSS attack. To be decide if this will be too slow
     from lxml.html.clean import clean_html
     charter = clean_html(charter)
-    alliance_url = '/a/%s.json' % (shortname)
-    alliance_url = '/alliances.js'
-    return render_template("alliance_profile.html", shortname = shortname, charter= charter, alliance=alliance);
+    return render_template("alliance_profile.html", shortname=shortname, charter=charter, alliance=alliance)
+
 
 @app.route('/a/<shortname>.json')
 @cross_origin(origins="*", send_wildcard=True, methods="GET")

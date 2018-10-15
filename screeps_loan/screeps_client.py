@@ -1,7 +1,7 @@
-import psycopg2
-from flask import g
-from screeps_loan import app
 import screepsapi.screepsapi as screepsapi
+from flask import g
+
+from screeps_loan import app
 
 
 def get_client():
