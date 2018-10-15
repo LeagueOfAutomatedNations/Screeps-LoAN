@@ -116,7 +116,13 @@ def invite_to_alliance():
     my_id = session['my_id']
     alliance = users_model.alliance_of_user(my_id)
     if alliance is None:
-        return "You are not in an alliance, can't invite anyone"
+        return "You are not in an alliance."
+
+    # Check if user is not leader or if leader has not been set yet
+    leader_list = alliance['leader']
+    if my_id not in leader_list and 0 not in leader_list:
+        flash('Only the alliance leaders can invite.')
+        return redirect(url_for("my_alliance"))
 
     username = request.form['username']
 
