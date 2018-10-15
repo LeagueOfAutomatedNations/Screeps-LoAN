@@ -30,6 +30,12 @@ def upload_my_alliance_logo():
     if alliance is None:
         return "You are not in an alliance, can't do this"
 
+    # Check if user is not leader or if leader has not been set yet
+    leader_list = alliance['leader']
+    if my_id not in leader_list and 0 not in leader_list:
+        flash('Only the alliance leaders can change the logo.')
+        return redirect(url_for("my_alliance"))
+
     if 'logo' not in request.files:
         # flash('No file part')
         return redirect(url_for('my'))
@@ -55,6 +61,12 @@ def update_my_alliance_charter():
     my_id = session['my_id']
     alliance = users_model.alliance_of_user(my_id)
 
+    # Check if user is not leader or if leader has not been set yet
+    leader_list = alliance['leader']
+    if my_id not in leader_list and 0 not in leader_list:
+        flash('Only the alliance leaders can update the charter.')
+        return redirect(url_for("my_alliance"))
+
     alliances_model.update_charter_of_alliance(alliance['shortname'], charter)
     return redirect(url_for('my_alliance'))
 
@@ -74,6 +86,13 @@ def update_my_alliance_profile():
 
     my_id = session['my_id']
     alliance = users_model.alliance_of_user(my_id)
+
+    # Check if user is not leader or if leader has not been set yet
+    leader_list = alliance['leader']
+    if my_id not in leader_list and 0 not in leader_list:
+        flash('Only the alliance leaders can update this information.')
+        return redirect(url_for("my_alliance"))
+
     alliances_model.update_all_alliances_info(alliance['shortname'], shortname, fullname, slack_channel)
     return redirect(url_for('my_alliance'))
 
