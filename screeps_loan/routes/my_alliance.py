@@ -2,16 +2,15 @@ from screeps_loan import app
 from flask import render_template, redirect, request, session, url_for, escape, flash
 from werkzeug.utils import secure_filename
 import os
-import hashlib
 import screeps_loan.models.alliances as alliances_model
 import screeps_loan.models.invites as invites
 import screeps_loan.models.users as users_model
 from screeps_loan.routes.decorators import login_required
 from screeps_loan.auth_user import AuthPlayer
-import screeps_loan.services.users as users_service
 import hashlib
 import screeps_loan.screeps_client as screeps_client
 import re
+
 
 def allowed_file(filename):
     ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
@@ -19,25 +18,24 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-@app.route('/my/uploadlogo', methods =['POST'])
+@app.route('/my/uploadlogo', methods=['POST'])
 @login_required
 def upload_my_alliance_logo():
     # check if the post request has the file part
     my_id = session['my_id']
     alliance = users_model.alliance_of_user(my_id)
 
-    if (alliance is None):
+    if alliance is None:
         return "You are not in an alliance, can't do this"
 
-
     if 'logo' not in request.files:
-        #flash('No file part')
+        # flash('No file part')
         return redirect(url_for('my'))
     file = request.files['logo']
     # if user does not select file, browser also
     # submit a empty part without filename
     if file.filename == '':
-    #    flash('No selected file')
+        # flash('No selected file')
         return redirect(url_for('my'))
     if file and allowed_file(file.filename):
         filename = secure_filename(hashlib.sha512(os.urandom(128)).hexdigest()[0: 15])
@@ -61,7 +59,6 @@ def update_my_alliance_charter():
 
 @app.route('/my/updateprofile', methods=["POST"])
 def update_my_alliance_profile():
-
     if re.match('^[\w|\s|-]+$', request.form['fullname']):
         fullname = request.form['fullname']
 
@@ -78,14 +75,15 @@ def update_my_alliance_profile():
     alliances_model.update_all_alliances_info(alliance['shortname'], shortname, fullname, slack_channel)
     return (redirect(url_for('my_alliance')))
 
+
 @app.route('/my')
 @login_required
 def my_alliance():
     my_id = session['my_id']
     alliance = users_model.alliance_of_user(my_id)
-    if (alliance is None):
+    if alliance is None:
         return render_template("alliance_creation.html")
-    return render_template('my.html', alliance = alliance)
+    return render_template('my.html', alliance=alliance)
 
 
 @app.route('/my/create', methods=["POST"])
@@ -110,14 +108,12 @@ def leave_alliance():
     return redirect(url_for("my_alliance"))
 
 
-
 @app.route('/invite', methods=["POST"])
 @login_required
 def invite_to_alliance():
-
     my_id = session['my_id']
     alliance = users_model.alliance_of_user(my_id)
-    if (alliance is None):
+    if alliance is None:
         return "You are not in an alliance, can't invite anyone"
 
     username = request.form['username']
@@ -130,7 +126,6 @@ def invite_to_alliance():
     if not ign:
         flash('User not present in game - remember usernames are case sensitive.')
         return redirect(url_for("my_alliance"))
-
 
     # Get database id
     id = users_model.user_id_from_db(username)
@@ -145,22 +140,20 @@ def invite_to_alliance():
         flash('User is already in an alliance.')
         return redirect(url_for("my_alliance"))
 
-
     invites.add_invite(id, alliance['shortname'], my_id)
-    api.msg_send(ign, "You are invited to join %s \n\n%s" % (alliance['fullname'], url_for('list_invites', _external=True)))
+    api.msg_send(ign,
+                 "You are invited to join %s \n\n%s" % (alliance['fullname'], url_for('list_invites', _external=True)))
 
     flash('Successfully invited user to your alliance')
     return redirect(url_for("my_alliance"))
 
 
-
 @app.route('/kick', methods=["POST"])
 @login_required
 def kick_from_alliance():
-
     my_id = session['my_id']
     alliance = users_model.alliance_of_user(my_id)
-    if (alliance is None):
+    if alliance is None:
         return "You are not in an alliance, can't kick anyone"
 
     username = request.form['username']
@@ -170,10 +163,14 @@ def kick_from_alliance():
     auth = AuthPlayer(api)
     ign = auth.id_from_name(username)
 
+    # Check if user is not leader
+    if alliance['leader'] is not my_id:
+        flash('Only the alliance leader can remove members.')
+        return redirect(url_for("my_alliance"))
+
     if not ign:
         flash('User not present in game - remember usernames are case sensitive.')
         return redirect(url_for("my_alliance"))
-
 
     # Get database id
     user_id = users_model.user_id_from_db(username)
@@ -193,5 +190,49 @@ def kick_from_alliance():
 
     users_model.update_alliance_by_screeps_id(user_id, None)
 
-    flash('Successfully kicked user from your alliance')
+    flash('Successfully kicked {} from your alliance'.format(username))
     return redirect(url_for("my_alliance"))
+
+
+@app.route('/updateleader', methods=["POST"])
+@login_required
+def update_my_alliance_leader():
+    my_id = session['my_id']
+    leader = request.form['leader']
+    alliance = users_model.alliance_of_user(my_id)
+    if alliance is None:
+        return "You are not in an alliance."
+
+    # Check if user is not leader or if leader has not been set yet
+    if alliance['leader'] is not my_id and alliance['leader'] is not 0:
+        flash('Only the alliance leader can set a new leader.')
+        return redirect(url_for("my_alliance"))
+
+    # Make sure user is in database and game world.
+    api = screeps_client.get_client()
+    auth = AuthPlayer(api)
+    ign = auth.id_from_name(leader)
+
+    if not ign:
+        flash('User not present in game - remember usernames are case sensitive.')
+        return redirect(url_for("my_alliance"))
+
+    # Get database id
+    user_id = users_model.user_id_from_db(leader)
+
+    if not user_id:
+        flash('User not present in system - please try again later.')
+        return redirect(url_for("my_alliance"))
+
+    # Is user already in an alliance?
+    current_alliance = users_model.alliance_of_user(user_id)
+    if not current_alliance:
+        flash('User is not in an alliance.')
+        return redirect(url_for("my_alliance"))
+    if current_alliance is not alliance:
+        flash('User is not in your alliance.')
+        return redirect(url_for("my_alliance"))
+
+    alliances_model.update_leader_of_alliance(alliance['shortname'], user_id)
+    flash('Successfully set {} as the leader of {}'.format(leader, alliance['fullname']))
+    return redirect(url_for('my_alliance'))
