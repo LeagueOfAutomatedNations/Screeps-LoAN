@@ -1,1 +1,1 @@
-ALTER TABLE "alliances" ADD COLUMN "leader" integer DEFAULT 0;
+ALTER TABLE "alliances" ADD COLUMN "leaders" integer[] DEFAULT '{0}';

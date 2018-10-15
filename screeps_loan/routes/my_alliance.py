@@ -166,7 +166,8 @@ def kick_from_alliance():
     ign = auth.id_from_name(username)
 
     # Check if user is not leader
-    if alliance['leader'] is not my_id:
+    leader_list = alliance['leaders']
+    if my_id not in leader_list:
         flash('Only the alliance leader can remove members.')
         return redirect(url_for("my_alliance"))
 
@@ -192,6 +193,11 @@ def kick_from_alliance():
 
     users_model.update_alliance_by_screeps_id(user_id, None)
 
+    # Remove user from leader list if there
+    if user_id in leader_list:
+        leader_list.remove(user_id)
+        alliances_model.update_leader_of_alliance(alliance['shortname'], leader_list)
+
     flash('Successfully kicked {} from your alliance'.format(username))
     return redirect(url_for("my_alliance"))
 
@@ -200,14 +206,15 @@ def kick_from_alliance():
 @login_required
 def update_my_alliance_leader():
     my_id = session['my_id']
-    leader = request.form['leader']
+    leader = request.form['leaders']
     alliance = users_model.alliance_of_user(my_id)
     if alliance is None:
         return "You are not in an alliance."
 
     # Check if user is not leader or if leader has not been set yet
-    if alliance['leader'] is not my_id and alliance['leader'] is not 0:
-        flash('Only the alliance leader can set a new leader.')
+    leader_list = alliance['leader']
+    if my_id not in leader_list and 0 not in leader_list:
+        flash('Only the alliance leaders can add a new leader.')
         return redirect(url_for("my_alliance"))
 
     # Make sure user is in database and game world.
@@ -235,6 +242,18 @@ def update_my_alliance_leader():
         flash('User is not in your alliance.')
         return redirect(url_for("my_alliance"))
 
-    alliances_model.update_leader_of_alliance(alliance['shortname'], user_id)
+    # Check if user is already a leader
+    if user_id in leader_list:
+        flash('User is already set as a leader.')
+        return redirect(url_for("my_alliance"))
+
+    # Setup leader array
+    leader_list.append(user_id)
+
+    # Remove 0 if this is setting the initial leader
+    if 0 in leader_list:
+        leader_list.remove(0)
+
+    alliances_model.update_leader_of_alliance(alliance['shortname'], leader_list)
     flash('Successfully set {} as the leader of {}'.format(leader, alliance['fullname']))
     return redirect(url_for('my_alliance'))
