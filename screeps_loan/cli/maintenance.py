@@ -1,7 +1,7 @@
-import os, sys
-from datetime import datetime, timedelta
+import os
 import subprocess
-import click
+from datetime import datetime, timedelta
+
 from screeps_loan import app
 
 
@@ -30,7 +30,7 @@ def purge_cdn():
     print(staticdir)
     for dirpath, dirnames, filenames in os.walk(staticdir):
         for filename in filenames:
-            fullpath = os.path.join(dirpath,filename)
+            fullpath = os.path.join(dirpath, filename)
             url = app.config['WEB_ROOT'] + fullpath[dirlen:]
             print(url)
             subprocess.call(['curl', '-X', 'PURGE', url])

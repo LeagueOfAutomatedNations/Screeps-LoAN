@@ -1,11 +1,12 @@
 from screeps_loan.models import db
 from screeps_loan.services.cache import cache
 
-class AllianceQuery():
+
+class AllianceQuery:
     def getAll(self):
         query = "SELECT shortname, fullname, slack_channel, color, logo FROM alliances ORDER BY shortname"
         result = db.find_all(query)
-        return [{"shortname":i[0], "fullname": i[1],
+        return [{"shortname": i[0], "fullname": i[1],
                  "slack_channel": i[2], "color": i[3], "logo": i[4]} for i in result]
 
     def getMembershipData(self):
@@ -51,9 +52,8 @@ class AllianceQuery():
             t.alliance;
         """
         result = db.find_all(query, (import_id,))
-        return_value = []
         return [{"shortname": row[0], "members": row[1].split(","),
-            "active_member_count": int(row[2]), "room_count": int(row[3])} for row in result]
+                 "active_member_count": int(row[2]), "room_count": int(row[3])} for row in result]
 
     def find_by_shortname(self, name):
         query = "SELECT fullname from alliances where shortname=%s"
@@ -62,10 +62,11 @@ class AllianceQuery():
             return result[0]
         return None
 
-    def insert_alliance(self, shortname, fullname, color = '#000000', slack_channel = None):
+    def insert_alliance(self, shortname, fullname, color='#000000', slack_channel=None):
         query = """INSERT INTO alliances(shortname, fullname, color, slack_channel) \
                  VALUES(%s, %s, %s, %s)"""
         result = db.execute(query, (shortname, fullname, color, slack_channel))
+
 
 def update_logo_of_alliance(shortname, logo):
     query = "UPDATE alliances SET logo=%s WHERE shortname = %s"
@@ -77,8 +78,13 @@ def update_charter_of_alliance(shortname, charter):
     db.execute(query, (charter, shortname))
 
 
+def update_leader_of_alliance(shortname, leader_id):
+    query = "UPDATE alliances SET leader=%s WHERE shortname = %s"
+    db.execute(query, (leader_id, shortname))
+
+
 def update_all_alliances_info(shortname, new_shortname, fullname, slack_channel, color='#000000'):
-    color=str(color)
+    color = str(color)
     query = "UPDATE alliances SET color = %s, shortname = %s, fullname = %s, slack_channel = %s WHERE shortname = %s"
     db.execute(query, (color, new_shortname, fullname, slack_channel, shortname))
 
@@ -87,25 +93,25 @@ def find_by_shortname(name):
     import psycopg2.extras
 
     conn = db.get_conn()
-    cursor = conn.cursor(cursor_factory = psycopg2.extras.DictCursor)
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     query = "SELECT * FROM alliances where shortname=%s"
     cursor.execute(query, (name,))
     result = cursor.fetchone()
     return result
 
 
-def create_an_alliance(user_id, fullname, shortname,  color='#000000'):
+def create_an_alliance(user_id, fullname, shortname, color='#000000'):
     conn = db.get_conn()
     try:
         query = "INSERT INTO alliances(fullname, shortname, color) VALUES(%s, %s, %s)"
         cursor = conn.cursor()
-        cursor.execute (query, (fullname, shortname, color))
+        cursor.execute(query, (fullname, shortname, color))
 
         query = "UPDATE users SET alliance = %s WHERE id = %s"
         cursor.execute(query, (shortname, user_id))
 
         conn.commit()
-    except (e):
+    except e:
         conn.rollback()
 
 
