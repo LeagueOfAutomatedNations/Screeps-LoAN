@@ -19,8 +19,8 @@ def find_name_by_alliance(alliance):
     return [row[0] for row in result]
 
 
-def find_id_by_alliance(alliance):
-    query = "SELECT id FROM users where alliance = %s"
+def find_player_id_by_alliance(alliance):
+    query = "SELECT screeps_id FROM users where alliance = %s"
     result = db.find_all(query, (alliance,))
     return [row[0] for row in result]
 

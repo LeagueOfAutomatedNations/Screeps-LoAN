@@ -125,6 +125,18 @@ def create_an_alliance():
 @app.route('/my/leave', methods=["POST"])
 @login_required
 def leave_alliance():
+    my_id = session['my_id']
+    alliance = users_model.alliance_of_user(my_id)
+    if alliance is None:
+        return "You are not in an alliance."
+
+    # Check if user is not leader or if leader has not been set yet
+    leader_list = alliance['leader']
+
+    # Remove user from leader list if there
+    if my_id in leader_list:
+        leader_list.remove(my_id)
+        alliances_model.update_leader_of_alliance(alliance['shortname'], leader_list)
     users_model.update_alliance_by_screeps_id(session['screeps_id'], None)
     return redirect(url_for("my_alliance"))
 
@@ -225,7 +237,10 @@ def kick_from_alliance():
 
     flash('Successfully kicked {} from your alliance'.format(username))
     kicker_name = users_model.user_name_from_db_id(my_id)
-    api.msg_send(user_id, 'You have been removed from {} by {}.'.format(alliance['fullname'], kicker_name))
+
+    # Get player id for message and send
+    player_id = users_model.player_id_from_db(username)
+    api.msg_send(player_id, 'You have been removed from {} by {}.'.format(alliance['fullname'], kicker_name))
     return redirect(url_for("my_alliance"))
 
 
@@ -283,9 +298,12 @@ def update_my_alliance_leader():
 
     alliances_model.update_leader_of_alliance(alliance['shortname'], leader_list)
     flash('Successfully set {} as a leader of {}'.format(leader, alliance['fullname']))
-    user_name = users_model.user_name_from_db_id(my_id)
-    api.msg_send(user_id, 'You have been given a leader role for {} by {}. This allows you to manage the alliance on '
-                          'the LOAN website.'.format(alliance['fullname'], user_name))
+
+    # Get player id for message and send
+    player_id = users_model.player_id_from_db(leader)
+    assignor_name = users_model.user_name_from_db_id(my_id)
+    api.msg_send(player_id, 'You have been given a leader role for {} by {}. This allows you to manage the alliance on '
+                            'the LOAN website.'.format(alliance['fullname'], assignor_name))
     return redirect(url_for('my_alliance'))
 
 
@@ -303,7 +321,7 @@ def send_message():
         flash('Only the alliance leaders can send alliance wide messages.')
         return redirect(url_for("my_alliance"))
 
-    alliance_members = users_model.find_id_by_alliance(alliance['shortname'])
+    alliance_members = users_model.find_player_id_by_alliance(alliance['shortname'])
     api = screeps_client.get_client()
 
     sender_name = users_model.user_name_from_db_id(my_id)
