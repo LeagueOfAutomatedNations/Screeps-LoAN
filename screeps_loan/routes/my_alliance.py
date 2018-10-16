@@ -325,8 +325,8 @@ def send_message():
     api = screeps_client.get_client()
 
     sender_name = users_model.user_name_from_db_id(my_id)
-    for user in alliance_members:
-        api.msg_send(user, '{}\n\nSent By: {}'.format(message, sender_name))
+    for player_id in alliance_members:
+        api.msg_send(player_id, '{}\n\nSent By: {}'.format(message, sender_name))
 
     flash('Message sent.')
     return redirect(url_for("my_alliance"))
