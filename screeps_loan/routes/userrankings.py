@@ -1,24 +1,22 @@
-from flask import render_template
-
-import screeps_loan.models.users as users
 from screeps_loan import app
+from flask import render_template
+import screeps_loan.models.users as users
 
 gcl_min = 1000000
 power_min = 100000
 combined_min = 1000000
 
-
 @app.route('/player/rankings/gcl')
 def player_rankings_gcl():
     userlist = [elem for elem in users.get_all_users() if isinstance(elem['gcl'], int) and elem['gcl'] > gcl_min]
-    userlist.sort(key=lambda a: a['gcl'])
+    userlist.sort(key = lambda a: a['gcl'])
     return render_template("user_rankings.html", rankings=userlist[::-1], field='gcl', category='GCL')
 
 
 @app.route('/player/rankings/power')
 def player_rankings_power():
     userlist = [elem for elem in users.get_all_users() if isinstance(elem['power'], int) and elem['power'] > power_min]
-    userlist.sort(key=lambda a: a['power'])
+    userlist.sort(key = lambda a: a['power'])
     return render_template("user_rankings.html", rankings=userlist[::-1], field='power', category='Power')
 
 
@@ -39,5 +37,5 @@ def player_rankings_combined():
                 'ign': user['ign'],
                 'combined': combined
             })
-    finalusers.sort(key=lambda a: a['combined'])
+    finalusers.sort(key = lambda a: a['combined'])
     return render_template("user_rankings.html", rankings=finalusers[::-1], field='combined', category='Combined')

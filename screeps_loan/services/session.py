@@ -1,6 +1,6 @@
-from beaker.middleware import SessionMiddleware
+from flask import Flask, session
 from flask.sessions import SessionInterface
-
+from beaker.middleware import SessionMiddleware
 from screeps_loan import app
 
 cache_root = app.config['CACHE_ROOT']
@@ -13,7 +13,6 @@ session_opts = {
     'session.type': 'file',
 }
 
-
 class BeakerSessionInterface(SessionInterface):
     def open_session(self, app, request):
         session = request.environ['beaker.session']
@@ -21,7 +20,6 @@ class BeakerSessionInterface(SessionInterface):
 
     def save_session(self, app, session, response):
         session.save()
-
 
 app.wsgi_app = SessionMiddleware(app.wsgi_app, session_opts)
 app.session_interface = BeakerSessionInterface()

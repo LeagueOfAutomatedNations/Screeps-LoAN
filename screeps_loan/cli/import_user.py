@@ -1,12 +1,10 @@
-import json
-import re
-
 import click
-
 from screeps_loan import app
+import screepsapi.screepsapi as screepsapi
+import re
+import json
 from screeps_loan.models.db import get_conn
 from screeps_loan.screeps_client import get_client
-
 
 class Map(object):
     roomRegex = re.compile(r'(E|W)(\d+)(N|S)(\d+)')
@@ -14,7 +12,11 @@ class Map(object):
 
     def getRoomData(self, room):
         match = self.roomRegex.match(room)
-        data = {'x_dir': match.group(1), 'x': int(match.group(2)), 'y_dir': match.group(3), 'y': int(match.group(4))}
+        data = {}
+        data['x_dir'] = match.group(1)
+        data['x'] = int(match.group(2))
+        data['y_dir'] = match.group(3)
+        data['y'] = int(match.group(4))
         return data
 
     def isNPC(self, room):
@@ -54,7 +56,7 @@ class Map(object):
             user_map = {}
             roomCount = 0
             api_worldsize = api.worldsize(shard)
-            maxroom = int((api_worldsize['width'] - 2) / 2)
+            maxroom = int((api_worldsize['width']-2)/2)
             for x in range(1, maxroom + 1):
                 for y in range(1, maxroom + 1):
                     for horizontal in ['E', 'W']:
@@ -69,7 +71,7 @@ class Map(object):
                     room_statistics = api.map_stats(queue, 'claim0', shard)
                     roomCount += self.queueLimit
                     click.echo(str(roomCount) + " rooms requested")
-                    # self.calls = self.calls + 1
+                    #self.calls = self.calls + 1
                     queue = []
 
                     for id, user_info in room_statistics['users'].items():
@@ -99,7 +101,7 @@ class Map(object):
         query = "UPDATE room_imports SET status='complete' WHERE id=(%s)"
         conn = get_conn()
         cursor = conn.cursor()
-        cursor.execute(query, (self.id,))
+        cursor.execute(query, (self.id, ))
 
     def clear(self):
         conn = get_conn()
@@ -111,9 +113,9 @@ class Map(object):
         query = "SELECT id FROM users WHERE screeps_id = %s"
         conn = get_conn()
         cursor = conn.cursor()
-        cursor.execute(query, (user_id,))
+        cursor.execute(query, (user_id, ))
         row = cursor.fetchone()
-        if row is None:
+        if (row is None):
             query = "INSERT INTO users(ign, screeps_id) VALUES (%s, %s) RETURNING id"
             cursor.execute(query, (username, user_id))
             id = cursor.fetchone()[0]
@@ -138,17 +140,19 @@ def initdb():
     """Initialize the database."""
     click.echo('Init the db')
 
-
 @app.cli.command()
 def import_alliances():
     click.echo("Start to import alliances from http://www.leagueofautomatednations.com/alliances.js")
     import requests as r
     import screeps_loan.models.alliances as alliances_model
     import screeps_loan.models.users as users_model
+    import screeps_loan.auth_user
     import screeps_loan.services.users as users_service
 
     alliance_query = alliances_model.AllianceQuery()
     users_query = users_model.UserQuery()
+    screeps = get_client()
+    auth_user = screeps_loan.auth_user.AuthPlayer(screeps)
     resp = r.get('http://www.leagueofautomatednations.com/alliances.js')
     data = json.loads(resp.text)
     for shortname, info in data.items():
@@ -162,8 +166,9 @@ def import_alliances():
         if 'slack' in info:
             slack = info['slack']
         alliance = alliance_query.find_by_shortname(shortname)
-        if alliance is None:
+        if (alliance is None):
             alliance_query.insert_alliance(shortname, fullname, color, slack)
+            alliance = shortname
 
         existing_member = [i['name'] for i in users_query.find_name_by_alliances([shortname])]
         new_members = [name for name in members if name not in existing_member]

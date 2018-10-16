@@ -1,14 +1,11 @@
-import json
-
-from flask import render_template
-from flask_cors import cross_origin
-
 from screeps_loan import app
 from screeps_loan.models.rooms import get_all_rooms
 from screeps_loan.routes.decorators import httpresponse
 from screeps_loan.screeps_client import get_client
 from screeps_loan.services.cache import cache
-
+import json
+from flask import render_template
+from flask_cors import cross_origin
 
 @app.route('/map/rooms.js')
 @cross_origin(origins="*", send_wildcard=True, methods="GET")
@@ -34,6 +31,7 @@ def alliance_room_shard_json(shard=None):
     return json.dumps(room_data_aux)
 
 
+
 @app.route('/map/<shard>')
 def map(shard):
     maxroom = get_shard_size(shard)
@@ -47,8 +45,6 @@ def map_users(shard):
 
 
 botmapurl = 'http://www.leagueofautomatednations.com/vk/bots/league.json'
-
-
 @app.route('/map/<shard>/bots')
 def map_bots(shard):
     maxroom = get_shard_size(shard)
@@ -59,4 +55,4 @@ def map_bots(shard):
 def get_shard_size(shard):
     api = get_client()
     api_worldsize = api.worldsize(shard)
-    return int((api_worldsize['width'] - 2) / 2)
+    return int((api_worldsize['width']-2)/2)

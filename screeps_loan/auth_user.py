@@ -1,10 +1,9 @@
-import datetime
-import hashlib
-import os
-
+from screeps_loan.models.db import get_conn
 import screeps_loan.models.users as users_model
 import screeps_loan.services.users as users_service
-from screeps_loan.models.db import get_conn
+import hashlib
+import os
+import datetime
 
 
 class AuthPlayer(object):
@@ -14,12 +13,14 @@ class AuthPlayer(object):
     def random_token(self):
         return hashlib.sha512(os.urandom(128)).hexdigest()[0: 15]
 
+
     def id_from_name(self, name):
         id = users_model.player_id_from_db(name)
-        if id is None:
+        if (id is None):
             id = users_service.player_id_from_api(name)
             users_model.insert_username_with_id(name, id)
         return id
+
 
     def auth_token(self, name):
         id = self.id_from_name(name)
@@ -31,4 +32,4 @@ class AuthPlayer(object):
             cursor = conn.cursor()
             cursor.execute(query, (token, datetime.datetime.utcnow(), id))
             conn.commit()
-        return id, token
+        return (id, token)

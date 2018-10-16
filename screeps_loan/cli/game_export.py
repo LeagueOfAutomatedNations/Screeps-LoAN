@@ -1,14 +1,16 @@
-import json
-
 import click
-import requests
-
 from screeps_loan import app
 from screeps_loan.screeps_client import get_client
 
+import screeps_loan.models.alliances as alliances
+import screeps_loan.models.users as users
+
+import json
+import requests
+
+
 alliance_segment = 99
 clone_segment = 98
-
 
 @app.cli.command()
 def export_to_segments():
@@ -32,7 +34,7 @@ def export_to_segments():
     alliances_aux = {}
     for alliance in all_alliances:
         members = [user['name'] for user in users_with_alliance
-                   if user['alliance'] == alliance['shortname']]
+                               if user['alliance'] == alliance['shortname']]
         if len(members) < 2:
             continue
         alliances_aux[alliance['shortname']] = members

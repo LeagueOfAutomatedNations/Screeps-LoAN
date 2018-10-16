@@ -1,12 +1,14 @@
-import json
+from screeps_loan import app
+from flask import render_template, redirect, request, session, url_for, escape, flash, abort
 
-from flask import render_template, redirect, session, url_for, abort
-
-import screeps_loan.models.db as db
+import screeps_loan.models.alliances as alliances_model
 import screeps_loan.models.invites as invites
 import screeps_loan.models.users as users_model
-from screeps_loan import app
+import screeps_loan.models.invites
+import screeps_loan.models.db as db
 from screeps_loan.routes.decorators import login_required
+
+import json
 
 
 @app.route('/my/invites')
@@ -41,6 +43,8 @@ def invite_decline(inviteid):
 @app.route('/my/invites/<inviteid>/accept.js', methods=['POST'])
 @login_required
 def invite_accept(inviteid):
+
+
     my_id = session['my_id']
 
     invite = invites.get_invite_by_id(inviteid)

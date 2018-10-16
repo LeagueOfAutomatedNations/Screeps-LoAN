@@ -1,9 +1,8 @@
 import datetime
 import time
 from functools import wraps
+from flask import g, request, redirect, url_for, session, make_response
 from wsgiref.handlers import format_date_time
-
-from flask import redirect, url_for, session, make_response
 
 
 def login_required(f):
