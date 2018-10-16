@@ -228,7 +228,7 @@ def kick_from_alliance():
         flash('User is not in your alliance.')
         return redirect(url_for("my_alliance"))
 
-    users_model.update_alliance_by_screeps_id(user_id, None)
+    users_model.update_alliance_by_user_id(user_id, None)
 
     # Remove user from leader list if there
     if user_id in leader_list:
