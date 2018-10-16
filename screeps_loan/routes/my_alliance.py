@@ -1,15 +1,17 @@
-from screeps_loan import app
-from flask import render_template, redirect, request, session, url_for, escape, flash
-from werkzeug.utils import secure_filename
+import hashlib
 import os
+import re
+
+from flask import render_template, redirect, request, session, url_for, flash
+from werkzeug.utils import secure_filename
+
 import screeps_loan.models.alliances as alliances_model
 import screeps_loan.models.invites as invites
 import screeps_loan.models.users as users_model
-from screeps_loan.routes.decorators import login_required
-from screeps_loan.auth_user import AuthPlayer
-import hashlib
 import screeps_loan.screeps_client as screeps_client
-import re
+from screeps_loan import app
+from screeps_loan.auth_user import AuthPlayer
+from screeps_loan.routes.decorators import login_required
 
 
 def allowed_file(filename):
@@ -30,7 +32,7 @@ def upload_my_alliance_logo():
 
     # Check if user is not leader or if leader has not been set yet
     leader_list = alliance['leader']
-    if my_id not in leader_list and 0 not in leader_list:
+    if my_id not in leader_list:
         flash('Only the alliance leaders can change the logo.')
         return redirect(url_for("my_alliance"))
 
@@ -61,12 +63,12 @@ def update_my_alliance_charter():
 
     # Check if user is not leader or if leader has not been set yet
     leader_list = alliance['leader']
-    if my_id not in leader_list and 0 not in leader_list:
+    if my_id not in leader_list:
         flash('Only the alliance leaders can update the charter.')
         return redirect(url_for("my_alliance"))
 
     alliances_model.update_charter_of_alliance(alliance['shortname'], charter)
-    return (redirect(url_for('my_alliance')))
+    return redirect(url_for('my_alliance'))
 
 
 @app.route('/my/updateprofile', methods=["POST"])
@@ -87,12 +89,12 @@ def update_my_alliance_profile():
 
     # Check if user is not leader or if leader has not been set yet
     leader_list = alliance['leader']
-    if my_id not in leader_list and 0 not in leader_list:
+    if my_id not in leader_list:
         flash('Only the alliance leaders can update this information.')
         return redirect(url_for("my_alliance"))
 
     alliances_model.update_all_alliances_info(alliance['shortname'], shortname, fullname, slack_channel)
-    return (redirect(url_for('my_alliance')))
+    return redirect(url_for('my_alliance'))
 
 
 @app.route('/my')
@@ -137,7 +139,7 @@ def invite_to_alliance():
 
     # Check if user is not leader or if leader has not been set yet
     leader_list = alliance['leader']
-    if my_id not in leader_list and 0 not in leader_list:
+    if my_id not in leader_list:
         flash('Only the alliance leaders can invite.')
         return redirect(url_for("my_alliance"))
 
@@ -169,7 +171,7 @@ def invite_to_alliance():
     api.msg_send(ign,
                  "You are invited to join %s \n\n%s" % (alliance['fullname'], url_for('list_invites', _external=True)))
 
-    flash('Successfully invited user to your alliance')
+    flash('Successfully invited {} to your alliance'.format(username))
     return redirect(url_for("my_alliance"))
 
 
@@ -222,6 +224,8 @@ def kick_from_alliance():
         alliances_model.update_leader_of_alliance(alliance['shortname'], leader_list)
 
     flash('Successfully kicked {} from your alliance'.format(username))
+    kicker_name = users_model.user_name_from_db_id(my_id)
+    api.msg_send(user_id, 'You have been removed from {} by {}.'.format(alliance['fullname'], kicker_name))
     return redirect(url_for("my_alliance"))
 
 
@@ -278,7 +282,10 @@ def update_my_alliance_leader():
         leader_list.remove(0)
 
     alliances_model.update_leader_of_alliance(alliance['shortname'], leader_list)
-    flash('Successfully set {} as the leader of {}'.format(leader, alliance['fullname']))
+    flash('Successfully set {} as a leader of {}'.format(leader, alliance['fullname']))
+    user_name = users_model.user_name_from_db_id(my_id)
+    api.msg_send(user_id, 'You have been given a leader role for {} by {}. This allows you to manage the alliance on '
+                          'the LOAN website.'.format(alliance['fullname'], user_name))
     return redirect(url_for('my_alliance'))
 
 
@@ -299,8 +306,9 @@ def send_message():
     alliance_members = users_model.find_id_by_alliance(alliance['shortname'])
     api = screeps_client.get_client()
 
+    sender_name = users_model.user_name_from_db_id(my_id)
     for user in alliance_members:
-        api.msg_send(user, message)
+        api.msg_send(user, '{}\n\nSent By: {}'.format(message, sender_name))
 
     flash('Message sent.')
     return redirect(url_for("my_alliance"))
