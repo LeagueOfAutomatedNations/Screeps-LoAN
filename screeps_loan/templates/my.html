@@ -27,6 +27,7 @@
             <li class="tabs-title"><a href="#panel4">Members</a></li>
             <li class="tabs-title"><a href="#panel2" onclick="activateCharterBox()">Charter</a></li>
             <li class="tabs-title"><a href="#panel3">Leave Alliance</a></li>
+            <li class="tabs-title"><a href="#panel5" onclick="activateMessageBox()">Send Alliance Message</a></li>
         </ul>
         <div class="tabs-content" data-tabs-content="example-tabs">
             <div class="tabs-panel is-active" id="panel1">
@@ -108,6 +109,12 @@
                     <p><input class="button" type=submit value=Submit></p>
                 </form>
             </div>
+            <div class="tabs-panel" id="panel5">
+                <form id="alliance-message-form" action="/my/sendmessage" method="POST">
+                    <textarea id="alliance-message" name="alliance-message"></textarea>
+                    <input type=submit value="Submit">
+                </form>
+            </div>
         </div>
     </div>
 </div>
@@ -120,6 +127,19 @@
      var simplemde = new SimpleMDE({ element: document.getElementById("charter"),
                                      autofocus:true});
      function activateCharterBox() {
+         setTimeout(function() {
+             simplemde.codemirror.refresh();
+         }.bind(simplemde), 0);
+     };
+
+ });
+ $(document).ready(function() {
+     //$("#colorpicker").spectrum({
+     //    color: "#f00"
+     //});
+     var simplemde = new SimpleMDE({ element: document.getElementById("charter"),
+                                     autofocus:true});
+     function activateMessageBox() {
          setTimeout(function() {
              simplemde.codemirror.refresh();
          }.bind(simplemde), 0);

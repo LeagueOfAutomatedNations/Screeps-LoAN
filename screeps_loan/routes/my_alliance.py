@@ -280,3 +280,27 @@ def update_my_alliance_leader():
     alliances_model.update_leader_of_alliance(alliance['shortname'], leader_list)
     flash('Successfully set {} as the leader of {}'.format(leader, alliance['fullname']))
     return redirect(url_for('my_alliance'))
+
+
+@app.route('/my/sendmessage', methods=['POST'])
+def send_message():
+    my_id = session['my_id']
+    message = request.form['alliance-message']
+    alliance = users_model.alliance_of_user(my_id)
+    if alliance is None:
+        return "You are not in an alliance."
+
+    # Check if user is not leader or if leader has not been set yet
+    leader_list = alliance['leader']
+    if my_id not in leader_list:
+        flash('Only the alliance leaders can send alliance wide messages.')
+        return redirect(url_for("my_alliance"))
+
+    alliance_members = users_model.find_id_by_alliance(alliance['shortname'])
+    api = screeps_client.get_client()
+
+    for user in alliance_members:
+        api.msg_send(user, message)
+
+    flash('Message sent.')
+    return redirect(url_for("my_alliance"))
