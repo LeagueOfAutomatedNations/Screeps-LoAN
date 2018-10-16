@@ -17,7 +17,10 @@
 {% block content %}
     <div class="row">
         <ul class="tabs" data-tabs id="example-tabs">
-            <li class="tabs-title is-active"><a href="#panel1" aria-selected="true">Location</a></li>
+            <li class="tabs-title"><a href="#panel1a" aria-selected="true">Shard0 Locations</a></li>
+            <li class="tabs-title"><a href="#panel1b">Shard1 Locations</a></li>
+            <li class="tabs-title"><a href="#panel1c">Shard2 Locations</a></li>
+            <li class="tabs-title"><a href="#panel1d">Shard3 Locations</a></li>
             <li class="tabs-title"><a href="#panel2">Charter</a></li>
             {% if alliance['slack_channel'] %}
             <li class="tabs-title" onclick="location.href='https://screeps.slack.com/messages/{{ alliance['slack_channel'] }}'">
@@ -26,10 +29,10 @@
             {% endif %}
         </ul>
         <div class="tabs-content" data-tabs-content="example-tabs">
-
-            <div class="tabs-panel is-active" id="panel1">
-              {{ map(shortname=shortname) }}
-            </div>
+            <div class="tabs-panel is-active" id="panel1a">{{ map(shard='shard0',shortname=shortname) }}</div>
+            <div class="tabs-panel is-active" id="panel1b">{{ map(shard='shard1',shortname=shortname) }}</div>
+            <div class="tabs-panel is-active" id="panel1c">{{ map(shard='shard2',shortname=shortname) }}</div>
+            <div class="tabs-panel is-active" id="panel1d">{{ map(shard='shard3',shortname=shortname) }}</div>
             <div class="tabs-panel" id="panel2">
                 {{charter | safe}}
             </div>
