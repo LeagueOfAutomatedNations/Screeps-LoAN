@@ -1,0 +1,19 @@
+version: '3'
+services:
+  loan:
+    build: .
+    image: ags131/loan
+    environment:
+      SETTINGS: /data/settings
+    volumes:
+    - ./data/loan:/data
+    ports:
+    - '5000:5000'
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: screeps
+      POSTGRES_DB: screeps
+      POSTGRES_PASSWORD: abc123
+    volumes:
+    - ./data/postgres:/var/lib/postgresql/data
