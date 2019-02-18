@@ -5,4 +5,4 @@ WORKDIR /app
 COPY ./requirements.txt /app
 RUN pip install -r requirements.txt
 COPY . /app
-CMD ["flask","run","--host=0.0.0.0"]
+CMD ["gunicorn","-w","3","-b",":5000","screeps_loan.screeps_loan:app"]
