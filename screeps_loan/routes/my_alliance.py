@@ -224,7 +224,7 @@ def kick_from_alliance():
     if not current_alliance:
         flash('User is not in an alliance.')
         return redirect(url_for("my_alliance"))
-    if current_alliance is not alliance:
+    if current_alliance[1] != alliance[1]:
         flash('User is not in your alliance.')
         return redirect(url_for("my_alliance"))
 
@@ -280,7 +280,7 @@ def kick_from_alliance():
 #     if not current_alliance:
 #         flash('User is not in an alliance.')
 #         return redirect(url_for("my_alliance"))
-#     if current_alliance is not alliance:
+#     if current_alliance[1] != alliance[1]:
 #         flash('User is not in your alliance.')
 #         return redirect(url_for("my_alliance"))
 #
