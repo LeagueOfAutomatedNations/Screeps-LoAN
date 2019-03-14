@@ -1,12 +1,12 @@
 {% extends "layout.html" %}
 {% block head %}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.8.0/spectrum.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.8.0/spectrum.min.css">
 
 {% endblock %}
 {% block js_include %}
-    <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
-    <script src="{{url_for('static', filename="js/tinycolorpicker.js")}}"></script>
+<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+<script src="{{url_for('static', filename=" js/tinycolorpicker.js")}}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.8.0/spectrum.min.js"></script>
 {% endblock %}
 {% block content %}
@@ -15,33 +15,36 @@
     <div class="small-11 columns">
         <ul class="tabs" data-tabs id="example-tabs">
             <div style="float:left; width:52px; height:52px">
-            {% if alliance['logo'] %}
-            <img class=""
-                 src="{{url_for('get_obj', filename = alliance['logo']) }}">
-            {% else %}
-            <img class=""
-                 src="{{url_for('static', filename = 'img/leaguelogo.png') }}">
-            {% endif %}
+                {% if alliance['logo'] %}
+                <img class=""
+                     src="{{url_for('get_obj', filename = alliance['logo']) }}">
+                {% else %}
+                <img class=""
+                     src="{{url_for('static', filename = 'img/leaguelogo.png') }}">
+                {% endif %}
             </div>
-            <li class="tabs-title is-active"><a href="#panel1" aria-selected="true">Management</a></li>
+            <li class="tabs-title is-active"><a href="#panel1" aria-selected="true">Alliance Details</a></li>
+            <li class="tabs-title"><a href="#panel4">Members</a></li>
             <li class="tabs-title"><a href="#panel2" onclick="activateCharterBox()">Charter</a></li>
             <li class="tabs-title"><a href="#panel3">Leave Alliance</a></li>
+            <li class="tabs-title"><a href="#panel5" onclick="activateMessageBox()">Send Alliance Message</a></li>
         </ul>
         <div class="tabs-content" data-tabs-content="example-tabs">
             <div class="tabs-panel is-active" id="panel1">
-                <form action="/invite" method="post">
-                    <p> Invite a user to your alliance. NAME IS CASE SENSITIVE</p>
-                    <p><input type=text name=username></p>
+                <!--
+                <form action="/updateleader" method="POST">
+                    <p> Set the leader of this alliance. NAME IS CASE SENSITIVE</p>
+                    <p><input type=text name=leader></p>
                     <p><input class="button" type=submit value=Submit></p>
                 </form>
                 <hr>
+                -->
                 Upload your logo (around 190x190)
                 <form enctype="multipart/form-data"
                       action="{{url_for('upload_my_alliance_logo')}}" method="POST">
                     <input class="button" type=file name="logo">
                     <input class="button" type=submit value=Submit>
                 </form>
-
                 <hr>
                 <form action="/my/updateprofile" method="POST">
                     <div class="row">
@@ -52,7 +55,7 @@
                         </div>
                         <div class="large-3 columns">
                             <label> Abbreviation
-                                <input type="text" value="{{alliance['shortname']}}" name="shortname" />
+                                <input type="text" value="{{alliance['shortname']}}" name="shortname"/>
                             </label>
                         </div>
                         <div class="large-3 columns">
@@ -62,16 +65,16 @@
                                 <input class="input-group-field"
                                        type="text"
                                        value="{{alliance['slack_channel']}}"
-                                       name="slack_channel" />
+                                       name="slack_channel"/>
                             </div>
                         </div>
 
                         <div class="large-2 columns">
-                        <!--
-                            <label> Alliance Color </label>
-                            <input name="color" type="color"
-                                   id='colorpicker' value="{{alliance['color']}}"/>
-                         -->
+                            <!--
+                                <label> Alliance Color </label>
+                                <input name="color" type="color"
+                                       id='colorpicker' value="{{alliance['color']}}"/>
+                             -->
                         </div>
 
                     </div>
@@ -95,22 +98,54 @@
                     <input class="button" type=submit value="Leave Alliance">
                 </form>
             </div>
+            <div class="tabs-panel" id="panel4">
+                <form id="invite-form" action="/invite" method="POST">
+                    <p> Invite a user to your alliance. NAME IS CASE SENSITIVE</p>
+                    <p><input type=text name=username></p>
+                    <p><input class="button" type=submit value=Submit></p>
+                </form>
+                <hr>
+                <form id="kick-form" action="/kick" method="POST">
+                    <p> Remove a user from your alliance. NAME IS CASE SENSITIVE (Leader Restricted)</p>
+                    <p><input type=text name=username></p>
+                    <p><input class="button" type=submit value=Submit></p>
+                </form>
+            </div>
+            <div class="tabs-panel" id="panel5">
+                <form id="alliance-message-form" action="/my/sendmessage" method="POST">
+                    <textarea id="alliance-message" name="alliance-message"></textarea>
+                    <input type=submit value="Submit">
+                </form>
+            </div>
         </div>
     </div>
 </div>
 {% endblock %}
 {% block script %}
- $(document).ready(function() {
-     //$("#colorpicker").spectrum({
-     //    color: "#f00"
-     //});
-     var simplemde = new SimpleMDE({ element: document.getElementById("charter"),
-                                     autofocus:true});
-     function activateCharterBox() {
-         setTimeout(function() {
-             simplemde.codemirror.refresh();
-         }.bind(simplemde), 0);
-     };
+$(document).ready(function() {
+//$("#colorpicker").spectrum({
+//    color: "#f00"
+//});
+var simplemde = new SimpleMDE({ element: document.getElementById("charter"),
+autofocus:true});
+function activateCharterBox() {
+setTimeout(function() {
+simplemde.codemirror.refresh();
+}.bind(simplemde), 0);
+};
 
- });
+});
+$(document).ready(function() {
+//$("#colorpicker").spectrum({
+//    color: "#f00"
+//});
+var simplemde = new SimpleMDE({ element: document.getElementById("charter"),
+autofocus:true});
+function activateMessageBox() {
+setTimeout(function() {
+simplemde.codemirror.refresh();
+}.bind(simplemde), 0);
+};
+
+});
 {% endblock %}
