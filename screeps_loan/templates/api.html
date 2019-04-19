@@ -13,10 +13,12 @@
 
   <div class='row columns'>
 
-    <p>The League websites use a series of different APIs to create the maps and other data available. These APIs are extremely informal, and  they are in many cases different systems. The best way to figure out what they do are to open the example URLs and examine the data directly.</p>
-
+    <p>The League websites use a series of different APIs to create the maps and other data available. These APIs are extremely informal, and they are in many cases different systems. The best way to figure out what they do are to open the example URLs and examine the data directly.</p>
+    <p>The in game user "LeagueOfAutomatedNations" has a copy of several API end points in <a href="https://docs.screeps.com/api/#RawMemory.foreignSegment">public segments</a>, the segment ids are listed next to the endpoints.</p>
+    
     <dl>
       <dt><a href="/alliances.js">/alliances.js</a></dt>
+      <dd>Available in public segment 99</dd>
       <dd>This contains a variety of metadata about alliances, including their members.</dd>
     </dl>
 
@@ -25,18 +27,24 @@
       <dd>This lists all rooms with owners along with their levels (reserved rooms are marked as level `0`).</dd>
     </dl>
 
-
     <dl>
       <dt><a href="/vk/bots/members.json">/vk/bots/members.json</a></dt>
       <dd>This is a list of all known "clone" accounts. These are users who are running open source bots on their accounts.</dd>
     </dl>
 
-
+    <dl>
+      <dt><a href="/vk/bots/league.json">/vk/bots/league.json</a></dt>
+      <dd>Available in public segment 98</dd>
+      <dd>As above with some additional information about the open source bots.</dd>
+    </dl>
+    
     <dl>
       <dt><a href="/vk/battles.json">/vk/battles.json</a></dt>
       <dd>This feed contains a list of active conflicts along with metadata. This includes the classification level of each battle, it's participants, and when it took place.</dd>
     </dl>
 
+    
+    
   </div>
 </div>
 
