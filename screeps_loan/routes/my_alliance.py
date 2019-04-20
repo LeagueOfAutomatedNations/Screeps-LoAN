@@ -169,7 +169,7 @@ def kick_from_alliance():
     user_id = users_model.user_id_from_db(username)
 
     if not user_id:
-        flash('User not present in system - please try again later.')
+        flash('User not present in system')
         return redirect(url_for("my_alliance"))
 
     # Is user already in an alliance?
