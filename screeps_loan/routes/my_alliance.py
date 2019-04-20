@@ -160,7 +160,7 @@ def kick_from_alliance():
 
     my_id = session['my_id']
     alliance = users_model.alliance_of_user(my_id)
-    if (alliance is None):
+    if alliance is None:
         return "You are not in an alliance, can't kick anyone"
 
     username = request.form['username']
