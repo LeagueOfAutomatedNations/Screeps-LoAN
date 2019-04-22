@@ -151,3 +151,37 @@ def invite_to_alliance():
 
     flash('Successfully invited user to your alliance')
     return redirect(url_for("my_alliance"))
+
+
+
+@app.route('/kick', methods=["POST"])
+@login_required
+def kick_from_alliance():
+
+    my_id = session['my_id']
+    alliance = users_model.alliance_of_user(my_id)
+    if alliance is None:
+        return "You are not in an alliance, can't kick anyone"
+
+    username = request.form['username']
+
+    # Get database id
+    user_id = users_model.user_id_from_db(username)
+
+    if not user_id:
+        flash('User not present in system')
+        return redirect(url_for("my_alliance"))
+
+    # Is user already in an alliance?
+    current_alliance = users_model.alliance_of_user(user_id)
+    if not current_alliance:
+        flash('User is not in an alliance.')
+        return redirect(url_for("my_alliance"))
+    if current_alliance[1] != alliance[1]:
+        flash('User is not in your alliance.')
+        return redirect(url_for("my_alliance"))
+
+    users_model.update_alliance_by_user_id(user_id, None)
+
+    flash('Successfully kicked user from your alliance')
+    return redirect(url_for("my_alliance"))
