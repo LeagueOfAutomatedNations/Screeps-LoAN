@@ -13,28 +13,83 @@
 
   <div class='row columns'>
 
-    <p>The League websites use a series of different APIs to create the maps and other data available. These APIs are extremely informal, and  they are in many cases different systems. The best way to figure out what they do are to open the example URLs and examine the data directly.</p>
+    <p>The League websites use a series of different APIs to create the maps and other data available. These APIs are extremely informal, and they are in many cases different systems. The best way to figure out what they do are to open the example URLs and examine the data directly.</p>
+    <p>The in game user "LeagueOfAutomatedNations" has a copy of several API end points in <a href="https://docs.screeps.com/api/#RawMemory.foreignSegment">public segments</a>, the segment ids are listed in the endpoint descriptions below.</p>
 
     <dl>
-      <dt><a href="/alliances.js">/alliances.js</a></dt>
+      <dt>Alliances</dt>
+      <dd><a href="/alliances.js">/alliances.js</a></dd>
+      <dd>Available in public segment 99</dd>
       <dd>This contains a variety of metadata about alliances, including their members.</dd>
     </dl>
 
     <dl>
-      <dt>/map/[shard]/rooms.js - <a href="/map/shard1/rooms.js">Example (shard1)</a></dt>
+      <dt>Rooms</dt>
+      <dd>/map/[shard]/rooms.js - <a href="/map/shard1/rooms.js">Example (shard1)</a></dd>
       <dd>This lists all rooms with owners along with their levels (reserved rooms are marked as level `0`).</dd>
     </dl>
 
-
     <dl>
-      <dt><a href="/vk/bots/members.json">/vk/bots/members.json</a></dt>
+      <dt>Clones</dt>
+      <dd><a href="/vk/bots/members.json">/vk/bots/members.json</a></dd>
       <dd>This is a list of all known "clone" accounts. These are users who are running open source bots on their accounts.</dd>
     </dl>
 
+    <dl>
+      <dt>Clones+</dt>
+      <dd><a href="/vk/bots/league.json">/vk/bots/league.json</a></dd>
+      <dd>Available in public segment 98</dd>
+      <dd>As above with some additional information about the open source bots.</dd>
+    </dl>
 
     <dl>
-      <dt><a href="/vk/battles.json">/vk/battles.json</a></dt>
+      <dt>Battles</dt>
+      <dd><a href="/vk/battles.json">/vk/battles.json</a></dd>
       <dd>This feed contains a list of active conflicts along with metadata. This includes the classification level of each battle, it's participants, and when it took place.</dd>
+    </dl>
+
+    <dl>
+      <dt>Portal rooms</dt>
+      <dd>https://screepspl.us/data/[shard].portals.min.js - <a href="https://screepspl.us/data/shard0.portals.min.json">Example (shard0)</a></dd>
+      <dd>Available in public segment 97</dd>
+      <dd>A list rooms with portals and their destinations.</dd>
+    </dl>
+
+    <dl>
+      <dt>Novice Rooms</dt>
+      <dd>https://screepspl.us/data/[shard].novice.js - <a href="https://screepspl.us/data/shard0.novice.json">Example (shard0)</a></dd>
+      <dd>Available in public segment 96</dd>
+      <dd>A list rooms that are either novice or respawn areas with their end times.</dd>
+    </dl>
+
+    <dl>
+      <dt>Novice Areas</dt>
+      <dd>https://screepspl.us/data/[shard].novice.area.js - <a href="https://screepspl.us/data/shard0.novice.area.json">Example (shard0)</a></dd>
+      <dd>A list novice and respawn areas with their end times, and the rooms they contain.</dd>
+    </dl>
+
+    <dl>
+      <dt>Room info</dt>
+      <dd>https://screepspl.us/data/[shard].roominfo.js - <a href="https://screepspl.us/data/shard0.roominfo.json">Example (shard0)</a></dd>
+      <dd>A LARGE endpoint with a lot of info for each room</dd>
+    </dl>
+
+    <dl>
+      <dt>Room maps</dt>
+      <dd>https://screepspl.us/data/[shard].roommaps.js - <a href="https://screepspl.us/data/shard0.roommaps.json">Example (shard0)</a></dd>
+      <dd>A LARGE endpoint with map info for each room</dd>
+    </dl>
+
+    <dl>
+      <dt>Portals</dt>
+      <dd>https://screepspl.us/data/[shard].portals.js - <a href="https://screepspl.us/data/shard0.portals.json">Example (shard0)</a></dd>
+      <dd>A list of each portal and information.  The portals.min.json format above maybe more useful.</dd>
+    </dl>
+
+    <dl>
+      <dt>Users</dt>
+      <dd>https://screepspl.us/data/[shard].users.js - <a href="https://screepspl.us/data/shard0.users.json">Example (shard0)</a></dd>
+      <dd>A list of each user and their badge.</dd>
     </dl>
 
   </div>
