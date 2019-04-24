@@ -163,6 +163,11 @@ def kick_from_alliance():
 
     my_id = session['my_id']
     alliance = users_model.alliance_of_user(my_id)
+    leaders = alliances_leaders_model.get_leaders(alliance[1])
+    if session['username'] not in leaders:
+        flash('You are not a alliance leader, can\'t kick anyone')
+        return redirect(url_for("my_alliance"))
+
     if alliance is None:
         return "You are not in an alliance, can't kick anyone"
 

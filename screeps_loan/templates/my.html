@@ -39,12 +39,14 @@
                     <p><input class="button" type=submit value=Submit></p>
                 </form>
                 <hr>
+                {% if session['username'] in leaders %}
                 <form action="/kick" method="POST">
                     <p> Remove a user from your alliance. NAME IS CASE SENSITIVE</p>
                     <p><input type=text name=username></p>
                     <p><input class="button" type=submit value=Submit></p>
                 </form>
                 <hr>
+                {% endif %}
                 Upload your logo (around 190x190)
                 <form enctype="multipart/form-data"
                       action="{{url_for('upload_my_alliance_logo')}}" method="POST">
