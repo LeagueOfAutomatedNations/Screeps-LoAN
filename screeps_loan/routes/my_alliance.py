@@ -188,3 +188,14 @@ def kick_from_alliance():
 
     flash('Successfully kicked user from your alliance')
     return redirect(url_for("my_alliance"))
+
+
+@app.route('/claim-leader')
+@login_required
+def claim_leader():
+    alliance = users_model.alliance_of_user(session['my_id'])
+    leaders = alliances_leaders_model.get_leaders(alliance[1])
+    if leaders is not None:
+        alliances_leaders_model.add_leader(alliance[1], session['my_id'])
+        flash('You are now leader of '+alliance[1])
+    return redirect(url_for("my_alliance"))
