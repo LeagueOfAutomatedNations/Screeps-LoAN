@@ -6,6 +6,7 @@ import hashlib
 import screeps_loan.models.alliances as alliances_model
 import screeps_loan.models.invites as invites
 import screeps_loan.models.users as users_model
+import screeps_loan.models.alliances_leaders as alliances_leaders_model
 from screeps_loan.routes.decorators import login_required
 from screeps_loan.auth_user import AuthPlayer
 import screeps_loan.services.users as users_service
@@ -85,7 +86,9 @@ def my_alliance():
     alliance = users_model.alliance_of_user(my_id)
     if (alliance is None):
         return render_template("alliance_creation.html")
-    return render_template('my.html', alliance = alliance)
+
+    leaders = alliances_leaders_model.get_leaders(alliance[1])
+    return render_template('my.html', alliance=alliance,leaders=leaders)
 
 
 @app.route('/my/create', methods=["POST"])

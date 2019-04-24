@@ -29,6 +29,10 @@
         </ul>
         <div class="tabs-content" data-tabs-content="example-tabs">
             <div class="tabs-panel is-active" id="panel1">
+                {% if not leaders %}
+                    You're alliance does not have a leader yet, click <a href="/claim-leader">here</a> to claim leadership <br>
+                    <hr>
+                {% endif %}
                 <form action="/invite" method="POST">
                     <p> Invite a user to your alliance. NAME IS CASE SENSITIVE</p>
                     <p><input type=text name=username></p>
