@@ -88,7 +88,8 @@ def my_alliance():
         return render_template("alliance_creation.html")
 
     leaders = alliances_leaders_model.get_leaders(alliance[1])
-    return render_template('my.html', alliance=alliance,leaders=leaders)
+    members = users_model.find_name_by_alliance(alliance[1])
+    return render_template('my.html', alliance=alliance,leaders=leaders,users=members)
 
 
 @app.route('/my/create', methods=["POST"])
@@ -157,9 +158,9 @@ def invite_to_alliance():
 
 
 
-@app.route('/kick', methods=["POST"])
+@app.route('/kick/<username>')
 @login_required
-def kick_from_alliance():
+def kick_from_alliance(username):
 
     my_id = session['my_id']
     alliance = users_model.alliance_of_user(my_id)
@@ -170,8 +171,6 @@ def kick_from_alliance():
 
     if alliance is None:
         return "You are not in an alliance, can't kick anyone"
-
-    username = request.form['username']
 
     # Get database id
     user_id = users_model.user_id_from_db(username)

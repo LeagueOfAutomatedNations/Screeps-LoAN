@@ -23,9 +23,10 @@
                  src="{{url_for('static', filename = 'img/leaguelogo.png') }}">
             {% endif %}
             </div>
-            <li class="tabs-title is-active"><a href="#panel1" aria-selected="true">Management</a></li>
-            <li class="tabs-title"><a href="#panel2" onclick="activateCharterBox()">Charter</a></li>
-            <li class="tabs-title"><a href="#panel3">Leave Alliance</a></li>
+            <li class="tabs-title is-active"><a href="#panel1" aria-selected="true">Members</a></li>
+            <li class="tabs-title"><a href="#panel2">Management</a></li>
+            <li class="tabs-title"><a href="#panel3" onclick="activateCharterBox()">Charter</a></li>
+            <li class="tabs-title"><a href="#panel4">Leave Alliance</a></li>
         </ul>
         <div class="tabs-content" data-tabs-content="example-tabs">
             <div class="tabs-panel is-active" id="panel1">
@@ -33,20 +34,30 @@
                     You're alliance does not have a leader yet, click <a href="/claim-leader">here</a> to claim leadership <br>
                     <hr>
                 {% endif %}
+                <table class="table">
+                    <tr>
+                        <th colspan="2" class="members-table-header">Name</th>
+                    </tr>
+                    {% for user in users %}
+                    <tr>
+                        <td style="width: 1px; white-space: nowrap;">
+                            {% if session['username'] in leaders %}
+                                <a href="/kick/{{ user }}" onclick="return confirm('Are you sure you want to remove {{user}} from your alliance?')"><i class="fa fa-minus-circle" style="color:black"></i></a>
+                            {% endif %}
+                        </td>
+                        <td><a href="https://screeps.com/a/#!/profile/{{user}}" target="_blank">{{ user }}</a></td>
+                    </tr>
+                    {% endfor %}
+                </table>
+                <hr>
                 <form action="/invite" method="POST">
                     <p> Invite a user to your alliance. NAME IS CASE SENSITIVE</p>
                     <p><input type=text name=username></p>
                     <p><input class="button" type=submit value=Submit></p>
                 </form>
                 <hr>
-                {% if session['username'] in leaders %}
-                <form action="/kick" method="POST">
-                    <p> Remove a user from your alliance. NAME IS CASE SENSITIVE</p>
-                    <p><input type=text name=username></p>
-                    <p><input class="button" type=submit value=Submit></p>
-                </form>
-                <hr>
-                {% endif %}
+            </div>
+            <div class="tabs-panel" id="panel2">
                 Upload your logo (around 190x190)
                 <form enctype="multipart/form-data"
                       action="{{url_for('upload_my_alliance_logo')}}" method="POST">
@@ -96,13 +107,13 @@
                 </form>
 
             </div>
-            <div class="tabs-panel" id="panel2">
+            <div class="tabs-panel" id="panel3">
                 <form id="charter-form" action="/my/updatecharter" method="POST">
                     <textarea id="charter" name="charter">{{alliance['charter']}}</textarea>
                     <input type=submit value="Submit">
                 </form>
             </div>
-            <div class="tabs-panel" id="panel3">
+            <div class="tabs-panel" id="panel4">
                 <form id="leave-form" action="/my/leave" method="POST">
                     <input class="button" type=submit value="Leave Alliance">
                 </form>
