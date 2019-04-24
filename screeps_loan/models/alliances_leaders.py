@@ -12,4 +12,5 @@ def remove_leader(alliance, user_id):
 
 def get_leaders(alliance):
     query = "SELECT users.ign FROM alliances_leaders INNER JOIN users ON users.id = alliances_leaders.user_id WHERE alliances_leaders.alliance= %s"
-    return db.find_all(query, (alliance,))
+    result = db.find_all(query, (alliance,))
+    return [row[0] for row in result]
