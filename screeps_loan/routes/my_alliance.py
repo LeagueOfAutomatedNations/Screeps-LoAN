@@ -192,6 +192,9 @@ def kick_from_alliance(username):
 
     users_model.update_alliance_by_user_id(user_id, None)
 
+    if username in leaders:
+        alliances_leaders_model.remove_leader(alliance[1], user_id)
+
     flash('Successfully kicked user from your alliance')
     return redirect(url_for("my_alliance"))
 
