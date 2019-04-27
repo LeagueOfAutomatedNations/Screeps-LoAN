@@ -104,6 +104,7 @@ def create_an_alliance():
         shortname = re.sub(r'\w+', '', request.form['shortname'])
 
     alliances_model.create_an_alliance(my_id, fullname, shortname)
+    alliances_leaders_model.add_leader(shortname, my_id)
     return redirect(url_for("my_alliance"))
 
 
