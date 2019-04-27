@@ -10,6 +10,10 @@ def remove_leader(alliance, user_id):
     query = "DELETE FROM alliances_leaders WHERE alliance= %s AND user_id= %s"
     db.execute(query, (alliance, user_id))
 
+def remove_by_user_id(user_id):
+    query = "DELETE FROM alliances_leaders WHERE user_id= %s"
+    db.execute(query, (user_id, ))
+
 def get_leaders(alliance):
     query = "SELECT users.ign FROM alliances_leaders INNER JOIN users ON users.id = alliances_leaders.user_id WHERE alliances_leaders.alliance= %s"
     result = db.find_all(query, (alliance,))

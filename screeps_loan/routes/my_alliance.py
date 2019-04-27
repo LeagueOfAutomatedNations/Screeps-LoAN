@@ -111,6 +111,7 @@ def create_an_alliance():
 @login_required
 def leave_alliance():
     users_model.update_alliance_by_screeps_id(session['screeps_id'], None)
+    alliances_leaders_model.remove_by_user_id(session['my_id'])
     return redirect(url_for("my_alliance"))
 
 
