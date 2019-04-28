@@ -160,9 +160,9 @@ def invite_to_alliance():
 
 
 
-@app.route('/kick/<username>')
+@app.route('/kick', methods=["POST"])
 @login_required
-def kick_from_alliance(username):
+def kick_from_alliance():
 
     my_id = session['my_id']
     alliance = users_model.alliance_of_user(my_id)
@@ -173,6 +173,8 @@ def kick_from_alliance(username):
 
     if alliance is None:
         return "You are not in an alliance, can't kick anyone"
+
+    username = request.form['username']
 
     # Get database id
     user_id = users_model.user_id_from_db(username)

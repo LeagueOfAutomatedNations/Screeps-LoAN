@@ -42,7 +42,10 @@
                     <tr>
                         <td style="width: 1px; white-space: nowrap;">
                             {% if session['username'] in leaders %}
-                                <a href="/kick/{{ user }}" onclick="return confirm('Are you sure you want to remove {{user}} from your alliance?')"><i class="fa fa-minus-circle" style="color:black"></i></a>
+                                <form method="POST" action="/kick">
+                                    <input type="hidden" name="username" value="{{user}}">
+                                    <a href="#" onclick="return confirm('Are you sure you want to remove {{user}} from your alliance?') && this.parentElement.submit();"><i class="fa fa-minus-circle" style="color:black"></i></a>
+                                </form>
                             {% endif %}
                         </td>
                         <td><a href="https://screeps.com/a/#!/profile/{{user}}" target="_blank">{{ user }}</a></td>
