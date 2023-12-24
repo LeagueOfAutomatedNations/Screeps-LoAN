@@ -3,6 +3,9 @@ ENV FLASK_APP=screeps_loan/screeps_loan.py
 ENV SETTINGS=/app/settings
 ENV FLASK_RUN_CERT=adhoc
 
+# Make sure we have up-to-date SSL certs
+RUN pip install --upgrade certifi
+
 COPY . /app
 
 WORKDIR /app
