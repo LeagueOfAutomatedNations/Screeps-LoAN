@@ -3,36 +3,36 @@
 {% block title %} {{ alliance['fullname'] }} {% endblock %}
 {% block head %}
 
-    <link rel="stylesheet" href="{{url_for('static', filename='css/map.css')}}">
-    <link rel="stylesheet" href="{{url_for ('static', filename = 'css/vendor/leaflet.css')}}" />
-    <script src="{{url_for ('static', filename = 'js/vendor/leaflet.js')}}"></script>
-    <script type="text/javascript" language="javascript" src="{{url_for ('static', filename = 'js/headroom.min.js')}}"></script>
-    <script type="text/javascript" language="javascript" src="{{url_for ('static', filename = 'js/vendor/randomColor.js')}}"></script>
-    <script type="text/javascript" language="javascript" src="{{url_for ('static', filename = 'js/ScreepsMap.js')}}"></script>
-    <script type="text/javascript" language="javascript" src="{{url_for ('static', filename = 'js/ScreepsRegion.js')}}"></script>
-    <script type="text/javascript" language="javascript" src="{{url_for ('static', filename = 'js/ScreepsConstants.js')}}"></script>
-    {{ super() }}
+<link rel="stylesheet" href="{{url_for('static', filename='css/map.css')}}">
+<link rel="stylesheet" href="{{url_for ('static', filename = 'css/vendor/leaflet.css')}}" />
+<script src="{{url_for ('static', filename = 'js/vendor/leaflet.js')}}"></script>
+<script type="text/javascript" language="javascript" src="{{url_for ('static', filename = 'js/headroom.min.js')}}"></script>
+<script type="text/javascript" language="javascript" src="{{url_for ('static', filename = 'js/vendor/randomColor.js')}}"></script>
+<script type="text/javascript" language="javascript" src="{{url_for ('static', filename = 'js/ScreepsMap.js')}}"></script>
+<script type="text/javascript" language="javascript" src="{{url_for ('static', filename = 'js/ScreepsRegion.js')}}"></script>
+<script type="text/javascript" language="javascript" src="{{url_for ('static', filename = 'js/ScreepsConstants.js')}}"></script>
+{{ super() }}
 {% endblock %}
 
 {% block content %}
-    <div class="row">
-        <ul class="tabs" data-tabs id="example-tabs">
-            <li class="tabs-title is-active"><a href="#panel1" aria-selected="true">Location</a></li>
-            <li class="tabs-title"><a href="#panel2">Charter</a></li>
-            {% if alliance['slack_channel'] %}
-            <li class="tabs-title" onclick="location.href='https://screeps.slack.com/messages/{{ alliance['slack_channel'] }}'">
-              <a href="https://screeps.slack.com/messages/{{ alliance['slack_channel'] }}" title="#{{ alliance['slack_channel'] }}" target="_blank">Slack</a>
-            </li>
-            {% endif %}
-        </ul>
-        <div class="tabs-content" data-tabs-content="example-tabs">
+<div class="row">
+    <ul class="tabs" data-tabs id="example-tabs">
+        <li class="tabs-title is-active"><a href="#panel1" aria-selected="true">Location</a></li>
+        <li class="tabs-title"><a href="#panel2">Charter</a></li>
+        {% if alliance['slack_channel'] %}
+        <li class="tabs-title" onclick="location.href='https://screeps.slack.com/messages/{{ alliance['slack_channel'] }}'">
+            <a href="https://screeps.slack.com/messages/{{ alliance['slack_channel'] }}" title="#{{ alliance['slack_channel'] }}" target="_blank">Slack</a>
+        </li>
+        {% endif %}
+    </ul>
+    <div class="tabs-content" data-tabs-content="example-tabs">
 
-            <div class="tabs-panel is-active" id="panel1">
-              {{ map(shortname=shortname) }}
-            </div>
-            <div class="tabs-panel" id="panel2">
-                {{charter | safe}}
-            </div>
+        <div class="tabs-panel is-active" id="panel1">
+            {{ map(shortname=shortname) }}
+        </div>
+        <div class="tabs-panel" id="panel2">
+            {{charter | safe}}
         </div>
     </div>
+</div>
 {% endblock %}

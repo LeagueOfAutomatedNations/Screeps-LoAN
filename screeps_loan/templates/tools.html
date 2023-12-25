@@ -1,36 +1,27 @@
 {% extends "layout.html" %}
 {% block title %}Tools{% endblock %}
 {% block content %}
-
 <div>
+    <div class="callout primary">
+        <div class="row column">
+            <h1 class='text-center'>Tools</h1>
+            <p  class="lead"></p>
+        </div>
+    </div>
 
-  <div class="callout primary">
-      <div class="row column">
-          <h1 class='text-center'>Tools</h1>
-          <p  class="lead"></p>
-      </div>
-  </div>
-
-  <div class='row columns'>
-
-    <dl>
-      <dt><a href="https://github.com/LeagueOfAutomatedNations/loan-browser-ext">Browser Extension</a></dt>
-      <dd>This plugin adds alliance data to the Screeps website using either Tampermonkey or Greasemonkey.</dd>
-    </dl>
-
-    <dl>
-      <dt><a href="https://github.com/screepers/snippets-client-abuse/blob/master/snippets/LoAN_tampermonkey_inject_for_any_client.js">Steam Client Extension</a></dt>
-      <dd>This plugin adds alliance data to the Screeps Steam Client by using the game console to inject the code into the client.</dd>
-    </dl>
-
-    <dl>
-      <dt><a href="{{url_for('static_api')}}">Public Segments</a></dt>
-      <dd>The in game user "LeagueOfAutomatedNations" has a copy of several API end points in <a href="https://docs.screeps.com/api/#RawMemory.foreignSegment">public segments</a>.  See the <a href="{{url_for('static_api')}}">API page</a> for a list.</dd>
-    </dl>
-
-  </div>
+    <div class='row columns'>
+        <dl>
+            <dt><a href="https://github.com/LeagueOfAutomatedNations/loan-browser-ext">Browser Extension</a></dt>
+            <dd>This plugin adds alliance data to the Screeps website using either Tampermonkey or Greasemonkey.</dd>
+        </dl>
+        <dl>
+            <dt><a href="https://github.com/screepers/snippets-client-abuse/blob/master/snippets/LoAN_tampermonkey_inject_for_any_client.js">Steam Client Extension</a></dt>
+            <dd>This plugin adds alliance data to the Screeps Steam Client by using the game console to inject the code into the client.</dd>
+        </dl>
+        <dl>
+            <dt><a href="{{url_for('static_api')}}">Public Segments</a></dt>
+            <dd>The in game user "LeagueOfAutomatedNations" has a copy of several API end points in <a href="https://docs.screeps.com/api/#RawMemory.foreignSegment">public segments</a>.  See the <a href="{{url_for('static_api')}}">API page</a> for a list.</dd>
+        </dl>
+    </div>
 </div>
-
-
-
 {% endblock %}

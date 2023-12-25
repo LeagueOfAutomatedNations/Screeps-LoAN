@@ -1,1 +1,4 @@
-ALTER TABLE "alliances" ADD COLUMN "charter" Text;
+ALTER TABLE
+    "alliances"
+ADD
+    COLUMN "charter" Text;

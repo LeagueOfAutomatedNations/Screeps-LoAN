@@ -6,9 +6,9 @@ services:
     environment:
       SETTINGS: /data/settings
     volumes:
-    - ./data/loan:/data
+      - ./data/loan:/data
     ports:
-    - '5000:5000'
+      - '5000:5000'
   postgres:
     image: postgres
     environment:
@@ -16,4 +16,4 @@ services:
       POSTGRES_DB: screeps
       POSTGRES_PASSWORD: abc123
     volumes:
-    - ./data/postgres:/var/lib/postgresql/data
+      - ./data/postgres:/var/lib/postgresql/data

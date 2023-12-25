@@ -1,5 +1,5 @@
-var ScreepsRegion = (function() {
-    function ScreepsRegion (topLeft, bottomRight) {
+var ScreepsRegion = (function () {
+    function ScreepsRegion(topLeft, bottomRight) {
         this.topLeft = topLeft;
         this.bottomRight = bottomRight;
     }
@@ -24,7 +24,7 @@ var ScreepsRegion = (function() {
             right: (xy.x + 1) * ScreepsConstants.RoomSize
         };
     }
-    
+
     ScreepsRegion.prototype.roomNameToXY = function (name) {
         let parts = name.match(/([EW])([0-9]*)([NS])([0-9]*)/);
         let x = parseInt(parts[2]);
@@ -35,9 +35,9 @@ var ScreepsRegion = (function() {
         if (parts[3] == "N") {
             y = ~y;
         }
-        return {"x": x, "y": y};
+        return { "x": x, "y": y };
     }
-    
+
     ScreepsRegion.prototype.xyToRoomName = function (rx, ry) {
         let result = "";
         result += (rx < 0 ? "W" + String(~rx) : "E" + String(rx));
@@ -46,7 +46,7 @@ var ScreepsRegion = (function() {
     }
 
     ScreepsRegion.prototype.worldPositionToXY = function (wx, wy) {
-        return { x: Math.floor(wx / ScreepsConstants.RoomSize), y: Math.floor(wy / ScreepsConstants.RoomSize)};
+        return { x: Math.floor(wx / ScreepsConstants.RoomSize), y: Math.floor(wy / ScreepsConstants.RoomSize) };
     }
 
     ScreepsRegion.prototype.worldPositionToRoomName = function (wx, wy) {
@@ -55,7 +55,7 @@ var ScreepsRegion = (function() {
         return this.xyToRoomName(xy.x, xy.y);
     }
 
-    ScreepsRegion.prototype.worldPositionInBounds = function(wx, wy) {
+    ScreepsRegion.prototype.worldPositionInBounds = function (wx, wy) {
         let rect = this.getRect();
         return rect.left <= wx && wx <= rect.right &&
             rect.top <= wy && wy <= rect.bottom;

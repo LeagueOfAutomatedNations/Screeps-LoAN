@@ -12,11 +12,12 @@ import requests
 alliance_segment = 99
 clone_segment = 98
 
+
 @app.cli.command()
 def export_to_segments():
     click.echo("Exporting Alliance and Bot Data To Segment")
 
-    r = requests.get('http://www.leagueofautomatednations.com/vk/bots/league.json')
+    r = requests.get("http://www.leagueofautomatednations.com/vk/bots/league.json")
     if r.status_code == requests.codes.ok:
         clone_data = r.text
     else:
@@ -33,11 +34,14 @@ def export_to_segments():
 
     alliances_aux = {}
     for alliance in all_alliances:
-        members = [user['name'] for user in users_with_alliance
-                               if user['alliance'] == alliance['shortname']]
+        members = [
+            user["name"]
+            for user in users_with_alliance
+            if user["alliance"] == alliance["shortname"]
+        ]
         if len(members) < 2:
             continue
-        alliances_aux[alliance['shortname']] = members
+        alliances_aux[alliance["shortname"]] = members
 
     alliance_json = json.dumps(alliances_aux)
 

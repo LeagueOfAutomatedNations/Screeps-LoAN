@@ -29,8 +29,8 @@ var DEFAULT_COLORS = [
 
 var DEFAULT_UNCATEGORIZED = '#555'
 
-var ScreepsMap = (function() {
-    function ScreepsMap (config) {
+var ScreepsMap = (function () {
+    function ScreepsMap(config) {
         this.spinnerHostId = config.spinnerHostId;
         this.mapHostId = config.mapHostId;
         this.legendHostId = config.legendHostId;
@@ -71,22 +71,22 @@ var ScreepsMap = (function() {
     }
 
     ScreepsMap.prototype.setAlliance = function (alliance) {
-      this.alliance = alliance
+        this.alliance = alliance
     }
 
     ScreepsMap.prototype.allowUnaffiliated = function () {
-      this.allowUnaffiliated = true
+        this.allowUnaffiliated = true
     }
 
     ScreepsMap.prototype.disableLabels = function () {
-      this.disableLabels = true
+        this.disableLabels = true
     }
 
     ScreepsMap.prototype.setGroupType = function (type) {
-      this.groupType = type
-      if(type == 'user') {
-        this.legendUrlPrefix = 'https://screeps.com/a/#!/profile/'
-      }
+        this.groupType = type
+        if (type == 'user') {
+            this.legendUrlPrefix = 'https://screeps.com/a/#!/profile/'
+        }
     }
 
     ScreepsMap.prototype.setSpinnerVisibile = function (show) {
@@ -99,7 +99,7 @@ var ScreepsMap = (function() {
     ScreepsMap.prototype.render = function () {
         this.setSpinnerVisibile(true);
 
-        this.loadTerrainAsync(function() {
+        this.loadTerrainAsync(function () {
             let regionBounds = this.getRegionBounds();
 
             let mapAdjust = (this.style['room-padding'] || 0) * ScreepsConstants.RoomSize;
@@ -168,7 +168,7 @@ var ScreepsMap = (function() {
             if (roomName) {
                 let toolRect = this.getBoundingClientRect();
                 this.style.left = String(e.originalEvent.clientX + 15) + "px";
-                this.style.top = String(e.originalEvent.clientY - Math.floor(toolRect.height/2)) + "px";
+                this.style.top = String(e.originalEvent.clientY - Math.floor(toolRect.height / 2)) + "px";
                 this.style.display = "block";
 
                 if (this.currentRoom === roomName) return;
@@ -182,7 +182,7 @@ var ScreepsMap = (function() {
         };
 
         this.map.on({
-            click: function(e) {
+            click: function (e) {
                 if (this.map.disableMouse) return;
 
                 let worldPosition = this.worldPositionFromMapCoords(e.latlng);
@@ -193,7 +193,7 @@ var ScreepsMap = (function() {
                 }
             }.bind(this),
 
-            mouseover: function(e) {
+            mouseover: function (e) {
                 if (this.map.disableMouse) return;
 
                 let worldPosition = this.worldPositionFromMapCoords(e.latlng);
@@ -206,7 +206,7 @@ var ScreepsMap = (function() {
                 roomInfoControl.update(e, roomName);
             }.bind(this),
 
-            mousemove: function(e) {
+            mousemove: function (e) {
                 if (this.map.disableMouse) return;
 
                 let worldPosition = this.worldPositionFromMapCoords(e.latlng);
@@ -219,7 +219,7 @@ var ScreepsMap = (function() {
                 roomInfoControl.update(e, roomName);
             }.bind(this),
 
-            mouseout: function(e) {
+            mouseout: function (e) {
                 roomInfoControl.update(e, null);
             }.bind(this),
         });
@@ -291,28 +291,28 @@ var ScreepsMap = (function() {
         output += '<ul class="colorKeyList">';
 
         let alliance_shortnames = Object.keys(this.allianceData)
-        alliance_shortnames.sort(function(a,b){
-          if(this.allianceData[a].name == 'unaffiliated') {
-            return 1;
-          }
-          if(this.allianceData[b].name == 'unaffiliated') {
-            return -1;
-          }
-          if (this.allianceData[a].name < this.allianceData[b].name)
-            return -1;
-          if (this.allianceData[a].name > this.allianceData[b].name)
-            return 1;
-          return 0;
-        }.bind({allianceData:this.allianceData}))
+        alliance_shortnames.sort(function (a, b) {
+            if (this.allianceData[a].name == 'unaffiliated') {
+                return 1;
+            }
+            if (this.allianceData[b].name == 'unaffiliated') {
+                return -1;
+            }
+            if (this.allianceData[a].name < this.allianceData[b].name)
+                return -1;
+            if (this.allianceData[a].name > this.allianceData[b].name)
+                return 1;
+            return 0;
+        }.bind({ allianceData: this.allianceData }))
 
         for (let allianceName of alliance_shortnames) {
             output += '<div id=#colorkey_alliance_' + allianceName + '>'
             output += '  <li class="colorKeyItem">';
             output += '    <span class="colorBox" style="background-color: ' + this.getAllianceColor(allianceName) + ';"></span>';
             if (this.allianceData[allianceName].url) {
-              output += '    <a href="' + this.allianceData[allianceName].url + '">'
+                output += '    <a href="' + this.allianceData[allianceName].url + '">'
             } else {
-              output += '    <a href="' + this.legendUrlPrefix + this.allianceData[allianceName].abbreviation + '">'
+                output += '    <a href="' + this.legendUrlPrefix + this.allianceData[allianceName].abbreviation + '">'
             }
             output += '      <span class="colorLabel">' + this.allianceData[allianceName].name + '</span>';
             output += '    </a>';
@@ -328,8 +328,8 @@ var ScreepsMap = (function() {
         let output = '<h3>Legend:</h3>';
         output += '<ul class="colorKeyList">';
         for (let user in this.userAlliance) {
-            if(!!this.alliance && this.alliance != this.userAlliance[user]) {
-              continue
+            if (!!this.alliance && this.alliance != this.userAlliance[user]) {
+                continue
             }
             output += '<div id=#colorkey_alliance_' + user + '>'
             output += '  <li class="colorKeyItem">';
@@ -365,8 +365,8 @@ var ScreepsMap = (function() {
 
             if (room.owner) {
                 let allianceName = this.userAlliance[room.owner];
-                if(!allianceName) {
-                  allianceName = 'unaffiliated'
+                if (!allianceName) {
+                    allianceName = 'unaffiliated'
                 }
                 let targetLayer = rclLayers[room.level];
                 let fillColor = this.getUserColor(room.owner);
@@ -384,29 +384,29 @@ var ScreepsMap = (function() {
         for (let group of groups) {
             let allianceName = this.groupType == 'user' ? this.userAlliance[group.labelName] : group.labelName
             let alliance = this.allianceData[allianceName];
-            if(!alliance || alliance.name == 'unaffiliated') {
-              if(!this.allowUnaffiliated) {
-                continue
-              }
+            if (!alliance || alliance.name == 'unaffiliated') {
+                if (!this.allowUnaffiliated) {
+                    continue
+                }
             }
-            if(!!this.alliance) {
-              if(!alliance) {
-                continue
-              }
-              if(this.alliance !== alliance.abbreviation) {
-                continue
-              }
+            if (!!this.alliance) {
+                if (!alliance) {
+                    continue
+                }
+                if (this.alliance !== alliance.abbreviation) {
+                    continue
+                }
             }
             let center = this.geometricCenter(group.rooms);
-            if(this.groupType == 'user') {
-              var title = group.labelName
-              var color = this.getUserColor(group.labelName)
+            if (this.groupType == 'user') {
+                var title = group.labelName
+                var color = this.getUserColor(group.labelName)
             } else {
-              if(!alliance) {
-                continue
-              }
-              var title = !!alliance.abbreviation ? alliance.abbreviation : alliance.name;
-              var color = this.getAllianceColor(group.labelName)
+                if (!alliance) {
+                    continue
+                }
+                var title = !!alliance.abbreviation ? alliance.abbreviation : alliance.name;
+                var color = this.getAllianceColor(group.labelName)
             }
             L.marker([~center.y, center.x], {
                 icon: L.divIcon({
@@ -420,7 +420,7 @@ var ScreepsMap = (function() {
 
     ScreepsMap.prototype.geometricCenter = function (rooms) {
         // average top left coordinates
-        let sum = {x: 0, y: 0};
+        let sum = { x: 0, y: 0 };
         for (let name of rooms) {
             let rect = this.region.getRoomRect(name);
             sum.x += rect.left;
@@ -460,10 +460,10 @@ var ScreepsMap = (function() {
                 let allianceName = this.userAlliance[room.owner];
                 if (allianceName === "unaffiliated" && !this.allowUnaffiliated) continue;
 
-                if(this.groupType == 'user') {
-                  var labelName = room.owner
+                if (this.groupType == 'user') {
+                    var labelName = room.owner
                 } else {
-                  var labelName = allianceName
+                    var labelName = allianceName
                 }
 
 
@@ -478,8 +478,8 @@ var ScreepsMap = (function() {
                     let checkName = toCheck.pop();
                     let xy = this.region.roomNameToXY(checkName);
 
-                    let minXY = {"x": Math.max(topLeft.x, xy.x - radius), "y": Math.max(topLeft.y, xy.y - radius)};
-                    let maxXY = {"x": Math.min(bottomRight.x, xy.x + radius), "y": Math.min(bottomRight.y, xy.y + radius)};
+                    let minXY = { "x": Math.max(topLeft.x, xy.x - radius), "y": Math.max(topLeft.y, xy.y - radius) };
+                    let maxXY = { "x": Math.min(bottomRight.x, xy.x + radius), "y": Math.min(bottomRight.y, xy.y + radius) };
                     for (let y = minXY.y; y <= maxXY.y; y++) {
                         for (let x = minXY.x; x <= maxXY.x; x++) {
                             if (y === minXY.y && x <= xy.x) continue;
@@ -492,9 +492,9 @@ var ScreepsMap = (function() {
                             groupChecked[curName] = true;
 
                             var curLabel = this.groupType == 'user' ? curRoom.owner : this.userAlliance[curRoom.owner];
-                            if(this.groupType != 'user') {
-                              let curAlliance = this.userAlliance[curRoom.owner];
-                              if (curAlliance === "unaffiliated" && !this.allowUnaffiliated) continue;
+                            if (this.groupType != 'user') {
+                                let curAlliance = this.userAlliance[curRoom.owner];
+                                if (curAlliance === "unaffiliated" && !this.allowUnaffiliated) continue;
                             }
                             if (curLabel === labelName) {
                                 checked[curName] = true;
@@ -533,63 +533,63 @@ var ScreepsMap = (function() {
     }
 
     ScreepsMap.prototype.getUserColor = function (user) {
-      let allianceName = this.userAlliance[user];
-      if(!this.allowUnaffiliated) {
-        if(!allianceName) {
-          return DEFAULT_UNCATEGORIZED
+        let allianceName = this.userAlliance[user];
+        if (!this.allowUnaffiliated) {
+            if (!allianceName) {
+                return DEFAULT_UNCATEGORIZED
+            }
         }
-      }
-      if(!!this.alliance && this.alliance != allianceName) {
-        return DEFAULT_UNCATEGORIZED
-      }
+        if (!!this.alliance && this.alliance != allianceName) {
+            return DEFAULT_UNCATEGORIZED
+        }
 
-      if(this.groupType == 'user') {
-        if(!this.userColors[user]) {
-          this.userColors[user] = this.getRandomColor(user)
+        if (this.groupType == 'user') {
+            if (!this.userColors[user]) {
+                this.userColors[user] = this.getRandomColor(user)
+            }
+            return this.userColors[user]
         }
-        return this.userColors[user]
-      }
-      return this.getAllianceColor(allianceName)
+        return this.getAllianceColor(allianceName)
     }
 
     ScreepsMap.prototype.getAllianceColor = function (allianceName) {
-      if (!allianceName || !this.allianceData[allianceName]) {
-       allianceName = 'unaffiliated'
-      }
+        if (!allianceName || !this.allianceData[allianceName]) {
+            allianceName = 'unaffiliated'
+        }
 
-      if(!this.allianceColors[allianceName]) {
-        this.allianceColors[allianceName] = this.getRandomColor(this.allianceData[allianceName].name)
-      }
-      return this.allianceColors[allianceName]
+        if (!this.allianceColors[allianceName]) {
+            this.allianceColors[allianceName] = this.getRandomColor(this.allianceData[allianceName].name)
+        }
+        return this.allianceColors[allianceName]
     }
 
-    ScreepsMap.prototype.getRandomColor = function (seed=false) {
+    ScreepsMap.prototype.getRandomColor = function (seed = false) {
 
-      if(!seed) {
-        if(!this.seed) {
-          this.seed = 1000
-        } else {
-          this.seed += 1
+        if (!seed) {
+            if (!this.seed) {
+                this.seed = 1000
+            } else {
+                this.seed += 1
+            }
+            seed = this.seed
         }
-        seed = this.seed
-      }
 
-      return randomColor({
-        luminosity: 'light',
-        hue: 'random',
-        seed: seed
-      });
+        return randomColor({
+            luminosity: 'light',
+            hue: 'random',
+            seed: seed
+        });
     }
 
     return ScreepsMap;
 })();
 
 /*
- * Workaround for 1px lines appearing in some browsers due to fractional transforms
- * and resulting anti-aliasing.
- * https://github.com/Leaflet/Leaflet/issues/3575
- */
-(function(){
+* Workaround for 1px lines appearing in some browsers due to fractional transforms
+* and resulting anti-aliasing.
+* https://github.com/Leaflet/Leaflet/issues/3575
+*/
+(function () {
     var originalInitTile = L.GridLayer.prototype._initTile
     L.GridLayer.include({
         _initTile: function (tile) {

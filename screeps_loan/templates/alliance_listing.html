@@ -1,37 +1,37 @@
 {% extends "layout.html" %}
 {% block title %}Screeps Alliance Index{% endblock %}
 {% block content %}
-    <div>
-        <div class="title-bar hide-for-large">
-            <div class="title-bar-left">
-                <button class="menu-icon" type="button" data-open="my-info"></button>
-                <span class="title-bar-title">League of Automated Nations </span>
-            </div>
+<div>
+    <div class="title-bar hide-for-large">
+        <div class="title-bar-left">
+            <button class="menu-icon" type="button" data-open="my-info"></button>
+            <span class="title-bar-title">League of Automated Nations </span>
         </div>
-        <div class="callout primary">
-            <div class="row column">
-                <h1 class='text-center'>Member Alliances</h1>
-                <p  class="lead"></p>
-            </div>
-        </div>
-        <div class="row small-up-2 medium-up-3 large-up-4">
-            {% for alliance in alliances %}
-                <div class="column small-centered text-center">
-                    <a href="{{url_for('alliance_profile', shortname=alliance['shortname'])}}">
-                        {% if alliance['logo'] %}
-                        <img class="thumbnail alliance_logo"
-                             src="{{url_for('get_obj', filename = alliance['logo']) }}">
-                        {% else %}
-                        <img class="thumbnail"
-                             src="{{url_for('static', filename = 'img/leaguelogo.png') }}">
-                        {% endif %}
-                    </a>
-                    <h5>{{alliance['fullname']}}</h5>
-                </div>
-            {% endfor %}
-        </div>
-
-        <hr>
     </div>
+    <div class="callout primary">
+        <div class="row column">
+            <h1 class='text-center'>Member Alliances</h1>
+            <p  class="lead"></p>
+        </div>
+    </div>
+    <div class="row small-up-2 medium-up-3 large-up-4">
+        {% for alliance in alliances %}
+        <div class="column small-centered text-center">
+            <a href="{{url_for('alliance_profile', shortname=alliance['shortname'])}}">
+                {% if alliance['logo'] %}
+                <img class="thumbnail alliance_logo"
+                src="{{url_for('get_obj', filename = alliance['logo']) }}">
+                {% else %}
+                <img class="thumbnail"
+                src="{{url_for('static', filename = 'img/leaguelogo.png') }}">
+                {% endif %}
+            </a>
+            <h5>{{alliance['fullname']}}</h5>
+        </div>
+        {% endfor %}
+    </div>
+
+    <hr>
+</div>
 
 {% endblock %}

@@ -1,6 +1,6 @@
 <!doctype html>
 <html class="no-js" lang="en">
-  <head>
+<head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title> {% block title %} {% endblock %} | League of Automated Nations</title>
@@ -27,149 +27,153 @@
 
     {% block head %}
     {% endblock %}
-  </head>
-  <body>
+</head>
+<body>
     <div class="off-canvas-wrapper">
-      <div class="off-canvas-wrapper-inner" data-off-canvas-wrapper>
+        <div class="off-canvas-wrapper-inner" data-off-canvas-wrapper>
 
-        <div class="off-canvas position-left reveal-for-large " id="my-info" data-off-canvas data-position="left">
-          <div class="row column">
-            <br>
-            <div id="menulogo" class="small-centered columns">
-                <a href="{{url_for('index')}}">
-                    <img class="small-centered" src="{{url_for('static', filename='img/leaguelogo.png')}}">
-                </a>
-            </div>
-            <br>
-            <h5 class="navbar-sitename">League of Automated Nations</h5>
-            <hr>
-            <ul class="off-canvas-list navbar">
+            <div class="off-canvas position-left reveal-for-large " id="my-info" data-off-canvas data-position="left">
+                <div class="row column">
+                    <br>
+                    <div id="menulogo" class="small-centered columns">
+                        <a href="{{url_for('index')}}">
+                            <img class="small-centered" src="{{url_for('static', filename='img/leaguelogo.png')}}">
+                        </a>
+                    </div>
+                    <br>
+                    <h5 class="navbar-sitename">League of Automated Nations</h5>
+                    <hr>
+                    <ul class="off-canvas-list navbar">
 
-              {% if not session.username %}
-                  <li>
-                      <i class="fa-sign-in fa"></i>
-                      <a href="{{url_for('login')}}"> Log In </a>
-                  </li>
-              {% else %}
-                <li>
-                    <i class="fa-star-o fa"></i>
-                    <a href="{{url_for('my_alliance')}}"> My Alliance </a>
-                </li>
+                        {% if not session.username %}
+                        <li>
+                            <i class="fa-sign-in fa"></i>
+                            <a href="{{url_for('login')}}"> Log In </a>
+                        </li>
+                        {% else %}
+                        <li>
+                            <i class="fa-star-o fa"></i>
+                            <a href="{{url_for('my_alliance')}}"> My Alliance </a>
+                        </li>
 
-                {% if has_invites() %}
-                <li>
-                    <i class="fa-envelope-open-o fa"></i>
-                    <a href="{{url_for('list_invites')}}"> My Invites </a>
-                </li>
+                        {% if has_invites() %}
+                        <li>
+                            <i class="fa-envelope-open-o fa"></i>
+                            <a href="{{url_for('list_invites')}}"> My Invites </a>
+                        </li>
 
-                {% endif %}
+                        {% endif %}
+                        {% endif %}
+
+                        <li>
+                            <i class="fa fa-list-ul"></i>
+                            <a href="{{url_for('alliance_listing')}}"> Alliance Index </a>
+                        </li>
+                        <li>
+                            <i class="fa fa-trophy"></i>
+                            <a href="{{url_for('alliance_rankings')}}">Alliance Rankings </a>
+                        </li>
+
+                        <li>
+                            <i class="fa fa-trophy"></i>
+                            <a href="{{url_for('player_rankings_combined')}}">Player Rankings </a>
+                        </li>
+                        <li>
+                            <i class="fa fa-trophy"></i>
+                            <a href="{{url_for('player_rankings_gcl')}}">Player GCL Rankings </a>
+                        </li>
+                        <li>
+                            <i class="fa fa-trophy"></i>
+                            <a href="{{url_for('player_rankings_power')}}">Player Power Rankings </a>
+                        </li>
 
 
-              {% endif %}
+                        {% for shard in shard_list() %}
+                        <li>
+                            <i class="fa fa-globe"></i>
+                            <a href="{{url_for('map', shard=shard)}}">{{ shard }} Alliance Map </a>
+                        </li>
+                        <li>
+                            <i class="fa fa-globe"></i>
+                            <a href="{{url_for('map_users', shard=shard)}}">{{ shard }} Player Map </a></li>
+                        </li>
+                        <li>
+                            <i class="fa fa-globe"></i>
+                            <a href="{{url_for('map_bots', shard=shard)}}">{{ shard }} Clone Map </a></li>
+                        </li>
 
-                <li>
-                    <i class="fa fa-list-ul"></i>
-                    <a href="{{url_for('alliance_listing')}}"> Alliance Index </a></li>
-                <li>
-                    <i class="fa fa-trophy"></i>
-                    <a href="{{url_for('alliance_rankings')}}">Alliance Rankings </a></li>
-
-                <li>
-                    <i class="fa fa-trophy"></i>
-                    <a href="{{url_for('player_rankings_combined')}}">Player Rankings </a></li>
-                <li>
-                    <i class="fa fa-trophy"></i>
-                    <a href="{{url_for('player_rankings_gcl')}}">Player GCL Rankings </a></li>
-                <li>
-                    <i class="fa fa-trophy"></i>
-                    <a href="{{url_for('player_rankings_power')}}">Player Power Rankings </a></li>
-
-
-              {% for shard in shard_list() %}
-                <li>
-                  <i class="fa fa-globe"></i>
-                  <a href="{{url_for('map', shard=shard)}}">{{ shard }} Alliance Map </a>
-                </li>
-                <li>
-                  <i class="fa fa-globe"></i>
-                  <a href="{{url_for('map_users', shard=shard)}}">{{ shard }} Player Map </a></li>
-                </li>
-                <li>
-                  <i class="fa fa-globe"></i>
-                  <a href="{{url_for('map_bots', shard=shard)}}">{{ shard }} Clone Map </a></li>
-                </li>
-
-              {% endfor %}
-
-                <li>
-                    <i class="fa fa-cog"></i>
-                    <a href="{{url_for('static_tools')}}">Tools</a></li>
-
-                <li>
-                    <i class="fa fa-cog"></i>
-                    <a href="{{url_for('static_api')}}">API</a></li>
-
-                <li>
-                    <i class="fa fa-discord"></i>
-                    <a href="https://discord.gg/WhJkBr9ZWf" target="_blank">Discord </a></li>
-                <li>
-                    <i class="fa fa-terminal"></i>
-                    <a href="https://www.screeps.com" target="_blank">Screeps </a></li>
-                <li>
-                    <i class="fa fa-github-alt"></i>
-                    <a href="https://github.com/LeagueOfAutomatedNations" target="_blank">Github </a></li>
-
-                {% if session.username %}
-                  <li>
-                      <i class="fa-sign-out fa"></i>
-                      <a href="{{url_for('logout')}}"> Log Out </a>
-                  </li>
-                {% endif %}
-
-            </ul>
-          </div>
-        </div>
-        <div id="main" class="off-canvas-content" data-off-canvas-content>
-
-            {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                    <ul class=flashes>
-                        {% for message in messages %}
-                            <li>{{ message }}</li>
                         {% endfor %}
-                    </ul>
-                {% endif %}
-            {% endwith %}
 
-            {% block content %}
-            {% endblock %}
+                        <li>
+                            <i class="fa fa-cog"></i>
+                            <a href="{{url_for('static_tools')}}">Tools</a>
+                        </li>
+
+                        <li>
+                            <i class="fa fa-cog"></i>
+                            <a href="{{url_for('static_api')}}">API</a>
+                        </li>
+
+                        <li>
+                            <i class="fa fa-discord"></i>
+                            <a href="https://discord.gg/WhJkBr9ZWf" target="_blank">Discord </a>
+                        </li>
+                        <li>
+                            <i class="fa fa-terminal"></i>
+                            <a href="https://www.screeps.com" target="_blank">Screeps </a>
+                        </li>
+                        <li>
+                            <i class="fa fa-github-alt"></i>
+                            <a href="https://github.com/LeagueOfAutomatedNations" target="_blank">Github </a>
+                        </li>
+
+                        {% if session.username %}
+                        <li>
+                            <i class="fa-sign-out fa"></i>
+                            <a href="{{url_for('logout')}}"> Log Out </a>
+                        </li>
+                        {% endif %}
+
+                    </ul>
+                </div>
+            </div>
+            <div id="main" class="off-canvas-content" data-off-canvas-content>
+
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                <ul class=flashes>
+                    {% for message in messages %}
+                    <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                {% endwith %}
+
+                {% block content %}
+                {% endblock %}
+            </div>
         </div>
-      </div>
     </div>
 
     {% block js_include %}
     {% endblock %}
     <script>
-      $(document).foundation();
-    {% block script %}
-    {% endblock %}
-
+        $(document).foundation();
+        {% block script %}
+        {% endblock %}
     </script>
     {% if config.GA is defined %}
-      <!-- Google Analytics -->
-      <script>
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+    <!-- Google Analytics -->
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
-      ga('create', '{{ config.GA }}', 'auto');
-      ga('send', 'pageview');
-      </script>
-      <!-- End Google Analytics -->
+        ga('create', '{{ config.GA }}', 'auto');
+        ga('send', 'pageview');
+    </script>
+    <!-- End Google Analytics -->
     {% endif %}
-  </body>
+</body>
 </html>
-
-
-

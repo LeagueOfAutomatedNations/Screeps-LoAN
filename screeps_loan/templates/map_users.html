@@ -2,19 +2,19 @@
 {% extends "layout.html" %}
 {% block title %} Screeps Alliance Map {% endblock %}
 {% block head %}
-		<link rel="stylesheet" href="{{url_for ('static', filename = 'css/vendor/leaflet.css')}}" />
-    <script src="{{url_for ('static', filename = 'js/vendor/leaflet.js')}}"></script>
-    <script type="text/javascript" language="javascript" src="{{url_for ('static', filename = 'js/headroom.min.js')}}"></script>
-		<script type="text/javascript" language="javascript" src="{{url_for ('static', filename = 'js/vendor/randomColor.js')}}"></script>
-    <script type="text/javascript" language="javascript" src="{{url_for ('static', filename = 'js/SliderControl.js')}}"></script>
-    <script type="text/javascript" language="javascript" src="{{url_for ('static', filename = 'js/ScreepsMap.js')}}"></script>
-    <script type="text/javascript" language="javascript" src="{{url_for ('static', filename = 'js/ScreepsRegion.js')}}"></script>
-    <script type="text/javascript" language="javascript" src="{{url_for ('static', filename = 'js/ScreepsConstants.js')}}"></script>
+<link rel="stylesheet" href="{{url_for ('static', filename = 'css/vendor/leaflet.css')}}" />
+<script src="{{url_for ('static', filename = 'js/vendor/leaflet.js')}}"></script>
+<script type="text/javascript" language="javascript" src="{{url_for ('static', filename = 'js/headroom.min.js')}}"></script>
+<script type="text/javascript" language="javascript" src="{{url_for ('static', filename = 'js/vendor/randomColor.js')}}"></script>
+<script type="text/javascript" language="javascript" src="{{url_for ('static', filename = 'js/SliderControl.js')}}"></script>
+<script type="text/javascript" language="javascript" src="{{url_for ('static', filename = 'js/ScreepsMap.js')}}"></script>
+<script type="text/javascript" language="javascript" src="{{url_for ('static', filename = 'js/ScreepsRegion.js')}}"></script>
+<script type="text/javascript" language="javascript" src="{{url_for ('static', filename = 'js/ScreepsConstants.js')}}"></script>
 
 <link rel="stylesheet" href="{{url_for('static', filename='css/map.css')}}">
 {{ super() }}
 {% endblock %}
 
 {% block content %}
-	{{ map(grouptype='user', shard=shard, maxroom=maxroom, unaffiliated=true, disablelabels=true) }}
+{{ map(grouptype='user', shard=shard, maxroom=maxroom, unaffiliated=true, disablelabels=true) }}
 {% endblock %}

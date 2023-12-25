@@ -16,8 +16,8 @@ L.Control.SliderControl = L.Control.extend({
             let lowStyle = ((self.lowValue - self.options.minValue) / (self.options.maxValue - self.options.minValue) * 100) + "%";
             let highStyle = ((self.highValue - self.options.minValue) / (self.options.maxValue - self.options.minValue) * 100) + "%";
 
-		    sliderB.style.setProperty("--low", lowStyle);
-		    sliderB.style.setProperty("--high", highStyle);
+            sliderB.style.setProperty("--low", lowStyle);
+            sliderB.style.setProperty("--high", highStyle);
 
             $(self).trigger("update");
         }
@@ -25,7 +25,7 @@ L.Control.SliderControl = L.Control.extend({
         function createSlider(className, value) {
             let slider = L.DomUtil.create('input', className, controlHost);
 
-            function updateAttributes () {
+            function updateAttributes() {
                 $(slider).attr('value', slider.value);
 
                 let ratio = (slider.value - self.options.minValue) / (self.options.maxValue - self.options.minValue);
@@ -49,9 +49,9 @@ L.Control.SliderControl = L.Control.extend({
                     updateAttributes();
                     valueChanged();
                 });
-            
+
             updateAttributes();
-            
+
             return slider;
         }
 
@@ -79,10 +79,10 @@ L.Control.SliderControl = L.Control.extend({
 
         Object.defineProperties(this, {
             lowValue: {
-                get: function() {
+                get: function () {
                     return Math.min(sliderA.value, sliderB.value);
                 },
-                set: function(v) {
+                set: function (v) {
                     if (sliderA.value <= sliderB.value)
                         sliderA.value = v;
                     else
@@ -91,10 +91,10 @@ L.Control.SliderControl = L.Control.extend({
                 enumerable: true
             },
             highValue: {
-                get: function() {
+                get: function () {
                     return Math.max(sliderA.value, sliderB.value);
                 },
-                set: function(v) {
+                set: function (v) {
                     if (sliderA.value > sliderB.value)
                         sliderA.value = v;
                     else
@@ -103,7 +103,7 @@ L.Control.SliderControl = L.Control.extend({
                 enumerable: true
             }
         });
-        
+
         setTimeout(() => {
             // delay resetting the slider positions until leaflet finishes adding the control
             $(sliderA).trigger("input");
