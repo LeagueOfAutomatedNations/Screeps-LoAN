@@ -1,4 +1,4 @@
-FROM python:3.6
+FROM python:3.8
 ENV FLASK_APP=screeps_loan/screeps_loan.py
 ENV SETTINGS=/app/settings
 ENV FLASK_RUN_CERT=adhoc
