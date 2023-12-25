@@ -6,6 +6,7 @@ services:
     image: ags131/loan
     volumes:
       - ./data/loan:/data
+      - ./data/storage:${OBJECT_STORAGE}
     ports:
       - 5000:5000
     depends_on:
