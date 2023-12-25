@@ -23,7 +23,7 @@ def login_as_user(user):
     auth = AuthPlayer(api)
     (id, token) = auth.auth_token(user)
     if id is not None:
-        message = "%s/auth/%s" % (app.config["WEB_ROOT"], token)
+        message = "%s/auth/%s" % (os.environ["WEB_ROOT"], token)
         click.echo(message)
 
 

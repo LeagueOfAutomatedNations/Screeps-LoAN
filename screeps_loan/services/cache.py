@@ -1,9 +1,9 @@
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
-
 from screeps_loan import app
+import os
 
-cache_root = app.config["CACHE_ROOT"]
+cache_root = os.environ["CACHE_ROOT"]
 
 cache_opts = {
     "cache.type": "dbm",

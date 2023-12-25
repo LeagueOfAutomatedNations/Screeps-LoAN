@@ -1,3 +1,4 @@
+import os
 from flask import (
     Flask,
     session,
@@ -12,7 +13,9 @@ from flask import (
 from screeps_loan import app
 from flask_cors import cross_origin
 
-app.config.from_envvar("SETTINGS")
+from dotenv import load_dotenv
+
+load_dotenv()
 
 import socket
 import screeps_loan.cli.game_export
@@ -36,7 +39,7 @@ import screeps_loan.extensions.jinja
 @app.route("/obj/<filename>")
 @cross_origin(origins="*", send_wildcard=True, methods="GET")
 def get_obj(filename):
-    return send_from_directory(app.config["OBJECT_STORAGE"], filename)
+    return send_from_directory(os.environ["OBJECT_STORAGE"], filename)
 
 
 @app.route("/")
@@ -55,4 +58,4 @@ def add_header(response):
 
 
 # set the secret key.  keep this really secret:
-app.secret_key = app.config["SECRET_KEY"]
+app.secret_key = os.environ["SECRET_KEY"]

@@ -42,7 +42,7 @@ def upload_my_alliance_logo():
         filename = secure_filename(hashlib.sha512(os.urandom(128)).hexdigest()[0:15])
         ext = file.filename.rsplit(".", 1)[1]
         filename = filename + "." + ext
-        file.save(os.path.join(app.config["OBJECT_STORAGE"], filename))
+        file.save(os.path.join(os.environ["OBJECT_STORAGE"], filename))
         alliances_model.update_logo_of_alliance(alliance["shortname"], filename)
         return redirect(url_for("my_alliance"))
 

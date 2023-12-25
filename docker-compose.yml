@@ -4,8 +4,6 @@ services:
     platform: linux/x86_64
     build: .
     image: ags131/loan
-    environment:
-      SETTINGS: /app/settings
     volumes:
       - ./data/loan:/data
     ports:
@@ -15,9 +13,9 @@ services:
   postgres:
     image: postgres
     environment:
-      POSTGRES_USER: screeps
-      POSTGRES_DB: screeps
-      POSTGRES_PASSWORD: abc123
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_DB: ${DB}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
     expose:

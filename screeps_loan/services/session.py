@@ -2,9 +2,11 @@ from flask import Flask, session
 from flask.sessions import SessionInterface
 from beaker.middleware import SessionMiddleware
 from screeps_loan import app
+import os
 
-cache_root = app.config["CACHE_ROOT"]
-secret_key = app.config["SECRET_KEY"]
+
+cache_root = os.environ["CACHE_ROOT"]
+secret_key = os.environ["SECRET_KEY"]
 
 session_opts = {
     "session.auto": True,

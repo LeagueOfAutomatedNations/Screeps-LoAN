@@ -3,16 +3,17 @@ import psycopg2.extras
 from flask import g
 from screeps_loan import app
 from psycopg2.extensions import STATUS_BEGIN, STATUS_READY
+import os
 
 
 def get_conn():
     conn = getattr(g, "_database", None)
     if conn is None:
         g._database = psycopg2.connect(
-            database=app.config["DB"],
-            user=app.config["DB_USERNAME"],
-            password=app.config["DB_PASSWORD"],
-            host=app.config["DB_HOST"],
+            database=os.environ["DB"],
+            user=os.environ["DB_USERNAME"],
+            password=os.environ["DB_PASSWORD"],
+            host=os.environ["DB_HOST"],
         )
     return g._database
 

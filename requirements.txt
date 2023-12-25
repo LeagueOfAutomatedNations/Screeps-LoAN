@@ -9,6 +9,7 @@ gunicorn==21.0.1
 lxml==4.9.4
 markdown2==2.3.6
 psycopg2==2.9.9
+python-dotenv==1.0.0
 requests==2.11.1
 requires==0.10.5
 screepsapi @ git+https://github.com/screepers/python-screeps@v0.5.2
