@@ -1,4 +1,5 @@
 # Requirements
+
 - Postgres
 - Python 3.x
 
@@ -15,8 +16,8 @@ export FLASK_APP=screeps_loan/screeps_loan.py
 python db/manage.py version_control
 python db/manage.py upgrade
 flask run
-flask import_users  #This actually will run map stats to get all users on the map
-flask import_alliances #Importing alliance from alliances.js file
+flask import-users  #This actually will run map stats to get all users on the map
+flask import-alliances #Importing alliance from alliances.js file
 ```
 
 # Update Data
@@ -27,7 +28,6 @@ Bash wrapper scripts are provided to make updating easier.
 ./bin/import_users
 ./bin/import_alliances
 ```
-
 
 # Testing with Vagrant
 

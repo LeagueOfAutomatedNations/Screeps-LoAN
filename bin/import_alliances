@@ -11,4 +11,4 @@ cd $DIR
 cd ..
 source $DIR/envvar
 
-flask import_alliances
+flask import-alliances
