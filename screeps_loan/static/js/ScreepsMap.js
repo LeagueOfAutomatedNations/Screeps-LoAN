@@ -311,7 +311,7 @@ var ScreepsMap = (function () {
             output += '    <span class="colorBox" style="background-color: ' + this.getAllianceColor(allianceName) + ';"></span>';
             if (this.allianceData[allianceName].url) {
                 output += '    <a href="' + this.allianceData[allianceName].url + '">'
-            } else {
+            } else if (this.allianceData[allianceName].abbreviation) {
                 output += '    <a href="' + this.legendUrlPrefix + this.allianceData[allianceName].abbreviation + '">'
             }
             output += '      <span class="colorLabel">' + this.allianceData[allianceName].name + '</span>';
