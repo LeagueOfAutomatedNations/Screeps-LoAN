@@ -12,6 +12,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    healthcheck:
+      test: [ "CMD-SHELL", "curl", "${FLASK_SERVER_NAME}:5000" ]
   postgres:
     image: postgres
     environment:
