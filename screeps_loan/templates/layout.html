@@ -17,9 +17,9 @@
     <meta name="description" content="Alliance tracking for Screeps, the game that plays itself.">
     <meta property="og:description" content="Alliance tracking for Screeps, the game that plays itself." />
     <meta name="twitter:description" content="Alliance tracking for Screeps, the game that plays itself." />
-    <meta property="og:image" content="http://www.leagueofautomatednations.com/img/leaguelogo.png" />
+    <meta property="og:image" content="{{ url_for('static', filename='img/leaguelogo.png') }}" />
     <meta name="twitter:card" content="summary" />
-    <meta name="twitter:image" content="http://www.leagueofautomatednations.com/img/leaguelogo.png" />
+    <meta name="twitter:image" content="{{ url_for('static', filename='img/leaguelogo.png') }}" />
 
     <script src="{{url_for('static', filename='js/vendor/jquery.js')}}"></script>
     <script src="{{url_for('static', filename='js/vendor/foundation.min.js')}}"></script>

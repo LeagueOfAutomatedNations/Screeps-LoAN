@@ -17,7 +17,7 @@ clone_segment = 98
 def export_to_segments():
     click.echo("Exporting Alliance and Bot Data To Segment")
 
-    r = requests.get("http://www.leagueofautomatednations.com/vk/bots/league.json")
+    r = requests.get("http://localhost:5000/vk/bots/league.json")
     if r.status_code == requests.codes.ok:
         clone_data = r.text
     else:

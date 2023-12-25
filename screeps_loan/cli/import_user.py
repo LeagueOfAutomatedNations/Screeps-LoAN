@@ -146,9 +146,7 @@ def initdb():
 
 @app.cli.command()
 def import_alliances():
-    click.echo(
-        "Start to import alliances from http://www.leagueofautomatednations.com/alliances.js"
-    )
+    click.echo("Start to import alliances from http://localhost:5000/alliances.js")
     import requests as r
     import screeps_loan.models.alliances as alliances_model
     import screeps_loan.models.users as users_model
@@ -159,7 +157,7 @@ def import_alliances():
     users_query = users_model.UserQuery()
     screeps = get_client()
     auth_user = screeps_loan.auth_user.AuthPlayer(screeps)
-    resp = r.get("http://www.leagueofautomatednations.com/alliances.js")
+    resp = r.get("http://localhost:5000/alliances.js")
     data = json.loads(resp.text)
     for shortname, info in data.items():
         print(shortname)
