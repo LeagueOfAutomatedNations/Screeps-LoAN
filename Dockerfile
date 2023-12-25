@@ -4,7 +4,7 @@ ENV SETTINGS=/app/settings
 ENV FLASK_RUN_CERT=adhoc
 
 # Make sure we have up-to-date SSL certs
-RUN pip install --upgrade certifi
+RUN pip install --upgrade pip certifi
 
 COPY . /app
 
