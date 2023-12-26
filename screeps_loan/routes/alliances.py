@@ -7,6 +7,7 @@ from screeps_loan.routes.decorators import httpresponse
 import json
 from flask import render_template
 from flask_cors import cross_origin
+from screeps_loan.routes.errors import show_error
 
 
 @app.route("/alliances.js")
@@ -88,6 +89,9 @@ def alliance_listing():
 @app.route("/a/<shortname>")
 def alliance_profile(shortname):
     alliance = alliances_model.find_by_shortname(shortname)
+    if alliance is None:
+        return show_error(404, f'No alliance named "{shortname}" exists')
+
     from markdown2 import Markdown
 
     markdowner = Markdown()

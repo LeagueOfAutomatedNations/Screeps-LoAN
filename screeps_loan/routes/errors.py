@@ -3,7 +3,7 @@ from flask import render_template
 
 
 @app.errorhandler(400)
-def error_unauthorized(e):
+def error_badrequest(e):
     return show_error(400, "Bad Request")
 
 
