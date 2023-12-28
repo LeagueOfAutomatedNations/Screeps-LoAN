@@ -59,6 +59,7 @@ def update_my_alliance_charter():
 
 
 @app.route("/my/updateprofile", methods=["POST"])
+@login_required
 def update_my_alliance_profile():
     if re.match("^[\w|\s|-]+$", request.form["fullname"]):
         fullname = request.form["fullname"]
