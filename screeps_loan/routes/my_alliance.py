@@ -63,9 +63,13 @@ def update_my_alliance_charter():
 def update_my_alliance_profile():
     if re.match("^[\w|\s|-]+$", request.form["fullname"]):
         fullname = request.form["fullname"]
+    else:
+        fullname = None
 
     if re.match("^\w+$", request.form["shortname"]):
         shortname = request.form["shortname"]
+    else:
+        shortname = None
 
     if re.match("^[\w|-]+$", request.form["slack_channel"]):
         slack_channel = request.form["slack_channel"]
