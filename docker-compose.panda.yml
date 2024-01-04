@@ -1,0 +1,49 @@
+version: '3.9'
+
+x-logging: &default-logging
+  driver: "local"
+  options:
+    max-size: "20m"
+    max-file: "5"
+
+networks:
+  traefik-net:
+    external: true
+
+services:
+  loan:
+    build: .
+    volumes:
+      - ./data/loan:/data
+      - ./data/storage:${OBJECT_STORAGE}
+    networks:
+      - traefik-net
+    depends_on:
+      postgresLoAN:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD-SHELL", "curl", "${FLASK_SERVER_NAME}:5000" ]
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.loan.rule=Host(`loan.${HOST}`)"
+      - "traefik.docker.network=traefik-net"
+      - "traefik.http.routers.loan.entrypoints=websecure"
+      - "traefik.http.routers.loan.tls.certresolver=letsencrypt"
+    logging: *default-logging
+    ports:
+      - 5002:5000
+  postgresLoAN:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_DB: ${DB}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    networks:
+      - traefik-net
+    logging: *default-logging
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-U", "screeps"]
+    ports:
+      - 5434:5432
