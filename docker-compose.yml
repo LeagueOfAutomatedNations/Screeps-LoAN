@@ -24,5 +24,5 @@ services:
       - ./data/postgres:/var/lib/postgresql/data
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready", "-U", "screeps" ]
-    expose:
-      - 5432
+    ports:
+      - 127.0.0.1:5432:5432
