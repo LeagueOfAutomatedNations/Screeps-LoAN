@@ -1,1 +1,4 @@
-ALTER TABLE alliances ADD COLUMN "logo" Character Varying( 255 );
+ALTER TABLE
+    alliances
+ADD
+    COLUMN "logo" Character Varying(255);

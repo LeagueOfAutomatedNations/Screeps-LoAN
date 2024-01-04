@@ -11,4 +11,4 @@ cd $DIR
 cd ..
 source $DIR/envvar
 
-flask purge_cdn
+flask purge-cdn

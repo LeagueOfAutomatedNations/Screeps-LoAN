@@ -2,7 +2,8 @@ from screeps_loan.models import db
 from screeps_loan.services.cache import cache
 from screeps_loan.models.db import get_conn
 
-class UserQuery():
+
+class UserQuery:
     def find_name_by_alliances(self, alliances):
         query = "SELECT ign, alliance FROM users where alliance = ANY(%s)"
         result = db.find_all(query, (alliances,))
@@ -49,11 +50,12 @@ def get_all_users_for_importing():
     query = "SELECT * FROM users ORDER BY gcl IS NOT NULL, RANDOM()"
     return db.find_all(query)
 
+
 @cache.cache()
 def player_id_from_db(name):
     query = "SELECT screeps_id FROM users WHERE LOWER(ign)=LOWER(%s)"
     row = db.find_one(query, (name,))
-    if (row is not None):
+    if row is not None:
         return row[0]
     return None
 
@@ -62,7 +64,7 @@ def player_id_from_db(name):
 def user_id_from_db(name):
     query = "SELECT id FROM users WHERE LOWER(ign)=LOWER(%s)"
     row = db.find_one(query, (name,))
-    if (row is not None):
+    if row is not None:
         return row[0]
     return None
 
@@ -71,14 +73,14 @@ def user_id_from_db(name):
 def user_name_from_db_id(id):
     query = "SELECT ign FROM users WHERE id=%s"
     row = db.find_one(query, (id,))
-    if (row is not None):
+    if row is not None:
         return row[0]
     return None
 
 
 @cache.cache()
 def get_player_room_count(player):
-    query = '''
+    query = """
     SELECT COUNT(DISTINCT rooms.name)
           FROM rooms,users
           WHERE rooms.owner=users.id
@@ -88,13 +90,12 @@ def get_player_room_count(player):
                                       ORDER BY id desc
                                       LIMIT 1
                                   );
-    '''
+    """
     conn = get_conn()
     cursor = conn.cursor()
     cursor.execute(query, (player,))
     result = cursor.fetchone()
     return int(result[0])
-
 
 
 def insert_username_with_id(name, id):
@@ -106,6 +107,6 @@ def insert_username_with_id(name, id):
 
 
 def alliance_of_user(id):
-    query = '''SELECT fullname, shortname, logo, charter, slack_channel, color
-                from users JOIN alliances ON alliance=shortname where id=%s'''
+    query = """SELECT fullname, shortname, logo, charter, slack_channel, color
+                from users JOIN alliances ON alliance=shortname where id=%s"""
     return db.find_one(query, (id,))

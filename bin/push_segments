@@ -11,4 +11,4 @@ cd $DIR
 cd ..
 source $DIR/envvar
 
-flask export_to_segments
+flask export-to-segments

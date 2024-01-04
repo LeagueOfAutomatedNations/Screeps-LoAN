@@ -6,24 +6,25 @@ import json
 from screeps_loan.models.db import get_conn
 from screeps_loan.screeps_client import get_client
 
+
 class Map(object):
-    roomRegex = re.compile(r'(E|W)(\d+)(N|S)(\d+)')
+    roomRegex = re.compile(r"(E|W)(\d+)(N|S)(\d+)")
     queueLimit = 15000
 
     def getRoomData(self, room):
         match = self.roomRegex.match(room)
         data = {}
-        data['x_dir'] = match.group(1)
-        data['x'] = int(match.group(2))
-        data['y_dir'] = match.group(3)
-        data['y'] = int(match.group(4))
+        data["x_dir"] = match.group(1)
+        data["x"] = int(match.group(2))
+        data["y_dir"] = match.group(3)
+        data["y"] = int(match.group(4))
         return data
 
     def isNPC(self, room):
         data = self.getRoomData(room)
 
-        x = data['x']
-        y = data['y']
+        x = data["x"]
+        y = data["y"]
 
         if x == 0 or y == 0:
             return True
@@ -51,16 +52,16 @@ class Map(object):
         shards = api.get_shards()
 
         for shard in shards:
-            click.echo('Importing from %s' % (shard,))
+            click.echo("Importing from %s" % (shard,))
             queue = []
             user_map = {}
             roomCount = 0
             api_worldsize = api.worldsize(shard)
-            maxroom = int((api_worldsize['width']-2)/2)
+            maxroom = int((api_worldsize["width"] - 2) / 2)
             for x in range(1, maxroom + 1):
                 for y in range(1, maxroom + 1):
-                    for horizontal in ['E', 'W']:
-                        for vertical in ['N', 'S']:
+                    for horizontal in ["E", "W"]:
+                        for vertical in ["N", "S"]:
                             room = "%s%s%s%s" % (horizontal, x, vertical, y)
                             if self.isNPC(room):
                                 continue
@@ -68,22 +69,24 @@ class Map(object):
                     if len(queue) < self.queueLimit:
                         if y < maxroom or x < maxroom:
                             continue
-                    room_statistics = api.map_stats(queue, 'claim0', shard)
+                    room_statistics = api.map_stats(queue, "claim0", shard)
                     roomCount += self.queueLimit
                     click.echo(str(roomCount) + " rooms requested")
-                    #self.calls = self.calls + 1
+                    # self.calls = self.calls + 1
                     queue = []
 
-                    for id, user_info in room_statistics['users'].items():
-                        username = user_info['username']
+                    for id, user_info in room_statistics["users"].items():
+                        username = user_info["username"]
                         user_map[id] = username
 
-                    for room, statistics in room_statistics['stats'].items():
-                        if 'own' in statistics:
-                            if 'user' in statistics['own']:
-                                user_id = statistics['own']['user']
-                                level = statistics['own']['level']
-                                self.update(user_id, user_map[user_id], room, level, shard)
+                    for room, statistics in room_statistics["stats"].items():
+                        if "own" in statistics:
+                            if "user" in statistics["own"]:
+                                user_id = statistics["own"]["user"]
+                                level = statistics["own"]["level"]
+                                self.update(
+                                    user_id, user_map[user_id], room, level, shard
+                                )
 
         conn = get_conn()
         self.finish()
@@ -101,7 +104,7 @@ class Map(object):
         query = "UPDATE room_imports SET status='complete' WHERE id=(%s)"
         conn = get_conn()
         cursor = conn.cursor()
-        cursor.execute(query, (self.id, ))
+        cursor.execute(query, (self.id,))
 
     def clear(self):
         conn = get_conn()
@@ -113,9 +116,9 @@ class Map(object):
         query = "SELECT id FROM users WHERE screeps_id = %s"
         conn = get_conn()
         cursor = conn.cursor()
-        cursor.execute(query, (user_id, ))
+        cursor.execute(query, (user_id,))
         row = cursor.fetchone()
-        if (row is None):
+        if row is None:
             query = "INSERT INTO users(ign, screeps_id) VALUES (%s, %s) RETURNING id"
             cursor.execute(query, (username, user_id))
             id = cursor.fetchone()[0]
@@ -138,11 +141,12 @@ def import_users():
 @app.cli.command()
 def initdb():
     """Initialize the database."""
-    click.echo('Init the db')
+    click.echo("Init the db")
+
 
 @app.cli.command()
 def import_alliances():
-    click.echo("Start to import alliances from http://www.leagueofautomatednations.com/alliances.js")
+    click.echo("Start to import alliances from http://localhost:5000/alliances.js")
     import requests as r
     import screeps_loan.models.alliances as alliances_model
     import screeps_loan.models.users as users_model
@@ -153,24 +157,26 @@ def import_alliances():
     users_query = users_model.UserQuery()
     screeps = get_client()
     auth_user = screeps_loan.auth_user.AuthPlayer(screeps)
-    resp = r.get('http://www.leagueofautomatednations.com/alliances.js')
+    resp = r.get("http://localhost:5000/alliances.js")
     data = json.loads(resp.text)
     for shortname, info in data.items():
         print(shortname)
-        members = info['members']
-        fullname = info['name']
+        members = info["members"]
+        fullname = info["name"]
         color = None
-        if 'color' in info:
-            color = info['color']
+        if "color" in info:
+            color = info["color"]
         slack = None
-        if 'slack' in info:
-            slack = info['slack']
+        if "slack" in info:
+            slack = info["slack"]
         alliance = alliance_query.find_by_shortname(shortname)
-        if (alliance is None):
+        if alliance is None:
             alliance_query.insert_alliance(shortname, fullname, color, slack)
             alliance = shortname
 
-        existing_member = [i['name'] for i in users_query.find_name_by_alliances([shortname])]
+        existing_member = [
+            i["name"] for i in users_query.find_name_by_alliances([shortname])
+        ]
         new_members = [name for name in members if name not in existing_member]
         for member in new_members:
             print(member)

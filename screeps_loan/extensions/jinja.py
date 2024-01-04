@@ -9,14 +9,17 @@ app.jinja_env.globals.update(get_name_from_shortname=alliance_query.find_by_shor
 
 
 import screeps_loan.models.users as users
+
 app.jinja_env.globals.update(get_name_from_user_id=users.user_name_from_db_id)
 
 
-
 import screeps_loan.models.invites as invites
+
+
 def user_has_invites():
-    my_invites = invites.get_invites_by_user(session['my_id'])
+    my_invites = invites.get_invites_by_user(session["my_id"])
     return len(my_invites) > 0
+
 
 app.jinja_env.globals.update(has_invites=user_has_invites)
 
@@ -26,7 +29,8 @@ def get_shards():
     api = get_client()
     shards = api.get_shards()
     if not shards:
-        shards = ['shard0']
+        shards = ["shard0"]
     return shards
+
 
 app.jinja_env.globals.update(shard_list=get_shards)

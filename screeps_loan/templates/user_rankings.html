@@ -2,55 +2,52 @@
 {% extends "layout.html" %}
 {% block title %}Screeps Player {{ category }} Rankings{% endblock %}
 {% block head %}
-    {{ super() }}
-    <link rel="stylesheet" href="{{url_for('static', filename='datatables/datatables.css')}}">
-    <script type="text/javascript" language="javascript" src="{{url_for ('static', filename = 'datatables/datatables.js')}}"></script>
+{{ super() }}
+<link rel="stylesheet" href="{{url_for('static', filename='datatables/datatables.css')}}">
+<script type="text/javascript" language="javascript" src="{{url_for ('static', filename = 'datatables/datatables.js')}}"></script>
 {% endblock %}
 
 {% block script %}
-    {{ super() }}
-    $('.datatable').DataTable({
-       "paging":   false,
-       "searching":   false,
-       "order": [[ 0, "asc" ]]
-     });
+{{ super() }}
+$('.datatable').DataTable({
+    "paging":   false,
+    "searching":   false,
+    "order": [[ 0, "asc" ]]
+});
 {% endblock %}
 
 {% block content %}
 
 <div>
-
-  <div class="callout primary">
-      <div class="row column">
-          <h1 class='text-center'>Player {{ category }} Rankings</h1>
-          <p  class="lead"></p>
-      </div>
-  </div>
-
-
-  <div class='row rankings'>
-    <table role="grid" class="datatable">
-      <thead>
-        <tr>
-          <th>Rank</th>
-          <th>User</th>
-          <th>{{ category }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% set count = 0 %}
-        {% for ranking in rankings %}
-        {% set count = count + 1 %}
-        <tr>
-          <td>{{count}}</td>
-          <td><a href="https://screeps.com/a/#!/profile/{{ranking['ign']}}">{{ranking['ign']}}</a></td>
-          <td>{{ranking[field]}}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-  <br>
+    <div class="callout primary">
+        <div class="row column">
+            <h1 class='text-center'>Player {{ category }} Rankings</h1>
+            <p  class="lead"></p>
+        </div>
+    </div>
+    <div class='row rankings'>
+        <table role="grid" class="datatable">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>User</th>
+                    <th>{{ category }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% set count = 0 %}
+                {% for ranking in rankings %}
+                {% set count = count + 1 %}
+                <tr>
+                    <td>{{count}}</td>
+                    <td><a href="https://screeps.com/a/#!/profile/{{ranking['ign']}}">{{ranking['ign']}}</a></td>
+                    <td>{{ranking[field]}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <br>
 </div>
 
 {% endblock %}

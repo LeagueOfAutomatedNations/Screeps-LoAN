@@ -11,16 +11,14 @@ class AuthPlayer(object):
         self.api_client = api_client
 
     def random_token(self):
-        return hashlib.sha512(os.urandom(128)).hexdigest()[0: 15]
-
+        return hashlib.sha512(os.urandom(128)).hexdigest()[0:15]
 
     def id_from_name(self, name):
         id = users_model.player_id_from_db(name)
-        if (id is None):
+        if id is None:
             id = users_service.player_id_from_api(name)
             users_model.insert_username_with_id(name, id)
         return id
-
 
     def auth_token(self, name):
         id = self.id_from_name(name)

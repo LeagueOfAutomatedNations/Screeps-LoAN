@@ -1,10 +1,10 @@
-;(function(window, undefined) {
+; (function (window, undefined) {
     "use strict";
 
     function extend() {
-        for(var i=1; i < arguments.length; i++) {
-            for(var key in arguments[i]) {
-                if(arguments[i].hasOwnProperty(key)) {
+        for (var i = 1; i < arguments.length; i++) {
+            for (var key in arguments[i]) {
+                if (arguments[i].hasOwnProperty(key)) {
                     arguments[0][key] = arguments[i][key];
                 }
             }
@@ -13,10 +13,10 @@
     }
 
     var pluginName = "tinycolorpicker"
-    ,   defaults   = {
-            backgroundUrl : null
+        , defaults = {
+            backgroundUrl: null
         }
-    ;
+        ;
 
     function Plugin($container, options) {
         /**
@@ -44,19 +44,19 @@
          */
         this._name = pluginName;
 
-        var self          = this
-        ,   $track        = $container.querySelectorAll(".track")[0]
-        ,   $color        = $container.querySelectorAll(".color")[0]
-        ,   $colorInner   = $container.querySelectorAll(".colorInner")[0]
-        ,   $canvas       = null
-        ,   $colorInput   = $container.querySelectorAll(".colorInput")[0]
+        var self = this
+            , $track = $container.querySelectorAll(".track")[0]
+            , $color = $container.querySelectorAll(".color")[0]
+            , $colorInner = $container.querySelectorAll(".colorInner")[0]
+            , $canvas = null
+            , $colorInput = $container.querySelectorAll(".colorInput")[0]
 
-        ,   context      = null
-        ,   mouseIsDown  = false
-        ,   hasCanvas    = !!document.createElement("canvas").getContext
-        ,   touchEvents  = "ontouchstart" in document.documentElement
-        ,   changeEvent  = document.createEvent("HTMLEvents")
-        ;
+            , context = null
+            , mouseIsDown = false
+            , hasCanvas = !!document.createElement("canvas").getContext
+            , touchEvents = "ontouchstart" in document.documentElement
+            , changeEvent = document.createEvent("HTMLEvents")
+            ;
 
         changeEvent.initEvent("change", true, true);
 
@@ -83,7 +83,7 @@
          * @private
          */
         function _initialize() {
-            if(hasCanvas) {
+            if (hasCanvas) {
                 $canvas = document.createElement("canvas");
                 $track.appendChild($canvas);
 
@@ -102,15 +102,15 @@
          * @private
          */
         function _setImage() {
-            var colorPicker   = new Image()
-            ,   style         = $track.currentStyle || window.getComputedStyle($track, false)
-            ,   backgroundUrl = style.backgroundImage.replace(/"/g, "").replace(/url\(|\)$/ig, "")
-            ;
+            var colorPicker = new Image()
+                , style = $track.currentStyle || window.getComputedStyle($track, false)
+                , backgroundUrl = style.backgroundImage.replace(/"/g, "").replace(/url\(|\)$/ig, "")
+                ;
 
             colorPicker.crossOrigin = "Anonymous";
             $track.style.backgroundImage = "none";
 
-            colorPicker.onload = function() {
+            colorPicker.onload = function () {
                 $canvas.width = this.width;
                 $canvas.height = this.height;
 
@@ -127,22 +127,22 @@
         function _setEvents() {
             var eventType = touchEvents ? "touchstart" : "mousedown";
 
-            if(hasCanvas) {
-                $color["on" + eventType] = function(event) {
+            if (hasCanvas) {
+                $color["on" + eventType] = function (event) {
                     event.preventDefault();
                     event.stopPropagation();
 
                     $track.style.display = 'block';
 
-                    document.onmousedown = function(event) {
+                    document.onmousedown = function (event) {
                         document.onmousedown = null;
 
                         self.close();
                     };
                 };
 
-                if(!touchEvents) {
-                    $canvas.onmousedown = function(event) {
+                if (!touchEvents) {
+                    $canvas.onmousedown = function (event) {
                         event.preventDefault();
                         event.stopPropagation();
 
@@ -150,7 +150,7 @@
 
                         _getColorCanvas(event);
 
-                        document.onmouseup = function(event) {
+                        document.onmouseup = function (event) {
                             document.onmouseup = null;
 
                             self.close();
@@ -162,7 +162,7 @@
                     $canvas.onmousemove = _getColorCanvas;
                 }
                 else {
-                    $canvas.ontouchstart = function(event) {
+                    $canvas.ontouchstart = function (event) {
                         mouseIsDown = true;
 
                         _getColorCanvas(event.touches[0]);
@@ -170,13 +170,13 @@
                         return false;
                     };
 
-                    $canvas.ontouchmove = function(event) {
+                    $canvas.ontouchmove = function (event) {
                         _getColorCanvas(event.touches[0]);
 
                         return false;
                     };
 
-                    $canvas.ontouchend = function(event) {
+                    $canvas.ontouchend = function (event) {
                         self.close();
 
                         return false;
@@ -190,10 +190,10 @@
          * @private
          */
         function _getColorCanvas(event) {
-            if(mouseIsDown) {
-                var offset    = event.target.getBoundingClientRect()
-                ,   colorData = context.getImageData(event.clientX - offset.left, event.clientY - offset.top, 1, 1).data
-                ;
+            if (mouseIsDown) {
+                var offset = event.target.getBoundingClientRect()
+                    , colorData = context.getImageData(event.clientX - offset.left, event.clientY - offset.top, 1, 1).data
+                    ;
 
                 self.setColor("rgb(" + colorData[0] + "," + colorData[1] + "," + colorData[2] + ")");
 
@@ -207,8 +207,8 @@
          * @method setColor
          * @chainable
          */
-        this.setColor = function(color) {
-            if(color.indexOf("#") >= 0) {
+        this.setColor = function (color) {
+            if (color.indexOf("#") >= 0) {
                 self.colorHex = color;
                 self.colorRGB = self.hexToRgb(self.colorHex);
             }
@@ -227,7 +227,7 @@
          * @method close
          * @chainable
          */
-        this.close = function() {
+        this.close = function () {
             mouseIsDown = false;
 
             $track.style.display = 'none';
@@ -239,7 +239,7 @@
          * @method hexToRgb
          * @chainable
          */
-        this.hexToRgb = function(hex) {
+        this.hexToRgb = function (hex) {
             var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
 
             return "rgb(" + parseInt(result[1], 16) + "," + parseInt(result[2], 16) + "," + parseInt(result[3], 16) + ")";
@@ -251,18 +251,18 @@
          * @method rgbToHex
          * @chainable
          */
-        this.rgbToHex = function(rgb) {
+        this.rgbToHex = function (rgb) {
             var result = rgb.match(/\d+/g);
 
             function hex(x) {
                 var digits = new Array("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F");
-                return isNaN(x) ? "00" : digits[(x - x % 16 ) / 16] + digits[x % 16];
+                return isNaN(x) ? "00" : digits[(x - x % 16) / 16] + digits[x % 16];
             }
 
             return "#" + hex(result[0]) + hex(result[1]) + hex(result[2]);
         };
 
-       return _initialize();
+        return _initialize();
     }
 
     /**
@@ -272,14 +272,14 @@
      * @param {Object} options
         @param {String} [options.backgroundUrl=''] It will look for a css image on the track div. If not found it will look if there's a url in this property.
      */
-    var tinycolorpicker = function($container, options) {
+    var tinycolorpicker = function ($container, options) {
         return new Plugin($container, options);
     };
 
-    if(typeof define == 'function' && define.amd) {
-        define(function(){ return tinycolorpicker; });
+    if (typeof define == 'function' && define.amd) {
+        define(function () { return tinycolorpicker; });
     }
-    else if(typeof module === 'object' && module.exports) {
+    else if (typeof module === 'object' && module.exports) {
         module.exports = tinycolorpicker;
     }
     else {

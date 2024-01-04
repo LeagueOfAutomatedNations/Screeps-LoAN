@@ -3,11 +3,14 @@ from datetime import datetime, timedelta
 import subprocess
 import click
 from screeps_loan import app
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 @app.cli.command()
 def clean_sessions():
-    sessiondir = app.config['CACHE_ROOT'] + '/sessions'
+    sessiondir = os.environ["CACHE_ROOT"] + "/sessions"
     for dirpath, dirnames, filenames in os.walk(sessiondir):
         for file in filenames:
             curpath = os.path.join(dirpath, file)
@@ -22,15 +25,15 @@ def get_file_directory(file):
 
 @app.cli.command()
 def purge_cdn():
-    if 'CACHE_ROOT' not in app.config:
+    if "CACHE_ROOT" not in os.environ:
         return
 
-    staticdir = app.root_path + '/static'
+    staticdir = app.root_path + "/static"
     dirlen = len(app.root_path)
     print(staticdir)
     for dirpath, dirnames, filenames in os.walk(staticdir):
         for filename in filenames:
-            fullpath = os.path.join(dirpath,filename)
-            url = app.config['WEB_ROOT'] + fullpath[dirlen:]
+            fullpath = os.path.join(dirpath, filename)
+            url = os.environ["WEB_ROOT"] + fullpath[dirlen:]
             print(url)
-            subprocess.call(['curl', '-X', 'PURGE', url])
+            subprocess.call(["curl", "-X", "PURGE", url])

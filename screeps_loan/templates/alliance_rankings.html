@@ -2,89 +2,89 @@
 {% extends "layout.html" %}
 {% block title %} Screeps Alliance Rankings {% endblock %}
 {% block head %}
-    {{ super() }}
-    <link rel="stylesheet" href="{{url_for('static', filename='datatables/datatables.css')}}">
-    <script type="text/javascript" language="javascript" src="{{url_for ('static', filename = 'datatables/datatables.js')}}"></script>
+{{ super() }}
+<link rel="stylesheet" href="{{url_for('static', filename='datatables/datatables.css')}}">
+<script type="text/javascript" language="javascript" src="{{url_for ('static', filename = 'datatables/datatables.js')}}"></script>
 {% endblock %}
 
 {% block script %}
-    {{ super() }}
-    $('.datatable').DataTable({
-       "paging":   false,
-       "searching":   false,
-       "order": [[ 1, "desc" ]]
-     });
+{{ super() }}
+$('.datatable').DataTable({
+    "paging":   false,
+    "searching":   false,
+    "order": [[ 1, "desc" ]]
+});
 {% endblock %}
 
 {% block content %}
 
 <div>
 
-  <div class="callout primary">
-      <div class="row column">
-          <h1 class='text-center'>Alliance Rankings</h1>
-          <p  class="lead"></p>
-      </div>
-  </div>
+    <div class="callout primary">
+        <div class="row column">
+            <h1 class='text-center'>Alliance Rankings</h1>
+            <p  class="lead"></p>
+        </div>
+    </div>
 
 
-  <div class='row rankings'>
-    <table role="grid" class="datatable">
-      <thead>
-        <tr>
-          <th>Alliance</th>
-          <th>Alliance GCL</th>
-          <th>Combined GCL</th>
-          <th>Alliance Power</th>
-          <th>Combined Power</th>
-          <th>Max Spawns</th>
-          <th>Members</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for ranking in rankings %}
-        <tr>
-          {% set longname = get_name_from_shortname(ranking['alliance']) %}
-          <td><a href="{{url_for('alliance_profile', shortname = ranking['alliance']) }}">{{longname}}</a></td>
-          <td>{{ranking['alliance_gcl']}}</td>
-          <td>{{ranking['combined_gcl']}}</td>
-          <td>{{ranking['alliance_power']}}</td>
-          <td>{{ranking['combined_power']}}</td>
-          <td>{{ranking['spawns']}}</td>
-          <td>{{ranking['members']}}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-  <br>
-  <div class='row columns'>
-    <h4>Ranking Types</h4>
-    <dl>
-      <dt>Alliance GCL</dt>
-      <dd>This metric combines the raw control points of all members of an alliance and calculates the GCL as if they were a single user. This method gives the best understanding of the alliance experience level.</dd>
-    </dl>
-    <dl>
-      <dt>Combined GCL</dt>
-      <dd>This metric adds all of the individual GCL levels together to get one number. With this metric a new user, regardless of skill level, will always add at least one to the score.</dd>
-    </dl>
-    <dl>
-      <dt>Alliance Power</dt>
-      <dd>This metric combines the raw power points of all members of an alliance and calculates the Power Creep level the alliance would be able to spawn if they were a single player.</dd>
-    </dl>
-    <dl>
-      <dt>Combined Power</dt>
-      <dd>This combines the Power Creep levels for all players in an alliance. This number should correspond to the number of power creep levels the alliance can currently spawn.</dd>
-    </dl>
-    <dl>
-      <dt>Max Spawns</dt>
-      <dd>Each claimed room in an alliance is scored by the number of spawns it can support. In other words, RCL8 rooms are worth three, RCL7 rooms two, and all remaining claimed rooms one. Unlike the GCL based metrics this score will go up and down based off of the state of world at the time.</dd>
-    </dl>
-    <dl>
-      <dt>Members</dt>
-      <dd>This is the total number of members in the alliance.</dd>
-    </dl>
-  </div>
+    <div class='row rankings'>
+        <table role="grid" class="datatable">
+            <thead>
+                <tr>
+                    <th>Alliance</th>
+                    <th>Alliance GCL</th>
+                    <th>Combined GCL</th>
+                    <th>Alliance Power</th>
+                    <th>Combined Power</th>
+                    <th>Max Spawns</th>
+                    <th>Members</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ranking in rankings %}
+                <tr>
+                    {% set longname = get_name_from_shortname(ranking['alliance']) %}
+                    <td><a href="{{url_for('alliance_profile', shortname = ranking['alliance']) }}">{{longname}}</a></td>
+                    <td>{{ranking['alliance_gcl']}}</td>
+                    <td>{{ranking['combined_gcl']}}</td>
+                    <td>{{ranking['alliance_power']}}</td>
+                    <td>{{ranking['combined_power']}}</td>
+                    <td>{{ranking['spawns']}}</td>
+                    <td>{{ranking['members']}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <br>
+    <div class='row columns'>
+        <h4>Ranking Types</h4>
+        <dl>
+            <dt>Alliance GCL</dt>
+            <dd>This metric combines the raw control points of all members of an alliance and calculates the GCL as if they were a single user. This method gives the best understanding of the alliance experience level.</dd>
+        </dl>
+        <dl>
+            <dt>Combined GCL</dt>
+            <dd>This metric adds all of the individual GCL levels together to get one number. With this metric a new user, regardless of skill level, will always add at least one to the score.</dd>
+        </dl>
+        <dl>
+            <dt>Alliance Power</dt>
+            <dd>This metric combines the raw power points of all members of an alliance and calculates the Power Creep level the alliance would be able to spawn if they were a single player.</dd>
+        </dl>
+        <dl>
+            <dt>Combined Power</dt>
+            <dd>This combines the Power Creep levels for all players in an alliance. This number should correspond to the number of power creep levels the alliance can currently spawn.</dd>
+        </dl>
+        <dl>
+            <dt>Max Spawns</dt>
+            <dd>Each claimed room in an alliance is scored by the number of spawns it can support. In other words, RCL8 rooms are worth three, RCL7 rooms two, and all remaining claimed rooms one. Unlike the GCL based metrics this score will go up and down based off of the state of world at the time.</dd>
+        </dl>
+        <dl>
+            <dt>Members</dt>
+            <dd>This is the total number of members in the alliance.</dd>
+        </dl>
+    </div>
 
 
 </div>

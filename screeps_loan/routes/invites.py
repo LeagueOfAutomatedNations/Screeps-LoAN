@@ -1,5 +1,14 @@
 from screeps_loan import app
-from flask import render_template, redirect, request, session, url_for, escape, flash, abort
+from flask import (
+    render_template,
+    redirect,
+    request,
+    session,
+    url_for,
+    escape,
+    flash,
+    abort,
+)
 
 import screeps_loan.models.alliances as alliances_model
 import screeps_loan.models.invites as invites
@@ -11,28 +20,28 @@ from screeps_loan.routes.decorators import login_required
 import json
 
 
-@app.route('/my/invites')
+@app.route("/my/invites")
 @login_required
 def list_invites():
     # Is user already in an alliance?
-    my_id = session['my_id']
+    my_id = session["my_id"]
     alliance = users_model.alliance_of_user(my_id)
     if alliance:
         return redirect(url_for("my_alliance"))
 
-    my_invites = invites.get_invites_by_user(session['my_id'])
+    my_invites = invites.get_invites_by_user(session["my_id"])
     return render_template("my_invites.html", invites=my_invites)
 
 
-@app.route('/my/invites/<inviteid>/delete.js', methods=['POST'])
+@app.route("/my/invites/<inviteid>/delete.js", methods=["POST"])
 @login_required
 def invite_decline(inviteid):
-    my_id = session['my_id']
+    my_id = session["my_id"]
     invite = invites.get_invite_by_id(inviteid)
     if not invite:
         abort(404)
 
-    if invite['user_id'] != my_id:
+    if invite["user_id"] != my_id:
         abort(404)
 
     invites.del_invite_by_id(inviteid)
@@ -40,21 +49,19 @@ def invite_decline(inviteid):
     return json.dumps(True)
 
 
-@app.route('/my/invites/<inviteid>/accept.js', methods=['POST'])
+@app.route("/my/invites/<inviteid>/accept.js", methods=["POST"])
 @login_required
 def invite_accept(inviteid):
-
-
-    my_id = session['my_id']
+    my_id = session["my_id"]
 
     invite = invites.get_invite_by_id(inviteid)
     if not invite:
         abort(404)
-    if invite['user_id'] != my_id:
+    if invite["user_id"] != my_id:
         abort(404)
 
     # Add user to appropriate alliance.
-    users_model.update_alliance_by_user_id(my_id, invite['alliance'])
+    users_model.update_alliance_by_user_id(my_id, invite["alliance"])
 
     # Remove all pending invites from user.
     invites.del_invites_by_user(my_id)
