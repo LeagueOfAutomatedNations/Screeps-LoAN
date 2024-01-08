@@ -21,8 +21,6 @@ services:
     depends_on:
       postgresLoAN:
         condition: service_healthy
-    healthcheck:
-      test: [ "CMD-SHELL", "curl", "${FLASK_SERVER_NAME}:5000" ]
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.loan.rule=Host(`${FLASK_SERVER_NAME}`)"
@@ -46,4 +44,4 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "pg_isready", "-U", "screeps"]
     ports:
-      - 5434:5432
+      - 127.0.0.1:5434:5432
