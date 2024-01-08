@@ -25,7 +25,7 @@ services:
       test: [ "CMD-SHELL", "curl", "${FLASK_SERVER_NAME}:5000" ]
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.loan.rule=Host(`loan.${HOST}`)"
+      - "traefik.http.routers.loan.rule=Host(`${FLASK_SERVER_NAME}`)"
       - "traefik.docker.network=traefik-net"
       - "traefik.http.routers.loan.entrypoints=websecure"
       - "traefik.http.routers.loan.tls.certresolver=letsencrypt"
