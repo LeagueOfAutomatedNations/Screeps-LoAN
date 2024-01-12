@@ -31,11 +31,16 @@ async function update() {
         const baseCommand = commands[i];
         const command = `docker exec ${containerName} ${baseCommand}`;
         try {
-            const time = Date.now();
+            const startTime = Date.now();
             logger.info(`Starting ${command}`)
             execSync(command, { encoding: 'utf-8' });
-            const timeTaken = Math.round(Date.now() - time / 1000)
-            logger.info(`Took ${timeTaken} seconds`)
+
+            const endTime = Date.now();
+            const timeTakenMilliseconds = endTime - startTime;
+            const timeTakenSeconds = Math.round(timeTakenMilliseconds / 1000);
+            const timeTakenMinutes = Math.round(timeTakenSeconds / 60);
+
+            logger.info(`Took ${timeTakenSeconds} seconds (${timeTakenMinutes} minutes)`);
         } catch (e) {
             logger.error(`Command: ${command}`)
             logger.error(e)
