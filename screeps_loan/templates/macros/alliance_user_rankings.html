@@ -1,0 +1,37 @@
+{% macro allianceUserRankings(alliance_url='/alliances.js', shortname=none) -%}
+
+<div>
+    <div class="callout primary">
+        <div class="row column">
+            <h1 class='text-center'>Alliance Member Rankings</h1>
+            <p class="lead"></p>
+        </div>
+    </div>
+    <div class='row rankings'>
+        <table role="grid" class="datatable">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>User</th>
+                    <th>GCL Level</th>
+                    <th>Combined RCL</th>
+                    <th>Spawn Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{loop.index}}</td>
+                    <td><a href="https://screeps.com/a/#!/profile/{{user['ign']}}">{{user['ign']}}</a></td>
+                    <td>{{user['gcl_level']}}</td>
+                    <td>{{user['combined_rcl']}}</td>
+                    <td>{{user['spawn_count']}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <br>
+</div>
+
+{%- endmacro %}

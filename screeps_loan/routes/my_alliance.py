@@ -71,15 +71,15 @@ def update_my_alliance_profile():
     else:
         shortname = None
 
-    if re.match("^[\w|-]+$", request.form["slack_channel"]):
-        slack_channel = request.form["slack_channel"]
+    if re.match("^[\w|-]+$", request.form["discord_url"]):
+        discord_url = request.form["discord_url"]
     else:
-        slack_channel = None
+        discord_url = None
 
     my_id = session["my_id"]
     alliance = users_model.alliance_of_user(my_id)
     alliances_model.update_all_alliances_info(
-        alliance["shortname"], shortname, fullname, slack_channel
+        alliance["shortname"], shortname, fullname, discord_url
     )
     return redirect(url_for("my_alliance"))
 

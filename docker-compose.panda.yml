@@ -21,14 +21,20 @@ services:
     depends_on:
       postgresLoAN:
         condition: service_healthy
-    healthcheck:
-      test: [ "CMD-SHELL", "curl", "${FLASK_SERVER_NAME}:5000" ]
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.loan.rule=Host(`${FLASK_SERVER_NAME}`)"
       - "traefik.docker.network=traefik-net"
+      - "traefik.http.routers.loan.rule=Host(`loan.pandascreeps.com`)"
       - "traefik.http.routers.loan.entrypoints=websecure"
       - "traefik.http.routers.loan.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.loanExternal.rule=Host(`leagueofautomatednations.com`)"
+      - "traefik.http.routers.loanExternal.entrypoints=websecure"
+      - "traefik.http.routers.loanExternal.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.loanExternal2.rule=Host(`www.leagueofautomatednations.com`)"
+      - "traefik.http.routers.loanExternal2.entrypoints=websecure"
+      - "traefik.http.routers.loanExternal2.tls.certresolver=letsencrypt"
+      - traefik.http.middlewares.loanExternal2-redirect-web-secure.redirectscheme.scheme=https
+      - traefik.http.routers.loanExternal2.middlewares=loanExternal2-redirect-web-secure
     logging: *default-logging
     ports:
       - 5002:5000

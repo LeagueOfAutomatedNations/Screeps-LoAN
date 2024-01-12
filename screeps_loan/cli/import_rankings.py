@@ -99,6 +99,7 @@ class Rankings(object):
             rcl = self.getAllianceRCL(alliance["shortname"])
 
             combined_gcl = sum(self.getUserGCL(user) for user in filtered_members)
+            average_gcl = combined_gcl / len(filtered_members)
             control = sum(getUserControlPoints(user) for user in filtered_members)
             alliance_gcl = self.convertGcl(control)
 
@@ -110,10 +111,11 @@ class Rankings(object):
 
             spawns = self.getAllianceSpawns(alliance["shortname"])
             print(
-                "%s- %s, %s, %s, %s, %s, %s, %s"
+                "%s- %s, %s, %s, %s, %s, %s, %s, %s"
                 % (
                     alliance["shortname"],
                     combined_gcl,
+                    average_gcl,
                     alliance_gcl,
                     rcl,
                     spawns,
@@ -127,6 +129,7 @@ class Rankings(object):
                 alliance["shortname"],
                 alliance_gcl,
                 combined_gcl,
+                average_gcl,
                 rcl,
                 spawns,
                 len(filtered_members),
@@ -155,6 +158,7 @@ class Rankings(object):
         alliance,
         alliance_gcl,
         combined_gcl,
+        average_gcl,
         rcl,
         spawns,
         members,
@@ -163,7 +167,7 @@ class Rankings(object):
     ):
         # Store info in db
         cursor = self.conn.cursor()
-        query = "INSERT INTO rankings(import, alliance, alliance_gcl, combined_gcl, rcl, spawns, members, alliance_power, combined_power) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        query = "INSERT INTO rankings(import, alliance, alliance_gcl, combined_gcl, average_gcl, rcl, spawns, members, alliance_power, combined_power) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
         cursor.execute(
             query,
             (
@@ -171,6 +175,7 @@ class Rankings(object):
                 alliance,
                 alliance_gcl,
                 combined_gcl,
+                average_gcl,
                 rcl,
                 spawns,
                 members,
@@ -295,12 +300,25 @@ def import_user_rankings():
         ):
             gcl = getUserControlPoints(dbuser["ign"])
             power = getUserPowerPoints(dbuser["ign"])
-            print("%s has %s gcl and %s power" % (dbuser["ign"], gcl, power))
+            gcl_level = users.convertGcl(gcl)
+            rcl = users.getUserRCL(dbuser["id"])
+            spawns = users.getUserSpawns(dbuser["id"])
+            
+            print("%s has %s gcl and %s power, gclLevel %s, rcl %s, spawns %s" % (dbuser["ign"], gcl, power, gcl_level, rcl, spawns))
             users.update_gcl_by_user_id(
                 dbuser["id"], getUserControlPoints(dbuser["ign"])
             )
             users.update_power_by_user_id(
                 dbuser["id"], getUserPowerPoints(dbuser["ign"])
+            )
+            users.update_gcl_level_by_user_id(
+                dbuser["id"], gcl_level
+            )
+            users.update_combined_rcl_by_user_id(
+                dbuser["id"], rcl
+            )
+            users.update_spawncount_by_user_id(
+                dbuser["id"], spawns
             )
             sleep(1.5)
         else:

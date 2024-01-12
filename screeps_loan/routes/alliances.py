@@ -3,6 +3,8 @@ import screeps_loan.models.alliances as alliances_model
 import screeps_loan.models.rankings as rankings_model
 from screeps_loan.models.rooms import get_all_rooms
 import screeps_loan.models.users as users_model
+from screeps_loan.services.cache import cache
+from screeps_loan.screeps_client import get_client
 from screeps_loan.routes.decorators import httpresponse
 import json
 from flask import render_template
@@ -37,10 +39,7 @@ def alliance_listing_json():
         if not alliance["shortname"] in alliance_user_data:
             continue
 
-        if alliance_user_data[alliance["shortname"]]["active_member_count"] < 2:
-            continue
-
-        if alliance_user_data[alliance["shortname"]]["room_count"] < 2:
+        if alliance_user_data[alliance["shortname"]]["room_count"] < 1:
             continue
 
         alliance["members"] = alliance_user_data[alliance["shortname"]]["members"]
@@ -104,8 +103,17 @@ def alliance_profile(shortname):
     charter = clean_html(charter)
     alliance_url = "/a/%s.json" % (shortname)
     alliance_url = "/alliances.js"
+    
+    users = users_model.find_users_by_alliance(shortname)
+
+    maxroomshard0 = get_shard_size('shard0')
+    maxroomshard1 = get_shard_size('shard1')
+    maxroomshard2 = get_shard_size('shard2')
+    maxroomshard3 = get_shard_size('shard3')
+
+
     return render_template(
-        "alliance_profile.html", shortname=shortname, charter=charter, alliance=alliance
+        "alliance_profile.html", shortname=shortname, charter=charter, alliance=alliance, users=users, maxroomshard0=maxroomshard0, maxroomshard1=maxroomshard1, maxroomshard2=maxroomshard2,maxroomshard3=maxroomshard3
     )
 
 
@@ -133,3 +141,9 @@ def alliance_rankings():
 def alliance_rankings_json(ranking_type):
     rankings = rankings_model.get_rankings_by_import_and_type(ranking_type)
     return json.dumps(rankings)
+
+@cache.cache()
+def get_shard_size(shard):
+    api = get_client()
+    api_worldsize = api.worldsize(shard)
+    return int((api_worldsize["width"] - 2) / 2)

@@ -92,8 +92,9 @@ var ScreepsMap = (function () {
     ScreepsMap.prototype.setSpinnerVisibile = function (show) {
         let container = document.getElementById(this.spinnerHostId);
         container.className = (show)
-            ? "spinner"
-            : "";
+            ? "ScreepsMapFlex spinner"
+            : "ScreepsMapFlex";
+        console.log(show, this.shard, this.spinnerHostId, container)
     }
 
     ScreepsMap.prototype.render = function () {
@@ -122,6 +123,7 @@ var ScreepsMap = (function () {
                 zoomDelta: 0.75,
                 attributionControl: false
             });
+            console.log(this.shard, this.map)
             this.map.fitBounds(mapBounds);
 
             let controlLayer = (new L.LayerGroup());
@@ -136,15 +138,19 @@ var ScreepsMap = (function () {
                 "Rooms": controlLayer,
                 "Labels": labelLayer
             };
+            console.log(1, overlays)
             L.control.layers({}, overlays).addTo(this.map);
 
             if (this.config.showTerrain === undefined || this.config.showTerrain === true) {
+                console.log(2, this.shard, 'addTerrain', this.map)
                 terrainLayer.addTo(this.map);
             }
             if (this.config.showControl === undefined || this.config.showControl === true) {
+                console.log(3, this.shard, 'addControl')
                 controlLayer.addTo(this.map);
             }
             if (this.config.showLabels === undefined || this.config.showLabels === true) {
+                console.log(4, this.shard, 'addLabel')
                 labelLayer.addTo(this.map);
             }
 
@@ -158,6 +164,7 @@ var ScreepsMap = (function () {
             this.bindRclFilter(controlLayer);
 
             this.setSpinnerVisibile(false);
+            console.log(5, this.shard, "End")
         }.bind(this));
     }
 

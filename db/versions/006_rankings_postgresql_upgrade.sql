@@ -25,6 +25,7 @@ CREATE TABLE rankings (
   import integer NOT NULL,
   alliance_gcl integer NOT NULL,
   combined_gcl integer NOT NULL,
+  average_gcl integer NOT NULL,
   rcl integer NOT NULL,
   spawns integer NOT NULL,
   members integer NOT NULL

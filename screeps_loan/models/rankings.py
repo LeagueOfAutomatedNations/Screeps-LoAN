@@ -6,6 +6,7 @@ def get_rankings_list():
     return [
         "alliance_gcl",
         "combined_gcl",
+        "average_gcl",
         "alliance_power",
         "combined_power",
         "rcl",
