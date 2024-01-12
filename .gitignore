@@ -1,9 +1,10 @@
-env
+.env
 *.pyc
 settings
 .#*
 .vagrant
 /src
 data
-
+logs
+node_modules
 ubuntu-xenial-16.04-cloudimg-console.log

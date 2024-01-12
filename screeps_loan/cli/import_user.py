@@ -166,12 +166,12 @@ def import_alliances():
         color = None
         if "color" in info:
             color = info["color"]
-        slack = None
-        if "slack" in info:
-            slack = info["slack"]
+        discord = None
+        if "discord" in info:
+            discord = info["discord"]
         alliance = alliance_query.find_by_shortname(shortname)
         if alliance is None:
-            alliance_query.insert_alliance(shortname, fullname, color, slack)
+            alliance_query.insert_alliance(shortname, fullname, color, discord)
             alliance = shortname
 
         existing_member = [

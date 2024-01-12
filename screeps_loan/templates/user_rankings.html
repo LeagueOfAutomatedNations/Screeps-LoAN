@@ -4,15 +4,16 @@
 {% block head %}
 {{ super() }}
 <link rel="stylesheet" href="{{url_for('static', filename='datatables/datatables.css')}}">
-<script type="text/javascript" language="javascript" src="{{url_for ('static', filename = 'datatables/datatables.js')}}"></script>
+<script type="text/javascript" language="javascript"
+    src="{{url_for ('static', filename = 'datatables/datatables.js')}}"></script>
 {% endblock %}
 
 {% block script %}
 {{ super() }}
 $('.datatable').DataTable({
-    "paging":   false,
-    "searching":   false,
-    "order": [[ 0, "asc" ]]
+"paging": false,
+"searching": false,
+"order": [[ 0, "asc" ]]
 });
 {% endblock %}
 
@@ -22,7 +23,7 @@ $('.datatable').DataTable({
     <div class="callout primary">
         <div class="row column">
             <h1 class='text-center'>Player {{ category }} Rankings</h1>
-            <p  class="lead"></p>
+            <p class="lead"></p>
         </div>
     </div>
     <div class='row rankings'>
@@ -35,13 +36,11 @@ $('.datatable').DataTable({
                 </tr>
             </thead>
             <tbody>
-                {% set count = 0 %}
                 {% for ranking in rankings %}
-                {% set count = count + 1 %}
                 <tr>
-                    <td>{{count}}</td>
-                    <td><a href="https://screeps.com/a/#!/profile/{{ranking['ign']}}">{{ranking['ign']}}</a></td>
-                    <td>{{ranking[field]}}</td>
+                    <td>{{loop.index}}</td>
+                    <td><a href="https://screeps.com/a/#!/profile/{{ ranking['ign'] }}">{{ ranking['ign'] }}</a></td>
+                    <td>{{ ranking[field] }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
