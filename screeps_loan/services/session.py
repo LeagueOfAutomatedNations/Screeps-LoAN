@@ -13,7 +13,7 @@ session_opts = {
     "session.data_dir": cache_root + "/sessions",
     "session.secret": secret_key,
     "session.type": "file",
-    "session.timeout": 7200
+    "session.timeout": 7200,
 }
 
 

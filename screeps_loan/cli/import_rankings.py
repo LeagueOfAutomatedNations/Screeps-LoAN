@@ -303,23 +303,20 @@ def import_user_rankings():
             gcl_level = users.convertGcl(gcl)
             rcl = users.getUserRCL(dbuser["id"])
             spawns = users.getUserSpawns(dbuser["id"])
-            
-            print("%s has %s gcl and %s power, gclLevel %s, rcl %s, spawns %s" % (dbuser["ign"], gcl, power, gcl_level, rcl, spawns))
+
+            print(
+                "%s has %s gcl and %s power, gclLevel %s, rcl %s, spawns %s"
+                % (dbuser["ign"], gcl, power, gcl_level, rcl, spawns)
+            )
             users.update_gcl_by_user_id(
                 dbuser["id"], getUserControlPoints(dbuser["ign"])
             )
             users.update_power_by_user_id(
                 dbuser["id"], getUserPowerPoints(dbuser["ign"])
             )
-            users.update_gcl_level_by_user_id(
-                dbuser["id"], gcl_level
-            )
-            users.update_combined_rcl_by_user_id(
-                dbuser["id"], rcl
-            )
-            users.update_spawncount_by_user_id(
-                dbuser["id"], spawns
-            )
+            users.update_gcl_level_by_user_id(dbuser["id"], gcl_level)
+            users.update_combined_rcl_by_user_id(dbuser["id"], rcl)
+            users.update_spawncount_by_user_id(dbuser["id"], spawns)
             sleep(1.5)
         else:
             print("Skipping user %s" % (dbuser["ign"]))

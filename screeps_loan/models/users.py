@@ -19,10 +19,21 @@ def find_name_by_alliance(alliance):
     result = db.find_all(query, (alliance,))
     return [row[0] for row in result]
 
+
 def find_users_by_alliance(alliance):
-    query = "SELECT ign, combined_rcl, spawncount, gcl_level FROM users where alliance = %s"
+    query = (
+        "SELECT ign, combined_rcl, spawncount, gcl_level FROM users where alliance = %s"
+    )
     result = db.find_all(query, (alliance,))
-    return [{"ign":row[0], "combined_rcl":row[1],"spawn_count":row[2],"gcl_level":row[3]} for row in result]
+    return [
+        {
+            "ign": row[0],
+            "combined_rcl": row[1],
+            "spawn_count": row[2],
+            "gcl_level": row[3],
+        }
+        for row in result
+    ]
 
 
 def update_alliance_by_screeps_id(id, alliance):
@@ -44,15 +55,21 @@ def update_power_by_user_id(id, power):
     query = "UPDATE users SET power = %s WHERE id=%s"
     db.execute(query, (power, id))
 
+
 def update_gcl_level_by_user_id(id, gcl_level):
     query = "UPDATE users SET gcl_level = %s WHERE id=%s"
     db.execute(query, (gcl_level, id))
+
+
 def update_combined_rcl_by_user_id(id, combined_rcl):
     query = "UPDATE users SET combined_rcl = %s WHERE id=%s"
     db.execute(query, (combined_rcl, id))
+
+
 def update_spawncount_by_user_id(id, spawncount):
     query = "UPDATE users SET spawncount = %s WHERE id=%s"
     db.execute(query, (spawncount, id))
+
 
 @cache.cache(expire=60)
 def get_all_users():
@@ -125,6 +142,7 @@ def alliance_of_user(id):
                 from users JOIN alliances ON alliance=shortname where id=%s"""
     return db.find_one(query, (id,))
 
+
 def getUserRCL(user):
     query = "SELECT id FROM room_imports WHERE status LIKE 'complete' ORDER BY started_at DESC"
     result = db.find_one(query)
@@ -139,8 +157,10 @@ def getUserRCL(user):
         return result
     return 0
 
+
 def convertGcl(control):
     return int((control / 1000000) ** (1 / 2.4)) + 1
+
 
 def getUserSpawns(user):
     query = "SELECT id FROM room_imports WHERE status LIKE 'complete' ORDER BY started_at DESC"
