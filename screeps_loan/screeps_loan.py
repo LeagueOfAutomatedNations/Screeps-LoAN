@@ -34,6 +34,7 @@ import screeps_loan.routes.static
 import screeps_loan.routes.userrankings
 
 import screeps_loan.extensions.jinja
+import logging
 
 
 @app.route("/obj/<filename>")
@@ -59,3 +60,10 @@ def add_header(response):
 
 # set the secret key.  keep this really secret:
 app.secret_key = os.environ["SECRET_KEY"]
+
+if __name__ != "__main__":
+    gunicorn_logger = logging.getLogger("gunicorn.error")
+    app.logger.handlers = gunicorn_logger.handlers
+    app.logger.setLevel(gunicorn_logger.level)
+
+app.logger.info("LoAN started")
