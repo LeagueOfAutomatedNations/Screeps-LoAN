@@ -53,4 +53,3 @@ async function update() {
 cron.schedule('0 */6 * * *', () => {
     update();
 });
-update();

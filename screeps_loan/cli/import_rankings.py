@@ -65,9 +65,9 @@ class Rankings(object):
     def run(self):
         alliance_query = alliances.AllianceQuery()
         all_alliances = alliance_query.getAll()
-        alliances_names = [item["shortname"] for item in all_alliances]
+        alliances_ids = [item["id"] for item in all_alliances]
         users_with_alliance = users_model.UserQuery().find_name_by_alliances(
-            alliances_names
+            alliances_ids
         )
 
         query = "SELECT id FROM room_imports WHERE status LIKE 'complete' ORDER BY started_at DESC"
@@ -79,11 +79,11 @@ class Rankings(object):
         print(self.id)
 
         for alliance in all_alliances:
-            users_with_alliance = self.find_name_by_alliances(alliances_names)
+            users_with_alliance = self.find_name_by_alliances(alliances_ids)
             members = [
                 user["name"]
                 for user in users_with_alliance
-                if user["alliance"] == alliance["shortname"]
+                if user["alliance_id"] == alliance["id"]
             ]
             filtered_members = [
                 user for user in members if self.get_player_room_count(user) > 0
@@ -94,10 +94,10 @@ class Rankings(object):
                 continue
 
             # Not enough rooms
-            if self.get_room_count(alliance["shortname"]) < 2:
+            if self.get_room_count(alliance["id"]) < 2:
                 continue
 
-            rcl = self.getAllianceRCL(alliance["shortname"])
+            rcl = self.getAllianceRCL(alliance["id"])
 
             combined_gcl = sum(self.getUserGCL(user) for user in filtered_members)
             average_gcl = combined_gcl / len(filtered_members)
@@ -110,7 +110,7 @@ class Rankings(object):
             power = sum(getUserPowerPoints(user) for user in filtered_members)
             alliance_power = self.convertPowerToLevel(power)
 
-            spawns = self.getAllianceSpawns(alliance["shortname"])
+            spawns = self.getAllianceSpawns(alliance["id"])
             print(
                 "%s- %s, %s, %s, %s, %s, %s, %s, %s"
                 % (
@@ -127,7 +127,7 @@ class Rankings(object):
             )
 
             self.update(
-                alliance["shortname"],
+                alliance["id"],
                 alliance_gcl,
                 combined_gcl,
                 average_gcl,
@@ -156,7 +156,7 @@ class Rankings(object):
 
     def update(
         self,
-        alliance,
+        alliance_id,
         alliance_gcl,
         combined_gcl,
         average_gcl,
@@ -173,7 +173,7 @@ class Rankings(object):
             query,
             (
                 self.id,
-                alliance,
+                alliance_id,
                 alliance_gcl,
                 combined_gcl,
                 average_gcl,
@@ -185,36 +185,36 @@ class Rankings(object):
             ),
         )
 
-    def getAllianceRCL(self, alliance):
-        query = "SELECT SUM(level) FROM rooms, users WHERE rooms.owner = users.id AND users.alliance=%s AND rooms.import=%s"
+    def getAllianceRCL(self, alliance_id):
+        query = "SELECT SUM(level) FROM rooms, users WHERE rooms.owner = users.id AND users.alliance_id=%s AND rooms.import=%s"
         cursor = self.conn.cursor()
-        cursor.execute(query, (alliance, self.room_import_id))
+        cursor.execute(query, (alliance_id, self.room_import_id))
         result = cursor.fetchone()[0]
         if result is not None:
             return result
         return 0
 
-    def getAllianceSpawns(self, alliance):
+    def getAllianceSpawns(self, alliance_id):
         count = 0
-        query = "SELECT COUNT(*) FROM rooms, users WHERE rooms.owner = users.id AND users.alliance=%s AND level>=8 AND rooms.import=%s"
+        query = "SELECT COUNT(*) FROM rooms, users WHERE rooms.owner = users.id AND users.alliance_id=%s AND level>=8 AND rooms.import=%s"
         cursor = self.conn.cursor()
-        cursor.execute(query, (alliance, self.room_import_id))
+        cursor.execute(query, (alliance_id, self.room_import_id))
         result = cursor.fetchone()[0]
         if result is not None:
             if result:
                 count += result * 3
 
-        query = "SELECT COUNT(*) FROM rooms, users WHERE rooms.owner = users.id AND users.alliance=%s AND level=7 AND rooms.import=%s"
+        query = "SELECT COUNT(*) FROM rooms, users WHERE rooms.owner = users.id AND users.alliance_id=%s AND level=7 AND rooms.import=%s"
         cursor = self.conn.cursor()
-        cursor.execute(query, (alliance, self.room_import_id))
+        cursor.execute(query, (alliance_id, self.room_import_id))
         result = cursor.fetchone()[0]
         if result is not None:
             if result:
                 count += result * 2
 
-        query = "SELECT COUNT(*) FROM rooms, users WHERE rooms.owner = users.id AND users.alliance=%s AND level>=1 AND level<7 AND rooms.import=%s"
+        query = "SELECT COUNT(*) FROM rooms, users WHERE rooms.owner = users.id AND users.alliance_id=%s AND level>=1 AND level<7 AND rooms.import=%s"
         cursor = self.conn.cursor()
-        cursor.execute(query, (alliance, self.room_import_id))
+        cursor.execute(query, (alliance_id, self.room_import_id))
         result = cursor.fetchone()[0]
         if result is not None:
             if result:
@@ -239,19 +239,19 @@ class Rankings(object):
     def getUserPowerLevel(self, username):
         return self.convertPowerToLevel(getUserPowerPoints(username))
 
-    def find_name_by_alliances(self, alliance):
-        query = "SELECT ign, alliance FROM users where alliance = ANY(%s)"
+    def find_name_by_alliances(self, alliance_id):
+        query = "SELECT ign, alliance_id FROM users where alliance_id = ANY(%s)"
         cursor = self.conn.cursor()
-        cursor.execute(query, (alliance,))
+        cursor.execute(query, (alliance_id,))
         result = cursor.fetchall()
-        return [{"name": row[0], "alliance": row[1]} for row in result]
+        return [{"name": row[0], "alliance_id": row[1]} for row in result]
 
-    def get_room_count(self, alliance):
+    def get_room_count(self, alliance_id):
         query = """
         SELECT COUNT(DISTINCT rooms.name)
             FROM rooms,users
             WHERE rooms.owner=users.id
-                AND users.alliance=%s
+                AND users.alliance_id=%s
                 AND rooms.import = (SELECT id
                                         FROM room_imports
                                         ORDER BY id desc
@@ -259,7 +259,7 @@ class Rankings(object):
                                     );
         """
         cursor = self.conn.cursor()
-        cursor.execute(query, (alliance,))
+        cursor.execute(query, (alliance_id,))
         result = cursor.fetchone()
         return int(result[0])
 

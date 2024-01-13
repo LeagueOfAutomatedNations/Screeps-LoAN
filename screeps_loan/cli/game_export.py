@@ -26,19 +26,19 @@ def export_to_segments():
     alliance_query = alliances.AllianceQuery()
     all_alliances = alliance_query.getAll()
 
-    alliances_name = [item["shortname"] for item in all_alliances]
-    users_with_alliance = users_model.UserQuery().find_name_by_alliances(alliances_name)
+    alliances_id = [item["id"] for item in all_alliances]
+    users_with_alliance = users_model.UserQuery().find_name_by_alliances(alliances_id)
 
     alliances_aux = {}
     for alliance in all_alliances:
         members = [
             user["name"]
             for user in users_with_alliance
-            if user["alliance"] == alliance["shortname"]
+            if user["alliance_id"] == alliance["id"]
         ]
         if len(members) < 2:
             continue
-        alliances_aux[alliance["shortname"]] = members
+        alliances_aux[alliance["id"]] = members
 
     alliance_json = json.dumps(alliances_aux)
 

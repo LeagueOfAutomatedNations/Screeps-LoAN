@@ -29,6 +29,6 @@ def login_as_user(user):
 
 
 @app.cli.command()
-@click.argument("alliance")
-def room_count(alliance):
-    click.echo(alliances_model.get_room_count(alliance))
+@click.argument("alliance_id")
+def room_count(alliance_id):
+    click.echo(alliances_model.get_room_count(alliance_id))
