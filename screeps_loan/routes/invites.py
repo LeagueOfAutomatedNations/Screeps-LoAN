@@ -57,10 +57,6 @@ def invite_accept(inviteid):
         abort(404)
 
     # Add user to appropriate alliance.
-    import json 
-    json_mylist = json.dumps(invite)
-    flash(my_id)
-    flash(json_mylist)
     users_model.update_alliance_by_user_id(my_id, invite["alliance_id"])
 
     # Remove all pending invites from user.
