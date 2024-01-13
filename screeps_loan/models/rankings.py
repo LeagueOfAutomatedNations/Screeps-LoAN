@@ -19,7 +19,9 @@ def get_all_rankings(import_id=None):
     if not import_id:
         query = "SELECT id FROM rankings_imports WHERE status LIKE 'complete' ORDER BY started_at DESC"
         result = db.find_one(query)
-        import_id = result[0]
+    if result is None:
+        return []
+    import_id = result[0]
     return get_all_rankings_by_import(import_id)
 
 
