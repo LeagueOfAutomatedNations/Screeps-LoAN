@@ -103,17 +103,24 @@ def alliance_profile(shortname):
     charter = clean_html(charter)
     alliance_url = "/a/%s.json" % (shortname)
     alliance_url = "/alliances.js"
-    
+
     users = users_model.find_users_by_alliance(shortname)
 
-    maxroomshard0 = get_shard_size('shard0')
-    maxroomshard1 = get_shard_size('shard1')
-    maxroomshard2 = get_shard_size('shard2')
-    maxroomshard3 = get_shard_size('shard3')
-
+    maxroomshard0 = get_shard_size("shard0")
+    maxroomshard1 = get_shard_size("shard1")
+    maxroomshard2 = get_shard_size("shard2")
+    maxroomshard3 = get_shard_size("shard3")
 
     return render_template(
-        "alliance_profile.html", shortname=shortname, charter=charter, alliance=alliance, users=users, maxroomshard0=maxroomshard0, maxroomshard1=maxroomshard1, maxroomshard2=maxroomshard2,maxroomshard3=maxroomshard3
+        "alliance_profile.html",
+        shortname=shortname,
+        charter=charter,
+        alliance=alliance,
+        users=users,
+        maxroomshard0=maxroomshard0,
+        maxroomshard1=maxroomshard1,
+        maxroomshard2=maxroomshard2,
+        maxroomshard3=maxroomshard3,
     )
 
 
@@ -141,6 +148,7 @@ def alliance_rankings():
 def alliance_rankings_json(ranking_type):
     rankings = rankings_model.get_rankings_by_import_and_type(ranking_type)
     return json.dumps(rankings)
+
 
 @cache.cache()
 def get_shard_size(shard):
