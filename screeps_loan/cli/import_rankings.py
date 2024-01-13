@@ -1,15 +1,14 @@
 import click
 from screeps_loan import app
-import screepsapi.screepsapi as screepsapi
 from screeps_loan.models.db import get_conn
 from screeps_loan.screeps_client import get_client
 from screeps_loan.models import db
 from screeps_loan.services.cache import cache
 
 import screeps_loan.models.alliances as alliances
-import screeps_loan.models.users as users
+import screeps_loan.models.users as users_model
 
-from random import shuffle, random
+from random import random
 from time import sleep
 import math
 
@@ -67,7 +66,9 @@ class Rankings(object):
         alliance_query = alliances.AllianceQuery()
         all_alliances = alliance_query.getAll()
         alliances_names = [item["shortname"] for item in all_alliances]
-        users_with_alliance = users.UserQuery().find_name_by_alliances(alliances_names)
+        users_with_alliance = users_model.UserQuery().find_name_by_alliances(
+            alliances_names
+        )
 
         query = "SELECT id FROM room_imports WHERE status LIKE 'complete' ORDER BY started_at DESC"
         result = db.find_one(query)
@@ -290,33 +291,33 @@ def import_rankings():
 @app.cli.command()
 def import_user_rankings():
     click.echo("Generating User Rankings")
-    dbusers = users.get_all_users_for_importing()
+    dbusers = users_model.get_all_users_for_importing()
     for dbuser in dbusers:
         # Only retrieve information if we don't have any or the player has some active rooms.
         if (
             not dbuser["gcl"]
-            or users.get_player_room_count(dbuser["ign"]) > 0
+            or users_model.get_player_room_count(dbuser["ign"]) > 0
             or random() < 0.05
         ):
             gcl = getUserControlPoints(dbuser["ign"])
             power = getUserPowerPoints(dbuser["ign"])
-            gcl_level = users.convertGcl(gcl)
-            rcl = users.getUserRCL(dbuser["id"])
-            spawns = users.getUserSpawns(dbuser["id"])
+            gcl_level = users_model.convertGcl(gcl)
+            rcl = users_model.getUserRCL(dbuser["id"])
+            spawns = users_model.getUserSpawns(dbuser["id"])
 
             print(
                 "%s has %s gcl and %s power, gclLevel %s, rcl %s, spawns %s"
                 % (dbuser["ign"], gcl, power, gcl_level, rcl, spawns)
             )
-            users.update_gcl_by_user_id(
+            users_model.update_gcl_by_user_id(
                 dbuser["id"], getUserControlPoints(dbuser["ign"])
             )
-            users.update_power_by_user_id(
+            users_model.update_power_by_user_id(
                 dbuser["id"], getUserPowerPoints(dbuser["ign"])
             )
-            users.update_gcl_level_by_user_id(dbuser["id"], gcl_level)
-            users.update_combined_rcl_by_user_id(dbuser["id"], rcl)
-            users.update_spawncount_by_user_id(dbuser["id"], spawns)
+            users_model.update_gcl_level_by_user_id(dbuser["id"], gcl_level)
+            users_model.update_combined_rcl_by_user_id(dbuser["id"], rcl)
+            users_model.update_spawncount_by_user_id(dbuser["id"], spawns)
             sleep(1.5)
         else:
             print("Skipping user %s" % (dbuser["ign"]))

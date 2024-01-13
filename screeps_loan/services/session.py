@@ -1,4 +1,3 @@
-from flask import Flask, session
 from flask.sessions import SessionInterface
 from beaker.middleware import SessionMiddleware
 from screeps_loan import app

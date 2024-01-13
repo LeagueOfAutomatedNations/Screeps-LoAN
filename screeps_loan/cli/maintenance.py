@@ -1,7 +1,6 @@
-import os, sys
+import os
 from datetime import datetime, timedelta
 import subprocess
-import click
 from screeps_loan import app
 from dotenv import load_dotenv
 

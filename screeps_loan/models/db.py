@@ -1,8 +1,6 @@
 import psycopg2
 import psycopg2.extras
 from flask import g
-from screeps_loan import app
-from psycopg2.extensions import STATUS_BEGIN, STATUS_READY
 import os
 
 
