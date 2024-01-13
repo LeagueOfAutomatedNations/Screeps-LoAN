@@ -94,6 +94,11 @@ def update_charter_of_alliance(shortname, charter):
     db.execute(query, (charter, shortname))
 
 
+def update_leader_of_alliance(shortname, leaders):
+    query = "UPDATE alliances SET leaders=%s WHERE shortname = %s"
+    db.execute(query, (leaders, shortname))
+
+
 def update_all_alliances_info(
     shortname, new_shortname, fullname, discord_url, color="#000000"
 ):

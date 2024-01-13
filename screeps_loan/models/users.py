@@ -36,6 +36,12 @@ def find_users_by_alliance(alliance):
     ]
 
 
+def find_player_id_by_alliance(alliance):
+    query = "SELECT screeps_id FROM users where alliance = %s"
+    result = db.find_all(query, (alliance,))
+    return [row[0] for row in result]
+
+
 def update_alliance_by_screeps_id(id, alliance):
     query = "UPDATE users SET alliance = %s WHERE screeps_id=%s"
     db.execute(query, (alliance, id))
@@ -138,7 +144,7 @@ def insert_username_with_id(name, id):
 
 
 def alliance_of_user(id):
-    query = """SELECT fullname, shortname, logo, charter, discord_url, color
+    query = """SELECT fullname, shortname, logo, charter, discord_url, color, leaders
                 from users JOIN alliances ON alliance=shortname where id=%s"""
     return db.find_one(query, (id,))
 
