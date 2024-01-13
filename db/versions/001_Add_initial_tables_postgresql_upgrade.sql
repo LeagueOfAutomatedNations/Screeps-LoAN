@@ -6,13 +6,6 @@ CREATE TABLE alliances (
     color character varying(15)
 );
 
-CREATE TABLE alliances (
-    shortname character varying(255) NOT NULL,
-    slack_channel character varying(2044),
-    fullname character varying(2044),
-    color character varying(15)
-);
-
 CREATE TABLE alliance_history (
     alliance_FK integer NOT NULL,
     user_FK integer NOT NULL,
