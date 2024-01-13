@@ -23,7 +23,7 @@ def auth(token):
         session["username"] = row[0]
         session["my_id"] = row[1]
         session["screeps_id"] = row[2]
-    return redirect(url_for("index"))
+    return redirect(url_for("my_alliance"))
 
 
 @app.route("/logout", methods=["GET", "POST"])

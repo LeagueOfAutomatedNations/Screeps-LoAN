@@ -159,26 +159,26 @@ def import_alliances():
     auth_user = screeps_loan.auth_user.AuthPlayer(screeps)
     resp = r.get("http://localhost:5000/alliances.js")
     data = json.loads(resp.text)
-    for shortname, info in data.items():
-        print(shortname)
+    for alliance_id, info in data.items():
         members = info["members"]
+        shortname = info["shortname"]
         fullname = info["name"]
         color = None
+        print(fullname)
         if "color" in info:
             color = info["color"]
-        slack = None
-        if "slack" in info:
-            slack = info["slack"]
-        alliance = alliance_query.find_by_shortname(shortname)
-        if alliance is None:
-            alliance_query.insert_alliance(shortname, fullname, color, slack)
-            alliance = shortname
+        discord = None
+        if "discord" in info:
+            discord = info["discord"]
+        alliance_id = alliance_query.find_by_shortname(shortname)
+        if alliance_id is None:
+            alliance_id = alliance_query.insert_alliance(shortname, fullname, color, discord)
 
         existing_member = [
-            i["name"] for i in users_query.find_name_by_alliances([shortname])
+            i["name"] for i in users_query.find_name_by_alliances([alliance_id])
         ]
         new_members = [name for name in members if name not in existing_member]
         for member in new_members:
             print(member)
             id = users_service.player_id_from_api(member)
-            users_query.update_alliance_by_screeps_id(id, shortname)
+            users_query.update_alliance_by_screeps_id(id, alliance_id)

@@ -23,10 +23,20 @@ services:
         condition: service_healthy
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.loan.rule=Host(`${FLASK_SERVER_NAME}`)"
       - "traefik.docker.network=traefik-net"
+      - "traefik.http.routers.loan.rule=Host(`loan.pandascreeps.com`)"
       - "traefik.http.routers.loan.entrypoints=websecure"
       - "traefik.http.routers.loan.tls.certresolver=letsencrypt"
+      - "traefik.http.middlewares.loan-redirect-web-secure.redirectscheme.scheme=https"
+      - "traefik.http.routers.loan.middlewares=loan-redirect-web-secure"
+      - "traefik.http.routers.loanExternal.rule=Host(`leagueofautomatednations.com`)"
+      - "traefik.http.routers.loanExternal.entrypoints=websecure"
+      - "traefik.http.routers.loanExternal.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.loanExternal2.rule=Host(`www.leagueofautomatednations.com`)"
+      - "traefik.http.routers.loanExternal2.entrypoints=websecure"
+      - "traefik.http.routers.loanExternal2.tls.certresolver=letsencrypt"
+      - "traefik.http.middlewares.loanExternal2-redirect-web-secure.redirectscheme.scheme=https"
+      - "traefik.http.routers.loanExternal2.middlewares=loanExternal2-redirect-web-secure"
     logging: *default-logging
     ports:
       - 5002:5000
@@ -44,4 +54,36 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "pg_isready", "-U", "screeps"]
     ports:
-      - 127.0.0.1:5434:5432
+      - 5434:5432
+  pgbackups:
+    image: prodrigestivill/postgres-backup-local
+    restart: always
+    volumes:
+        - /var/opt/pgbackupsLoAN:/backups
+    logging: *default-logging
+    links:
+      - postgresLoAN
+    depends_on:
+      - postgresLoAN
+    networks:
+      - traefik-net
+    environment:
+        - POSTGRES_HOST=postgresLoAN
+        - POSTGRES_DB=${DB}
+        - POSTGRES_USER=${DB_USERNAME}
+        - POSTGRES_PASSWORD=${DB_PASSWORD}
+        - POSTGRES_EXTRA_OPTS=-Z6 --schema=public --blobs
+        - SCHEDULE=@daily
+        - BACKUP_KEEP_DAYS=7
+        - BACKUP_KEEP_WEEKS=4
+        - BACKUP_KEEP_MONTHS=12
+        - HEALTHCHECK_PORT=8080
+  cronjob:
+    build: cronJob
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - "./logs:/usr/app/logs"
+    networks:
+      - traefik-net

@@ -23,8 +23,8 @@ python db/manage.py upgrade
 Finally, you can populate the database by doing this:
 
 ```bash
-flask import_users
-flask import_rankings
-flask import_alliances
-flask import_user_rankings
+flask import-users
+flask import-rankings
+flask import-alliances
+flask import-user-rankings
 ```

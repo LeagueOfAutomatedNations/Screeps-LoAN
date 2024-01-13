@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "node-cron": "^3.0.3",
+    "winston": "^3.11.0"
+  },
+  "type": "module"
+}

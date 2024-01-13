@@ -1,8 +1,24 @@
 CREATE TABLE alliances (
+    id SERIAL PRIMARY KEY,
     shortname character varying(255) NOT NULL,
-    slack_channel character varying(2044),
+    discord_url character varying(2044),
     fullname character varying(2044),
     color character varying(15)
+);
+
+CREATE TABLE alliances (
+    shortname character varying(255) NOT NULL,
+    discord_url character varying(2044),
+    fullname character varying(2044),
+    color character varying(15)
+);
+
+CREATE TABLE alliance_history (
+    alliance_FK integer NOT NULL,
+    user_FK integer NOT NULL,
+    timestamp timestamp without time zone DEFAULT current_timestamp NOT NULL,
+    change_type character varying(255) NOT NULL,
+    change text NOT NULL
 );
 
 CREATE TABLE rooms (
@@ -17,7 +33,7 @@ CREATE TABLE users (
     login_code character varying(2044),
     login_code_created_at timestamp without time zone,
     screeps_id character varying(50) NOT NULL,
-    alliance character varying(255)
+    alliance_id integer NULL,
 );
 
 CREATE SEQUENCE users_id_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1;

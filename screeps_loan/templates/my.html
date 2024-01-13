@@ -1,3 +1,4 @@
+{% from "macros/alliance_user_rankings.html" import allianceUserRankings with context %}
 {% extends "layout.html" %}
 {% block head %}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
@@ -6,26 +7,38 @@
 {% endblock %}
 {% block js_include %}
 <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
-<script src="{{url_for('static', filename="js/tinycolorpicker.js")}}"></script>
+<script src="{{url_for('static', filename = 'js/tinycolorpicker.js')}}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.8.0/spectrum.min.js"></script>
+<script type="text/javascript" language="javascript"
+    src="{{url_for ('static', filename = 'datatables/datatables.js')}}"></script>
+{{ super() }}
 {% endblock %}
+
+{% block script %}
+{{ super() }}
+$('.datatable').DataTable({
+"paging": false,
+"searching": false,
+"order": [[ 0, "asc" ]]
+});
+{% endblock %}
+
 {% block content %}
 <div class="row">
-
     <div class="small-11 columns">
         <ul class="tabs" data-tabs id="example-tabs">
             <div style="float:left; width:52px; height:52px">
                 {% if alliance['logo'] %}
-                <img class=""
-                src="{{url_for('get_obj', filename = alliance['logo']) }}">
+                <img class="" src="{{url_for('get_obj', filename = alliance['logo']) }}">
                 {% else %}
-                <img class=""
-                src="{{url_for('static', filename = 'img/leaguelogo.png') }}">
+                <img class="" src="{{url_for('static', filename = 'img/leaguelogo.png') }}">
                 {% endif %}
             </div>
             <li class="tabs-title is-active"><a href="#panel1" aria-selected="true">Management</a></li>
             <li class="tabs-title"><a href="#panel2" onclick="activateCharterBox()">Charter</a></li>
-            <li class="tabs-title"><a href="#panel3">Leave Alliance</a></li>
+            <li class="tabs-title"><a href="#panel3">Invites</a></li>
+            <li class="tabs-title"><a href="#panel4">User rankings</a></li>
+            <li class="tabs-title"><a href="#panel5">Leave Alliance</a></li>
         </ul>
         <div class="tabs-content" data-tabs-content="example-tabs">
             <div class="tabs-panel is-active" id="panel1">
@@ -42,80 +55,112 @@
                 </form>
                 <hr>
                 Upload your logo (around 190x190)
-                <form enctype="multipart/form-data"
-                action="{{url_for('upload_my_alliance_logo')}}" method="POST">
-                <input class="button" type=file name="logo">
-                <input class="button" type=submit value=Submit>
-            </form>
+                <form enctype="multipart/form-data" action="{{url_for('upload_my_alliance_logo')}}" method="POST">
+                    <input class="button" type=file name="logo">
+                    <input class="button" type=submit value=Submit>
+                </form>
 
-            <hr>
-            <form action="/my/updateprofile" method="POST">
-                <div class="row">
-                    <div class="large-4 columns">
-                        <label> Full name
-                            <input type="text" value="{{alliance['fullname']}}" name="fullname"/>
-                        </label>
-                    </div>
-                    <div class="large-3 columns">
-                        <label> Abbreviation
-                            <input type="text" value="{{alliance['shortname']}}" name="shortname" />
-                        </label>
-                    </div>
-                    <div class="large-3 columns">
-                        <label> Slack channel </label>
-                        <div class="input-group">
-                            <span class="input-group-label prefix">#</span>
-                            <input class="input-group-field"
-                            type="text"
-                            value="{{alliance['slack_channel']}}"
-                            name="slack_channel" />
+                <hr>
+                <form action="/my/updateprofile" method="POST">
+                    <div class="row">
+                        <div class="large-4 columns">
+                            <label> Full name
+                                <input type="text" value="{{alliance['fullname']}}" name="fullname" />
+                            </label>
                         </div>
-                    </div>
+                        <div class="large-3 columns">
+                            <label> Abbreviation
+                                <input type="text" value="{{alliance['shortname']}}" name="shortname" />
+                            </label>
+                        </div>
+                        <div class="large-3 columns">
+                            <label> Discord url </label>
+                            <div class="input-group">
+                                <input class="input-group-field" type="text" value="{{alliance['discord_url']}}"
+                                    name="discord_url" />
+                            </div>
+                        </div>
 
-                    <div class="large-2 columns">
-                        <!--
+                        <div class="large-2 columns">
+                            <!--
                             <label> Alliance Color </label>
                             <input name="color" type="color"
                             id='colorpicker' value="{{alliance['color']}}"/>
                         -->
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="large-12 columns">
+                            <input type="submit" value="Save" class="success button">
+                        </div>
                     </div>
 
-                </div>
-                <div class="row">
-                    <div class="large-12 columns">
-                        <input type="submit" value="Save" class="success button">
+                </form>
+
+            </div>
+            <div class="tabs-panel" id="panel2">
+                <form id="charter-form" action="/my/updatecharter" method="POST">
+                    <textarea id="charter" name="charter">{{alliance['charter']}}</textarea>
+                    <input type=submit value="Submit">
+                </form>
+            </div>
+            <div class="tabs-panel" id="panel3">
+                <div class="callout primary">
+                    <div class="row column">
+                        <h1 class='text-center'>Invites</h1>
+                        <p class="lead"></p>
                     </div>
                 </div>
 
-            </form>
-
-        </div>
-        <div class="tabs-panel" id="panel2">
-            <form id="charter-form" action="/my/updatecharter" method="POST">
-                <textarea id="charter" name="charter">{{alliance['charter']}}</textarea>
-                <input type=submit value="Submit">
-            </form>
-        </div>
-        <div class="tabs-panel" id="panel3">
-            <form id="leave-form" action="/my/leave" method="POST">
-                <input class="button" type=submit value="Leave Alliance">
-            </form>
+                <div class='row rankings'>
+                    <table role="grid" class="datatable">
+                        <thead>
+                            <tr>
+                                <th>Reciever</th>
+                                <th>Sent by User</th>
+                                <th>Sent at</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for invite in invites %}
+                            <tr>
+                                <td>{{ get_name_from_user_id(invite['user_id']) }}</td>
+                                <td>{{ get_name_from_user_id(invite['sender']) }}</td>
+                                <td>{{invite['sent_at']}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="tabs-panel" id="panel4">
+                {{ allianceUserRankings(shortname=shortname) }}
+            </div>
+            <div class="tabs-panel" id="panel5">
+                <form id="leave-form" action="/my/leave" method="POST">
+                    <input class="button" type=submit value="Leave Alliance">
+                </form>
+            </div>
         </div>
     </div>
 </div>
-{% endblock %}
-{% block script %}
-$(document).ready(function() {
-    //$("#colorpicker").spectrum({
-        //    color: "#f00"
-        //});
-        var simplemde = new SimpleMDE({ element: document.getElementById("charter"),
-        autofocus:true});
-        function activateCharterBox() {
-            setTimeout(function() {
-                simplemde.codemirror.refresh();
-            }.bind(simplemde), 0);
-        };
 
-    });
+<script>
+    let simplemde;
+    function activateCharterBox() {
+        setTimeout(function () {
+            simplemde.codemirror.refresh();
+        }.bind(simplemde), 0);
+    };
+
+    window.onload = function () {
+        simplemde = new SimpleMDE({
+            element: document.getElementById("charter"),
+            autofocus: true
+        });
+        activateCharterBox();
+    };
+</script>
+
 {% endblock %}

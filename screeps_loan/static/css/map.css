@@ -1,7 +1,7 @@
-#ScreepsMapFlex {
-  position: relative;
-  display: flex;
-  align-items: flex-start;
+.ScreepsMapFlex {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
 }
 
 .spinner {
@@ -16,67 +16,69 @@
     background-position: center center;
 }
 
-#ScreepsMapContainer {
+.ScreepsMapContainer {
     display: block;
     height: 1024px;
     width: 1024px;
     cursor: pointer;
 }
 
-#ScreepsColorKeyContainer {
+.ScreepsColorKeyContainer {
     float: right;
 }
 
-#ScreepsMapFlex .colorKeyList, #ScreepsMapFlex .layerControls {
+.ScreepsMapFlex .colorKeyList,
+#ScreepsMapFlex .layerControls {
     list-style: none;
 }
 
-#ScreepsColorKeyContainer .colorKeyList .colorBox {
-  display: inline-block;
-  border: 1px solid black;
-  width: 1em;
-  height: 1em;
-  margin-right: 2px;
-  vertical-align: middle;
+.ScreepsColorKeyContainer .colorKeyList .colorBox {
+    display: inline-block;
+    border: 1px solid black;
+    width: 1em;
+    height: 1em;
+    margin-right: 2px;
+    vertical-align: middle;
 }
 
-#ScreepsMapTooltip {
-  position: fixed;
-  z-index: 800;
-  background-color: #FFFFFF;
-  opacity: 0.80;
-  padding: 5px;
-  border: 1px solid black;
-  border-radius: 10px;
-  width: 17em;
+.ScreepsMapTooltip {
+    position: fixed;
+    z-index: 800;
+    background-color: #FFFFFF;
+    opacity: 0.80;
+    padding: 5px;
+    border: 1px solid black;
+    border-radius: 10px;
+    width: 17em;
 }
 
-#ScreepsMapTooltip dl {
-  display: flex;
-  flex-wrap: wrap;
+.ScreepsMapTooltip dl {
+    display: flex;
+    flex-wrap: wrap;
 }
 
-#ScreepsMapTooltip dl dt {
-  width: 30%;
+.ScreepsMapTooltip dl dt {
+    width: 30%;
 }
-#ScreepsMapTooltip dl div {
-  width: 66%;
+
+.ScreepsMapTooltip dl div {
+    width: 66%;
 }
 
 .alliance-label {
-  font-size: 12px;
-  font-weight: bold;
-  text-shadow:
-      -1px -1px 0 #000,
-      1px -1px 0 #000,
-      -1px 1px 0 #000,
-      1px 1px 0 #000,
+    font-size: 12px;
+    font-weight: bold;
+    text-shadow:
+        -1px -1px 0 #000,
+        1px -1px 0 #000,
+        -1px 1px 0 #000,
+        1px 1px 0 #000,
 
-      -2px -2px 0 #666,
-      2px -2px 0 #666,
-      -2px 2px 0 #666,
-      2px 2px 0 #666;
-  user-select: none;
+        -2px -2px 0 #666,
+        2px -2px 0 #666,
+        -2px 2px 0 #666,
+        2px 2px 0 #666;
+    user-select: none;
 }
 
 .leaflet-slider input[type="range"] {
@@ -86,6 +88,7 @@
     display: inline-block;
     vertical-align: top;
 }
+
 .leaflet-slider input[type=range]:focus {
     outline: none;
 }
@@ -105,18 +108,17 @@
     position: relative;
     --outer-color: rgb(192, 192, 192);
     --range-color: rgb(104, 162, 195);
-    --slider-bar: linear-gradient(
-            to right,
+    --slider-bar: linear-gradient(to right,
             var(--outer-color) var(--low),
             var(--range-color) 0,
             var(--range-color) var(--high),
-            var(--outer-color) 0
-        ) no-repeat 0 45% / 100% 40%;
+            var(--outer-color) 0) no-repeat 0 45% / 100% 40%;
 }
 
 .leaflet-slider input[type="range"].beta::-webkit-slider-runnable-track {
     background: var(--slider-bar);
 }
+
 .leaflet-slider input[type="range"].beta::-moz-range-track {
     background: var(--slider-bar);
 }
@@ -133,6 +135,7 @@
     height: 24px;
     width: 20px;
 }
+
 .leaflet-slider input[type=range]::-moz-range-thumb {
     border: 1px solid black;
     border-radius: 3px;
@@ -157,8 +160,8 @@
 .rcl-control {
     background: #fff;
     border-radius: 5px;
-    border: 2px solid rgba(0,0,0,0.2);
+    border: 2px solid rgba(0, 0, 0, 0.2);
     background-clip: padding-box;
     padding: 10px;
-    clear: none;
+    clear: none !important;
 }
