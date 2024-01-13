@@ -1,6 +1,5 @@
 import click
 from screeps_loan import app
-import screepsapi.screepsapi as screepsapi
 import re
 import json
 from screeps_loan.models.db import get_conn

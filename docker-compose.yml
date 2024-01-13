@@ -24,10 +24,3 @@ services:
       test: [ "CMD-SHELL", "pg_isready", "-U", "screeps" ]
     ports:
       - 127.0.0.1:5432:5432
-  cronjob:
-    build: cronJob
-    restart: unless-stopped
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    volumes:
-      - "./logs:/usr/app/logs"

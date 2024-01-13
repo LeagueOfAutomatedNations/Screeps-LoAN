@@ -1,5 +1,5 @@
 from screeps_loan import app
-from flask import render_template, redirect, request, session, url_for, escape, flash
+from flask import render_template, redirect, request, session, url_for, flash
 from werkzeug.utils import secure_filename
 import os
 import hashlib
@@ -8,8 +8,6 @@ import screeps_loan.models.invites as invites_model
 import screeps_loan.models.users as users_model
 from screeps_loan.routes.decorators import login_required
 from screeps_loan.auth_user import AuthPlayer
-import screeps_loan.services.users as users_service
-import hashlib
 import screeps_loan.screeps_client as screeps_client
 import re
 
@@ -168,7 +166,7 @@ def invite_to_alliance():
         % (alliance["fullname"], url_for("list_invites", _external=True)),
     )
 
-    flash("Successfully invited user to your alliance")
+    flash("Successfully invited {} to your alliance".format(username))
     return redirect(url_for("my_alliance"))
 
 

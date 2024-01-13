@@ -4,6 +4,7 @@ from screeps_loan.models import users
 import screeps_loan.screeps_client as screeps_client
 from screeps_loan.auth_user import AuthPlayer
 
+import os
 
 import screeps_loan.models.alliances as alliances_model
 

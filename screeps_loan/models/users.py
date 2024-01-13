@@ -55,15 +55,21 @@ def update_power_by_user_id(id, power):
     query = "UPDATE users SET power = %s WHERE id=%s"
     db.execute(query, (power, id))
 
+
 def update_gcl_level_by_user_id(id, gcl_level):
     query = "UPDATE users SET gcl_level = %s WHERE id=%s"
     db.execute(query, (gcl_level, id))
+
+
 def update_combined_rcl_by_user_id(id, combined_rcl):
     query = "UPDATE users SET combined_rcl = %s WHERE id=%s"
     db.execute(query, (combined_rcl, id))
+
+
 def update_spawncount_by_user_id(id, spawncount):
     query = "UPDATE users SET spawncount = %s WHERE id=%s"
     db.execute(query, (spawncount, id))
+
 
 @cache.cache(expire=60)
 def get_all_users():
@@ -136,6 +142,7 @@ def alliance_of_user(user_id):
                 WHERE id = (SELECT alliance_id FROM users WHERE id = %s LIMIT 1);"""
     return db.find_one(query, (user_id,))
 
+
 def getUserRCL(user):
     query = "SELECT id FROM room_imports WHERE status LIKE 'complete' ORDER BY started_at DESC"
     result = db.find_one(query)
@@ -150,8 +157,10 @@ def getUserRCL(user):
         return result
     return 0
 
+
 def convertGcl(control):
     return int((control / 1000000) ** (1 / 2.4)) + 1
+
 
 def getUserSpawns(user):
     query = "SELECT id FROM room_imports WHERE status LIKE 'complete' ORDER BY started_at DESC"

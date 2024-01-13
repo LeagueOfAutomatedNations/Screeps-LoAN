@@ -8,7 +8,7 @@ CREATE TABLE alliances (
 
 CREATE TABLE alliances (
     shortname character varying(255) NOT NULL,
-    discord_url character varying(2044),
+    slack_channel character varying(2044),
     fullname character varying(2044),
     color character varying(15)
 );

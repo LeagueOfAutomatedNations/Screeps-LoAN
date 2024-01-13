@@ -1,10 +1,9 @@
 from screeps_loan import app
-from flask import Flask, session, redirect, url_for, escape, request, render_template
+from flask import session, redirect, url_for, request, render_template
 from screeps_loan.models.db import get_conn
 import screepsapi.screepsapi as screepsapi
 import screeps_loan.screeps_client as screeps_client
 from screeps_loan.auth_user import AuthPlayer
-import screeps_loan.services.session
 
 
 @app.route("/auth/success")
