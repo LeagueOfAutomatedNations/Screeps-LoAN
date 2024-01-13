@@ -155,7 +155,7 @@ def invite_to_alliance():
         % (alliance["fullname"], url_for("list_invites", _external=True)),
     )
 
-    flash("Successfully invited user to your alliance")
+    flash("Successfully invited {} to your alliance".format(username))
     return redirect(url_for("my_alliance"))
 
 
