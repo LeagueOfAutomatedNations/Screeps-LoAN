@@ -1,7 +1,6 @@
 from screeps_loan import app
 import screeps_loan.models.alliances as alliances_model
 import screeps_loan.models.rankings as rankings_model
-from screeps_loan.models.rooms import get_all_rooms
 import screeps_loan.models.users as users_model
 from screeps_loan.services.cache import cache
 from screeps_loan.screeps_client import get_client
@@ -16,10 +15,7 @@ from screeps_loan.routes.errors import show_error
 @cross_origin(origins="*", send_wildcard=True, methods="GET")
 @httpresponse(expires=300, content_type="application/json")
 def alliance_listing_json():
-    import screeps_loan.models.alliances as alliances
-    import screeps_loan.models.users as users
-
-    alliance_query = alliances.AllianceQuery()
+    alliance_query = alliances_model.AllianceQuery()
     all_alliances = alliance_query.getAll()
 
     alliance_users = alliance_query.getMembershipData()
@@ -59,13 +55,10 @@ def alliance_listing_json():
 
 @app.route("/alliances")
 def alliance_listing():
-    import screeps_loan.models.alliances as alliances
-    import screeps_loan.models.users as users
-
-    alliance_query = alliances.AllianceQuery()
+    alliance_query = alliances_model.AllianceQuery()
     all_alliances = alliance_query.getAll()
     alliances_name = [item["shortname"] for item in all_alliances]
-    users_with_alliance = users.UserQuery().find_name_by_alliances(alliances_name)
+    users_with_alliance = users_model.UserQuery().find_name_by_alliances(alliances_name)
     display_alliances = []
     for alliance in all_alliances:
         if not alliance["shortname"]:

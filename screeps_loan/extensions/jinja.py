@@ -8,9 +8,9 @@ alliance_query = alliances_model.AllianceQuery()
 app.jinja_env.globals.update(get_name_from_shortname=alliance_query.find_by_shortname)
 
 
-import screeps_loan.models.users as users
+import screeps_loan.models.users as users_model
 
-app.jinja_env.globals.update(get_name_from_user_id=users.user_name_from_db_id)
+app.jinja_env.globals.update(get_name_from_user_id=users_model.user_name_from_db_id)
 
 
 import screeps_loan.models.invites as invites

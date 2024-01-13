@@ -3,7 +3,7 @@ from screeps_loan import app
 from screeps_loan.screeps_client import get_client
 
 import screeps_loan.models.alliances as alliances
-import screeps_loan.models.users as users
+import screeps_loan.models.users as users_model
 
 import json
 import requests
@@ -23,14 +23,11 @@ def export_to_segments():
     else:
         clone_data = False
 
-    import screeps_loan.models.alliances as alliances
-    import screeps_loan.models.users as users
-
     alliance_query = alliances.AllianceQuery()
     all_alliances = alliance_query.getAll()
 
     alliances_name = [item["shortname"] for item in all_alliances]
-    users_with_alliance = users.UserQuery().find_name_by_alliances(alliances_name)
+    users_with_alliance = users_model.UserQuery().find_name_by_alliances(alliances_name)
 
     alliances_aux = {}
     for alliance in all_alliances:
