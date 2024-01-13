@@ -1,7 +1,7 @@
 CREATE TABLE alliances (
     id SERIAL PRIMARY KEY,
     shortname character varying(255) NOT NULL,
-    discord_url character varying(2044),
+    discord_url text,
     fullname character varying(2044),
     color character varying(15)
 );

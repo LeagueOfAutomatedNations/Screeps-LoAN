@@ -10,7 +10,7 @@ app.jinja_env.globals.update(get_name_from_alliance_id=alliance_query.find_by_id
 
 import screeps_loan.models.users as users_model
 
-app.jinja_env.globals.update(get_name_from_user_id=users.user_name_from_db_id)
+app.jinja_env.globals.update(get_name_from_user_id=users_model.user_name_from_db_id)
 app.jinja_env.globals.update(get_shortname_from_alliance_id=alliances_model.find_shortname_by_id)
 
 

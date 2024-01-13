@@ -49,6 +49,60 @@ ORDER BY alliances.shortname;
             for i in result
         ]
 
+    def getMembershipData(self):
+        query = "SELECT id FROM room_imports ORDER BY id desc LIMIT 1"
+        result = db.find_one(query)
+        if result is None:
+            return []
+        import_id = result[0]
+
+        query = """
+          SELECT
+            t.alliance,
+            string_agg(t.ign, ',') AS members,
+            SUM(CASE WHEN t.room_count > 0 THEN 1 ELSE 0 END) AS active_member_count,
+            SUM(t.room_count) AS room_count
+            FROM
+              (
+                SELECT
+                  COUNT(DISTINCT rooms.name) AS room_count,
+                  users.ign,
+                  users.alliance
+                  FROM
+                      users
+                    JOIN
+                      alliances
+                    ON
+                      users.alliance_id = alliances.id
+                    LEFT JOIN
+                      rooms
+                    ON
+                        rooms.owner = users.id
+                      AND
+                        rooms.import = %s
+                  GROUP BY
+                    users.ign,
+                    users.alliance
+                  ORDER BY
+                    users.ign
+            ) t
+          GROUP BY
+            t.alliance
+          ORDER BY
+            t.alliance;
+        """
+        result = db.find_all(query, (import_id,))
+        return_value = []
+        return [
+            {
+                "shortname": row[0],
+                "members": row[1].split(","),
+                "active_member_count": int(row[2]),
+                "room_count": int(row[3]),
+            }
+            for row in result
+        ]
+
     def getMembershipDataByShard(self, shard):
         query = "SELECT id FROM room_imports ORDER BY id desc LIMIT 1"
         result = db.find_one(query)
@@ -131,7 +185,6 @@ ORDER BY
             conn.commit()
             return alliance_id
         except Exception as e:
-            print(e)
             conn.rollback()
 
 def update_logo_of_alliance(alliance_id, user_id, logo):
@@ -146,7 +199,6 @@ def update_logo_of_alliance(alliance_id, user_id, logo):
 
         conn.commit()
     except Exception as e:
-        print(e)
         conn.rollback()
 
 
@@ -162,7 +214,6 @@ def update_charter_of_alliance(alliance_id, user_id, charter):
 
         conn.commit()
     except Exception as e:
-        print(e)
         conn.rollback()
 
 
@@ -181,17 +232,15 @@ def update_all_alliances_info(
 
         conn.commit()
     except Exception as e:
-        print(e)
         conn.rollback()
 
 def create_an_alliance(user_id, fullname, shortname, color="#000000"):
     conn = db.get_conn()
     try:
-        query = "INSERT INTO alliances(fullname, shortname, color) VALUES(%s, %s, %s) RETURNING id"
+        query = "INSERT INTO alliances(fullname, shortname, color) VALUES(%s, %s, %s) returning Id"
         cursor = conn.cursor()
         cursor.execute(query, (fullname, shortname, color))
-        cursor.execute("SELECT LAST_INSERT_ID()")
-        alliance_id = cursor.fetchone()[0]["id"]
+        alliance_id = cursor.fetchone()[0]
 
         query = "UPDATE users SET alliance_id = %s WHERE id = %s"
         cursor.execute(query, (alliance_id, user_id))
@@ -201,7 +250,6 @@ def create_an_alliance(user_id, fullname, shortname, color="#000000"):
 
         conn.commit()
     except Exception as e:
-        print(e)
         conn.rollback()
 
 def find_by_shortname(name):

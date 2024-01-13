@@ -66,7 +66,7 @@ class Rankings(object):
         alliance_query = alliances.AllianceQuery()
         all_alliances = alliance_query.getAll()
         alliances_ids = [item["id"] for item in all_alliances]
-        users_with_alliance = users.UserQuery().find_name_by_alliances(alliances_ids)
+        users_with_alliance = users_model.UserQuery().find_name_by_alliances(alliances_ids)
 
         query = "SELECT id FROM room_imports WHERE status LIKE 'complete' ORDER BY started_at DESC"
         result = db.find_one(query)

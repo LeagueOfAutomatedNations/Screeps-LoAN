@@ -10,12 +10,53 @@ from flask import render_template
 from flask_cors import cross_origin
 from screeps_loan.routes.errors import show_error
 
+@app.route("/alliances.js")
+@cross_origin(origins="*", send_wildcard=True, methods="GET")
+@httpresponse(expires=300, content_type="application/json")
+def alliance_listing_json():
+    alliance_query = alliances_model.AllianceQuery()
+    all_alliances = alliance_query.getAll()
+
+    alliance_users = alliance_query.getMembershipData()
+    alliance_user_data = {}
+    for users_row in alliance_users:
+        alliance_user_data[users_row["shortname"]] = users_row
+
+    ranking_types = rankings_model.get_rankings_list()
+    ranking_data = {}
+    for ranking_type in ranking_types:
+        ranking_data[ranking_type] = rankings_model.get_rankings_by_import_and_type(
+            ranking_type
+        )
+
+    alliances_aux = {}
+    for alliance in all_alliances:
+        if not alliance["shortname"] in alliance_user_data:
+            continue
+
+        if alliance_user_data[alliance["shortname"]]["room_count"] < 1:
+            continue
+
+        alliance["members"] = alliance_user_data[alliance["shortname"]]["members"]
+        alliance["name"] = alliance["fullname"]
+        alliance["abbreviation"] = alliance["shortname"]
+        alliance.pop("fullname", None)
+        alliance.pop("shortname", None)
+
+        for ranking_type in ranking_types:
+            if alliance["abbreviation"] in ranking_data[ranking_type]:
+                data = ranking_data[ranking_type][alliance["abbreviation"]]
+                alliance[ranking_type + "_rank"] = data
+        alliances_aux[alliance["abbreviation"]] = alliance
+
+    return json.dumps(alliances_aux)
+
 @app.route("/alliances")
 def alliance_listing():
     alliance_query = alliances_model.AllianceQuery()
     all_alliances = alliance_query.getAll()
     alliances_id = [item["id"] for item in all_alliances]
-    users_with_alliance = users.UserQuery().find_name_by_alliances(alliances_id)
+    users_with_alliance = users_model.UserQuery().find_name_by_alliances(alliances_id)
     display_alliances = []
     for alliance in all_alliances:
         if not alliance["id"]:

@@ -159,7 +159,7 @@ def invite_to_alliance():
         flash("User is already in an alliance.")
         return redirect(url_for("my_alliance"))
 
-    invites_model.add_invite(id, alliance["id"], my_id)
+    invites_model.add_or_update_invite(id, alliance["id"], my_id)
     api.msg_send(
         ign,
         "You are invited to join %s \n\n%s"
@@ -195,11 +195,11 @@ def kick_from_alliance():
     if current_alliance[1] != alliance[1]:
         flash("User is not in your alliance.")
         return redirect(url_for("my_alliance"))
-    if my_id != user_id:
+    if my_id == user_id:
         flash("You cant kick yourself.")
         return redirect(url_for("my_alliance"))
 
-    users_model.update_alliance_by_user_id(user_id)
+    users_model.update_alliance_by_user_id(user_id, alliance["id"], True)
 
     flash("Successfully kicked user from your alliance")
     return redirect(url_for("my_alliance"))

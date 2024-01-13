@@ -1,4 +1,5 @@
 from screeps_loan.models import db
+from screeps_loan import app
 from screeps_loan.services.cache import cache
 from screeps_loan.models.db import get_conn
 
@@ -30,19 +31,18 @@ def update_alliance_by_screeps_id(id, alliance_id):
     db.execute(query, (alliance_id, id))
 
 
-def update_alliance_by_user_id(user_id, alliance_id=None):
+def update_alliance_by_user_id(user_id, alliance_id, isKicked=False):
     conn = db.get_conn()
     try:
         query = "UPDATE users SET alliance_id = %s WHERE id=%s"
         cursor = conn.cursor()
-        cursor.execute(query, (alliance_id, user_id))
+        cursor.execute(query, (None if isKicked else alliance_id, user_id))
 
         query = "INSERT INTO alliance_history(alliance_FK, user_FK, change_type, change) VALUES(%s, %s, %s, %s)"
-        cursor.execute(query, (alliance_id, user_id, "joined" if alliance_id != None else "kicked", alliance_id))
+        cursor.execute(query, (alliance_id, user_id, "joined" if alliance_id != None else "kicked", ""))
 
         conn.commit()
     except Exception as e:
-        print(e)
         conn.rollback()
 
 

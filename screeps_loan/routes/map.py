@@ -41,7 +41,7 @@ def alliance_room_shard_json(shard=None):
 @app.route("/map/<shard>/alliances.js")
 @cross_origin(origins="*", send_wildcard=True, methods="GET")
 @httpresponse(expires=300, content_type="application/json")
-def alliance_listing_json(shard=None):
+def alliance_listing_json_by_shard(shard=None):
     import screeps_loan.models.alliances as alliances
     import screeps_loan.models.users as users
 

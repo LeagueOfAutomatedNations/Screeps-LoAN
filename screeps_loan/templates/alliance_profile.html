@@ -44,7 +44,7 @@ $('.datatable').DataTable({
         <li class="tabs-title is-active"><a href="#panel1" aria-selected="true">Locations</a></li>
         <li class="tabs-title"><a href="#panel2">User ranking</a></li>
         <li class="tabs-title"><a href="#panel3">Charter</a></li>
-        {% if alliance['discord_channel'] %}
+        {% if alliance['discord_url'] %}
         <li class="tabs-title" onclick="location.href='{{ alliance['discord_url'] }}'">
             <a href="{{ alliance['discord_url'] }}" title="{{ alliance['discord_url'] }}" target="_blank">Discord</a>
         </li>

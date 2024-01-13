@@ -2,11 +2,26 @@ from screeps_loan.models import db
 from screeps_loan.services.cache import cache
 
 
-def add_invite(user_id, alliance_id, sender):
-    query = (
-        "INSERT INTO alliance_invites(alliance_id, user_id, sender) VALUES (%s, %s, %s)"
-    )
-    db.execute(query, (alliance_id, user_id, sender))
+def add_or_update_invite(user_id, alliance_id, sender):
+    conn = db.get_conn()
+    try:
+        # Delete existing invite
+        delete_query = "DELETE FROM alliance_invites WHERE alliance_id = %s AND user_id = %s"
+        delete_cursor = conn.cursor()
+        delete_cursor.execute(delete_query, (alliance_id, user_id))
+        conn.commit()
+
+        # Insert new invite with updated timestamp
+        insert_query = (
+            "INSERT INTO alliance_invites(alliance_id, user_id, sender) "
+            "VALUES (%s, %s, %s)"
+        )
+        insert_cursor = conn.cursor()
+        insert_cursor.execute(insert_query, (alliance_id, user_id, sender))
+        conn.commit()
+    except Exception as e:
+        print(e)
+        conn.rollback()
 
 
 def get_invites_by_user(user):
