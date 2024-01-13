@@ -58,7 +58,7 @@ def get_rankings_by_import_and_type(ranking_type, import_id=None):
 
 
 @cache.cache()
-def get_rankings_by_alliance_and_type(ranking_type, alliance, import_id=None):
+def get_rankings_by_alliance_and_type(ranking_type, alliance_id, import_id=None):
     allowed_types = get_rankings_list()
     if ranking_type not in allowed_types:
         raise ValueError("Not a valid ranking type")
@@ -69,8 +69,8 @@ def get_rankings_by_alliance_and_type(ranking_type, alliance, import_id=None):
     query = (
         "SELECT "
         + ranking_type
-        + " FROM rankings WHERE alliance=(%s) AND import=(%s) ORDER BY "
+        + " FROM rankings WHERE alliance_id=(%s) AND import=(%s) ORDER BY "
         + ranking_type
         + " DESC"
     )
-    return db.find_all(query, (alliance, import_id))
+    return db.find_all(query, (alliance_id, import_id))

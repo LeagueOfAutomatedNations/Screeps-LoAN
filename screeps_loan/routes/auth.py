@@ -23,7 +23,7 @@ def auth(token):
         session["username"] = row[0]
         session["my_id"] = row[1]
         session["screeps_id"] = row[2]
-    return redirect(url_for("index"))
+    return redirect(url_for("my_alliance"))
 
 
 @app.route("/logout", methods=["GET", "POST"])
@@ -49,7 +49,6 @@ def login():
         (id, token) = auth.auth_token(username)
         if id is not None:
             url = url_for("auth", token=token, _external=True)
-            url = url.replace("http://", "https://")
             message = "Login to the League of Automated Nations %s" % url
             api.msg_send(id, message)
         return redirect(url_for("auth_request"))

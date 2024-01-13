@@ -144,7 +144,7 @@
         mapViews[shard].setSpinnerVisibile(true);
         console.log("Start", shard)
         $.when(
-            $.getJSON('/alliances.js', {}, function (data) {
+            $.getJSON(`/map/${shard}/alliances.js`, {}, function (data) {
                 console.log('alliance data loaded', shard, data);
                 alliances[shard] = data;
             }),

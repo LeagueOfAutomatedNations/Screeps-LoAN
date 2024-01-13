@@ -326,6 +326,11 @@ var ScreepsMap = (function () {
             output += '  </li>';
             output += '</div>';
         }
+
+        if (alliance_shortnames.length === 0) {
+            output += '<span class="colorLabel">No one found</span>';
+        }
+
         output += '</ul>';
         container.innerHTML = output;
     }

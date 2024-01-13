@@ -1,3 +1,4 @@
+{% from "macros/alliance_user_rankings.html" import allianceUserRankings with context %}
 {% extends "layout.html" %}
 {% block head %}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
@@ -6,12 +7,24 @@
 {% endblock %}
 {% block js_include %}
 <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
-<script src="{{url_for('static', filename=" js/tinycolorpicker.js")}}"></script>
+<script src="{{url_for('static', filename = 'js/tinycolorpicker.js')}}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.8.0/spectrum.min.js"></script>
+<script type="text/javascript" language="javascript"
+    src="{{url_for ('static', filename = 'datatables/datatables.js')}}"></script>
+{{ super() }}
 {% endblock %}
+
+{% block script %}
+{{ super() }}
+$('.datatable').DataTable({
+"paging": false,
+"searching": false,
+"order": [[ 0, "asc" ]]
+});
+{% endblock %}
+
 {% block content %}
 <div class="row">
-
     <div class="small-11 columns">
         <ul class="tabs" data-tabs id="example-tabs">
             <div style="float:left; width:52px; height:52px">
@@ -23,7 +36,9 @@
             </div>
             <li class="tabs-title is-active"><a href="#panel1" aria-selected="true">Management</a></li>
             <li class="tabs-title"><a href="#panel2" onclick="activateCharterBox()">Charter</a></li>
-            <li class="tabs-title"><a href="#panel3">Leave Alliance</a></li>
+            <li class="tabs-title"><a href="#panel3">Invites</a></li>
+            <li class="tabs-title"><a href="#panel4">User rankings</a></li>
+            <li class="tabs-title"><a href="#panel5">Leave Alliance</a></li>
         </ul>
         <div class="tabs-content" data-tabs-content="example-tabs">
             <div class="tabs-panel is-active" id="panel1">
@@ -61,7 +76,6 @@
                         <div class="large-3 columns">
                             <label> Discord url </label>
                             <div class="input-group">
-                                <span class="input-group-label prefix">#</span>
                                 <input class="input-group-field" type="text" value="{{alliance['discord_url']}}"
                                     name="discord_url" />
                             </div>
@@ -92,25 +106,61 @@
                 </form>
             </div>
             <div class="tabs-panel" id="panel3">
+                <div class="callout primary">
+                    <div class="row column">
+                        <h1 class='text-center'>Invites</h1>
+                        <p class="lead"></p>
+                    </div>
+                </div>
+
+                <div class='row rankings'>
+                    <table role="grid" class="datatable">
+                        <thead>
+                            <tr>
+                                <th>Reciever</th>
+                                <th>Sent by User</th>
+                                <th>Sent at</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for invite in invites %}
+                            <tr>
+                                <td>{{ get_name_from_user_id(invite['user_id']) }}</td>
+                                <td>{{ get_name_from_user_id(invite['sender']) }}</td>
+                                <td>{{invite['sent_at']}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="tabs-panel" id="panel4">
+                {{ allianceUserRankings(shortname=shortname) }}
+            </div>
+            <div class="tabs-panel" id="panel5">
                 <form id="leave-form" action="/my/leave" method="POST">
                     <input class="button" type=submit value="Leave Alliance">
                 </form>
             </div>
         </div>
     </div>
-    {% endblock %}
-    {% block script %}
-    $(document).ready(function() {
-    //$("#colorpicker").spectrum({
-    // color: "#f00"
-    //});
-    var simplemde = new SimpleMDE({ element: document.getElementById("charter"),
-    autofocus:true});
+</div>
+
+<script>
+    let simplemde;
     function activateCharterBox() {
-    setTimeout(function() {
-    simplemde.codemirror.refresh();
-    }.bind(simplemde), 0);
+        setTimeout(function () {
+            simplemde.codemirror.refresh();
+        }.bind(simplemde), 0);
     };
 
-    });
-    {% endblock %}
+    window.onload = function () {
+        simplemde = new SimpleMDE({
+            element: document.getElementById("charter"),
+            autofocus: true
+        });
+        activateCharterBox();
+    };
+</script>
+
+{% endblock %}

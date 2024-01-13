@@ -4,7 +4,7 @@ from werkzeug.utils import secure_filename
 import os
 import hashlib
 import screeps_loan.models.alliances as alliances_model
-import screeps_loan.models.invites as invites
+import screeps_loan.models.invites as invites_model
 import screeps_loan.models.users as users_model
 from screeps_loan.routes.decorators import login_required
 from screeps_loan.auth_user import AuthPlayer
@@ -43,7 +43,7 @@ def upload_my_alliance_logo():
         ext = file.filename.rsplit(".", 1)[1]
         filename = filename + "." + ext
         file.save(os.path.join(os.environ["OBJECT_STORAGE"], filename))
-        alliances_model.update_logo_of_alliance(alliance["shortname"], filename)
+        alliances_model.update_logo_of_alliance(alliance["id"], my_id, filename)
         return redirect(url_for("my_alliance"))
 
 
@@ -54,18 +54,22 @@ def update_my_alliance_charter():
     my_id = session["my_id"]
     alliance = users_model.alliance_of_user(my_id)
 
-    alliances_model.update_charter_of_alliance(alliance["shortname"], charter)
+    alliances_model.update_charter_of_alliance(alliance["id"], my_id, charter)
     return redirect(url_for("my_alliance"))
 
 
 @app.route("/my/updateprofile", methods=["POST"])
 @login_required
 def update_my_alliance_profile():
+    import screeps_loan.models.alliances as alliances
+    alliance_query = alliances.AllianceQuery()
+    all_alliances = alliance_query.getAll()
+
     if re.match("^[\w|\s|-]+$", request.form["fullname"]):
         fullname = request.form["fullname"]
     else:
         fullname = None
-
+    
     if re.match("^\w+$", request.form["shortname"]):
         shortname = request.form["shortname"]
     else:
@@ -78,8 +82,13 @@ def update_my_alliance_profile():
 
     my_id = session["my_id"]
     alliance = users_model.alliance_of_user(my_id)
+
+    for oAlliance in all_alliances:
+        if oAlliance["id"] != alliance["id"] and (oAlliance["fullname"] == fullname or oAlliance["shortname"] == shortname or oAlliance["discord_url"] == discord_url):
+            return redirect(url_for("my_alliance"))
+
     alliances_model.update_all_alliances_info(
-        alliance["shortname"], shortname, fullname, discord_url
+        alliance["id"], my_id, shortname, fullname, discord_url
     )
     return redirect(url_for("my_alliance"))
 
@@ -91,7 +100,11 @@ def my_alliance():
     alliance = users_model.alliance_of_user(my_id)
     if alliance is None:
         return render_template("alliance_creation.html")
-    return render_template("my.html", alliance=alliance)
+    
+    invites = invites_model.get_invites_by_alliance(alliance["id"])
+    users = users_model.find_users_by_alliance(alliance['id'])
+
+    return render_template("my.html", alliance=alliance, invites=invites, users=users)
 
 
 @app.route("/my/create", methods=["POST"])
@@ -148,7 +161,7 @@ def invite_to_alliance():
         flash("User is already in an alliance.")
         return redirect(url_for("my_alliance"))
 
-    invites.add_invite(id, alliance["shortname"], my_id)
+    invites_model.add_invite(id, alliance["id"], my_id)
     api.msg_send(
         ign,
         "You are invited to join %s \n\n%s"
@@ -184,8 +197,11 @@ def kick_from_alliance():
     if current_alliance[1] != alliance[1]:
         flash("User is not in your alliance.")
         return redirect(url_for("my_alliance"))
+    if my_id != user_id:
+        flash("You cant kick yourself.")
+        return redirect(url_for("my_alliance"))
 
-    users_model.update_alliance_by_user_id(user_id, None)
+    users_model.update_alliance_by_user_id(user_id)
 
     flash("Successfully kicked user from your alliance")
     return redirect(url_for("my_alliance"))
