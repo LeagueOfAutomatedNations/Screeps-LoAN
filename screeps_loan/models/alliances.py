@@ -242,7 +242,7 @@ def create_an_alliance(user_id, fullname, shortname, color="#000000"):
         cursor.execute(query, (fullname, shortname, color))
         alliance_id = cursor.fetchone()[0]
 
-        query = "UPDATE users SET alliance_id = %s WHERE id = %s"
+        query = "UPDATE users SET alliance_id = %s, alliance_role = 'owner' WHERE id = %s"
         cursor.execute(query, (alliance_id, user_id))
 
         query = "INSERT INTO alliance_history(alliance_FK, user_FK, change_type, change) VALUES(%s, %s, %s, %s)"
@@ -251,6 +251,7 @@ def create_an_alliance(user_id, fullname, shortname, color="#000000"):
         conn.commit()
     except Exception as e:
         conn.rollback()
+
 
 def find_by_shortname(name):
     import psycopg2.extras

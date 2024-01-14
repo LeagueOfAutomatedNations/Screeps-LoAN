@@ -25,6 +25,5 @@ Finally, you can populate the database by doing this:
 ```bash
 flask import-users
 flask import-rankings
-flask import-alliances
 flask import-user-rankings
 ```

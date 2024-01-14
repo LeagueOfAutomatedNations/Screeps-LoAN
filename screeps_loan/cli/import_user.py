@@ -145,6 +145,9 @@ def initdb():
 
 @app.cli.command()
 def import_alliances():
+    click.echo("PANDA says: ATM this is unsupported, the api works but role is unkown, which means owner will not be set and the alliance is broken.")
+    return
+
     click.echo("Start to import alliances from http://localhost:5000/alliances.js")
     import requests as r
     import screeps_loan.models.alliances as alliances_model
@@ -167,8 +170,8 @@ def import_alliances():
         if "color" in info:
             color = info["color"]
         discord = None
-        if "discord" in info:
-            discord = info["discord"]
+        if "discord_url" in info:
+            discord = info["discord_url"]
         alliance_id = alliance_query.find_by_shortname(shortname)
         if alliance_id is None:
             alliance_id = alliance_query.insert_alliance(shortname, fullname, color, discord)
