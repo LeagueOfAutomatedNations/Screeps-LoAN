@@ -25,6 +25,9 @@ ALTER TABLE
 ADD
     CONSTRAINT lnk_alliance_invites_alliances FOREIGN KEY (alliance_id) REFERENCES alliances(id) MATCH FULL ON UPDATE CASCADE ON DELETE CASCADE;
 
-CREATE INDEX index_alliance_id ON alliance_invites USING btree (alliance_id);
-
+DROP INDEX index_alliance_id;
 CREATE INDEX index_alliance_id ON users USING btree (alliance_id);
+
+CREATE INDEX index_alliance_invites_id ON alliance_invites USING btree (alliance_id);
+
+ALTER TABLE alliance_invites ALTER COLUMN sent_at TYPE timestamp(0) without time zone default current_timestamp;

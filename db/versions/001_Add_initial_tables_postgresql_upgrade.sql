@@ -1,17 +1,9 @@
 CREATE TABLE alliances (
     id SERIAL PRIMARY KEY,
     shortname character varying(255) NOT NULL,
-    discord_url text,
+    slack_channel character varying(2044),
     fullname character varying(2044),
     color character varying(15)
-);
-
-CREATE TABLE alliance_history (
-    alliance_FK integer NOT NULL,
-    user_FK integer NOT NULL,
-    timestamp timestamp without time zone DEFAULT current_timestamp NOT NULL,
-    change_type character varying(255) NOT NULL,
-    change text NOT NULL
 );
 
 CREATE TABLE rooms (
@@ -60,7 +52,7 @@ ALTER TABLE
 ADD
     CONSTRAINT users_pkey PRIMARY KEY (id);
 
-CREATE INDEX index_alliance ON users USING btree (alliance);
+CREATE INDEX index_alliance_id ON users USING btree (alliance);
 
 CREATE INDEX index_ign ON users USING btree (ign);
 
