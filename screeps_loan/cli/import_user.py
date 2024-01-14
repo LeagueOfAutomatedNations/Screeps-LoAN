@@ -166,8 +166,8 @@ def import_alliances():
         if "color" in info:
             color = info["color"]
         discord = None
-        if "discord" in info:
-            discord = info["discord"]
+        if "discord_url" in info:
+            discord = info["discord_url"]
         alliance = alliance_query.find_by_shortname(shortname)
         if alliance is None:
             alliance_query.insert_alliance(shortname, fullname, color, discord)
