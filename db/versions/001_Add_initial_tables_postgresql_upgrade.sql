@@ -1,5 +1,4 @@
 CREATE TABLE alliances (
-    id SERIAL PRIMARY KEY,
     shortname character varying(255) NOT NULL,
     slack_channel character varying(2044),
     fullname character varying(2044),

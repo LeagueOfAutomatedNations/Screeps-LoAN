@@ -8,6 +8,10 @@ ALTER TABLE
 ADD
     COLUMN alliance_id integer NOT NULL;
 
+ALTER TABLE
+    alliances 
+ADD
+    COLUMN id SERIAL;
 
 ALTER TABLE ONLY users
 DROP CONSTRAINT lnk_users_alliances;

@@ -2,6 +2,9 @@ ALTER TABLE
     users DROP COLUMN alliance_id;
 
 ALTER TABLE
+    alliances DROP COLUMN id;
+
+ALTER TABLE
     alliance_invites DROP COLUMN alliance_id;
 
 ALTER TABLE ONLY users
