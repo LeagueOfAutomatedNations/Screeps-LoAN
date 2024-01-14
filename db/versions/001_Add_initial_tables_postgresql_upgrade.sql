@@ -26,7 +26,7 @@ CREATE TABLE users (
     login_code character varying(2044),
     login_code_created_at timestamp without time zone,
     screeps_id character varying(50) NOT NULL,
-    alliance_id integer NULL,
+    alliance character varying(255)
 );
 
 CREATE SEQUENCE users_id_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1;
@@ -60,7 +60,7 @@ ALTER TABLE
 ADD
     CONSTRAINT users_pkey PRIMARY KEY (id);
 
-CREATE INDEX index_alliance_id ON users USING btree (alliance);
+CREATE INDEX index_alliance ON users USING btree (alliance);
 
 CREATE INDEX index_ign ON users USING btree (ign);
 
