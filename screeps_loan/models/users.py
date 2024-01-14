@@ -62,26 +62,18 @@ def update_alliance_role_by_user_id(alliance_id, target_user_id, executer_user_i
 def assign_alliance_ownerrole_by_user_id(alliance_id, target_user_id, executer_user_id):
     conn = db.get_conn()
     try:
-        app.logger.info(
-        str(alliance_id) + " " +
-        str(target_user_id) + " " +
-        str(executer_user_id) + " ")
-
         query = "UPDATE users SET alliance_role = 'owner' WHERE id=%s"
         cursor = conn.cursor()
         cursor.execute(query, (target_user_id,))
-        app.logger.info("update success1")
     
         query = "UPDATE users SET alliance_role = 'admin' WHERE id=%s"
         cursor.execute(query, (executer_user_id,))
-        app.logger.info("update success2")
 
         query = "INSERT INTO alliance_history(alliance_FK, user_FK, change_type, change) VALUES(%s, %s, %s, %s)"
         cursor.execute(query, (alliance_id, executer_user_id, "role", "transfered leadership to " + target_user_id))
 
         conn.commit()
     except Exception as e:
-        app.logger.info(e)
         conn.rollback()
 
 def update_alliance_by_user_id(user_id, alliance_id, isKicked=False):
