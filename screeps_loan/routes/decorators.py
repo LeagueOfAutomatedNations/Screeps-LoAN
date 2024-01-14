@@ -3,6 +3,7 @@ import time
 from functools import wraps
 from flask import redirect, url_for, session, make_response
 from wsgiref.handlers import format_date_time
+import screeps_loan.models.users as users_model
 
 
 def login_required(f):
@@ -10,6 +11,34 @@ def login_required(f):
     def decorated_function(*args, **kwargs):
         if "my_id" not in session:
             return redirect(url_for("login"))
+        return f(*args, **kwargs)
+
+    return decorated_function
+
+
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if "my_id" not in session:
+            return redirect(url_for("login"))
+
+        role = users_model.get_user_role(session["my_id"])
+        if role == "member":
+            return redirect(url_for("index"))
+        return f(*args, **kwargs)
+
+    return decorated_function
+
+
+def owner_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if "my_id" not in session:
+            return redirect(url_for("login"))
+
+        role = users_model.get_user_role(session["my_id"])
+        if role != "owner":
+            return redirect(url_for("index"))
         return f(*args, **kwargs)
 
     return decorated_function

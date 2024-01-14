@@ -145,6 +145,9 @@ def initdb():
 
 @app.cli.command()
 def import_alliances():
+    click.echo("PANDA says: ATM this is unsupported, the api works but role is unkown, which means owner will not be set and the alliance is broken.")
+    return
+
     click.echo("Start to import alliances from http://localhost:5000/alliances.js")
     import requests as r
     import screeps_loan.models.alliances as alliances_model

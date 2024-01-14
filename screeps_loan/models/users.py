@@ -9,9 +9,9 @@ class UserQuery:
         result = db.find_all(query, (alliances,))
         return [{"name": row[0], "alliance_id": row[1]} for row in result]
 
-    def update_alliance_by_screeps_id(self, id, alliance_id):
+    def update_alliance_by_screeps_id(self, screeps_id, alliance_id):
         query = "UPDATE users SET alliance_id = %s WHERE screeps_id=%s"
-        db.execute(query, (alliance_id, id))
+        db.execute(query, (alliance_id, screeps_id))
 
 
 def find_name_by_alliance(alliance_id):
@@ -21,7 +21,7 @@ def find_name_by_alliance(alliance_id):
 
 
 def find_users_by_alliance(alliance_id):
-    query = "SELECT ign, combined_rcl, spawncount, gcl_level FROM users where alliance_id = %s"
+    query = "SELECT ign, combined_rcl, spawncount, gcl_level, id, alliance_role, alliance_id FROM users where alliance_id = %s"
     result = db.find_all(query, (alliance_id,))
     return [
         {
@@ -29,20 +29,93 @@ def find_users_by_alliance(alliance_id):
             "combined_rcl": row[1],
             "spawn_count": row[2],
             "gcl_level": row[3],
+            "id": row[4],
+            "alliance_role": row[5],
+            "alliance_id": row[6],
         }
         for row in result
     ]
 
 
-def update_alliance_by_screeps_id(id, alliance_id):
+def leave_alliance_by_user_id(user_id, alliance_id):
+    conn = db.get_conn()
+    try:
+        query = (
+            "UPDATE users SET alliance_id = %s, alliance_role = 'member' WHERE id=%s"
+        )
+        cursor = conn.cursor()
+        cursor.execute(query, (None, user_id))
+
+        query = "INSERT INTO alliance_history(alliance_FK, user_FK, change_type, change) VALUES(%s, %s, %s, %s)"
+        cursor.execute(query, (alliance_id, user_id, "left", ""))
+
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+
+
+def update_alliance_by_screeps_id(screeps_id, alliance_id):
     query = "UPDATE users SET alliance_id = %s WHERE screeps_id=%s"
-    db.execute(query, (alliance_id, id))
+    db.execute(query, (alliance_id, screeps_id))
+
+
+def update_alliance_role_by_user_id(
+    alliance_id, target_user_id, executer_user_id, role
+):
+    conn = db.get_conn()
+    try:
+        query = "UPDATE users SET alliance_role = %s WHERE id=%s"
+        cursor = conn.cursor()
+        cursor.execute(query, (role, target_user_id))
+
+        query = "INSERT INTO alliance_history(alliance_FK, user_FK, change_type, change) VALUES(%s, %s, %s, %s)"
+        cursor.execute(
+            query,
+            (
+                alliance_id,
+                executer_user_id,
+                "role",
+                "changed role to " + role + " for " + str(target_user_id),
+            ),
+        )
+
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+
+
+def assign_alliance_ownerrole_by_user_id(alliance_id, target_user_id, executer_user_id):
+    conn = db.get_conn()
+    try:
+        query = "UPDATE users SET alliance_role = 'owner' WHERE id=%s"
+        cursor = conn.cursor()
+        cursor.execute(query, (target_user_id,))
+
+        query = "UPDATE users SET alliance_role = 'admin' WHERE id=%s"
+        cursor.execute(query, (executer_user_id,))
+
+        query = "INSERT INTO alliance_history(alliance_FK, user_FK, change_type, change) VALUES(%s, %s, %s, %s)"
+        cursor.execute(
+            query,
+            (
+                alliance_id,
+                executer_user_id,
+                "role",
+                "transfered leadership to " + target_user_id,
+            ),
+        )
+
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
 
 
 def update_alliance_by_user_id(user_id, alliance_id, isKicked=False):
     conn = db.get_conn()
     try:
-        query = "UPDATE users SET alliance_id = %s WHERE id=%s"
+        query = (
+            "UPDATE users SET alliance_id = %s, alliance_role = 'member' WHERE id=%s"
+        )
         cursor = conn.cursor()
         cursor.execute(query, (None if isKicked else alliance_id, user_id))
 
@@ -206,3 +279,11 @@ def getUserSpawns(user):
             count += result
 
     return count
+
+
+def get_user_role(user_id):
+    query = "SELECT alliance_role FROM users where id=%s"
+    result = db.find_one(query, (user_id,))
+    if result is not None:
+        return result[0]
+    return None

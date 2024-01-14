@@ -26,7 +26,7 @@ $('.datatable').DataTable({
 {% block content %}
 <div class="row">
     <div class="small-11 columns">
-        <ul class="tabs" data-tabs id="example-tabs">
+        <ul class="tabs" data-tabs id="tabs">
             <div style="float:left; width:52px; height:52px">
                 {% if alliance['logo'] %}
                 <img class="" src="{{url_for('get_obj', filename = alliance['logo']) }}">
@@ -34,14 +34,54 @@ $('.datatable').DataTable({
                 <img class="" src="{{url_for('static', filename = 'img/leaguelogo.png') }}">
                 {% endif %}
             </div>
-            <li class="tabs-title is-active"><a href="#panel1" aria-selected="true">Management</a></li>
+            <li class="tabs-title is-active"><a href="#panel1" aria-selected="true">User rankings</a></li>
             <li class="tabs-title"><a href="#panel2" onclick="activateCharterBox()">Charter</a></li>
             <li class="tabs-title"><a href="#panel3">Invites</a></li>
-            <li class="tabs-title"><a href="#panel4">User rankings</a></li>
+            {% if role != "member" %}
+            <li class="tabs-title"><a href="#panel4">Management</a></li>
+            {% endif %}
             <li class="tabs-title"><a href="#panel5">Leave Alliance</a></li>
         </ul>
-        <div class="tabs-content" data-tabs-content="example-tabs">
+        <div class="tabs-content" data-tabs-content="tabs">
             <div class="tabs-panel is-active" id="panel1">
+                {{ allianceUserRankings(shortname=shortname) }}
+            </div>
+            <div class="tabs-panel" id="panel2">
+                <form id="charter-form" action="/my/updatecharter" method="POST">
+                    <textarea id="charter" name="charter">{{alliance['charter']}}</textarea>
+                    <input type=submit value="Submit">
+                </form>
+            </div>
+            <div class="tabs-panel" id="panel3">
+                <div class="callout primary">
+                    <div class="row column">
+                        <h1 class='text-center'>Invites</h1>
+                        <p class="lead"></p>
+                    </div>
+                </div>
+
+                <div class='row rankings'>
+                    <table role="grid" class="datatable">
+                        <thead>
+                            <tr>
+                                <th>Reciever</th>
+                                <th>Sent by User</th>
+                                <th>Sent at</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for invite in invites %}
+                            <tr>
+                                <td>{{ get_name_from_user_id(invite['user_id']) }}</td>
+                                <td>{{ get_name_from_user_id(invite['sender']) }}</td>
+                                <td>{{invite['sent_at']}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="tabs-panel" id="panel4">
                 <form action="/invite" method="POST">
                     <p> Invite a user to your alliance. NAME IS CASE SENSITIVE</p>
                     <p><input type=text name=username></p>
@@ -83,10 +123,10 @@ $('.datatable').DataTable({
 
                         <div class="large-2 columns">
                             <!--
-                            <label> Alliance Color </label>
-                            <input name="color" type="color"
-                            id='colorpicker' value="{{alliance['color']}}"/>
-                        -->
+                                            <label> Alliance Color </label>
+                                            <input name="color" type="color"
+                                            id='colorpicker' value="{{alliance['color']}}"/>
+                                        -->
                         </div>
 
                     </div>
@@ -98,17 +138,10 @@ $('.datatable').DataTable({
 
                 </form>
 
-            </div>
-            <div class="tabs-panel" id="panel2">
-                <form id="charter-form" action="/my/updatecharter" method="POST">
-                    <textarea id="charter" name="charter">{{alliance['charter']}}</textarea>
-                    <input type=submit value="Submit">
-                </form>
-            </div>
-            <div class="tabs-panel" id="panel3">
+                {% if role == "owner" %}
                 <div class="callout primary">
                     <div class="row column">
-                        <h1 class='text-center'>Invites</h1>
+                        <h1 class='text-center'>Assign rights</h1>
                         <p class="lead"></p>
                     </div>
                 </div>
@@ -117,25 +150,44 @@ $('.datatable').DataTable({
                     <table role="grid" class="datatable">
                         <thead>
                             <tr>
-                                <th>Reciever</th>
-                                <th>Sent by User</th>
-                                <th>Sent at</th>
+                                <th>User</th>
+                                <th>Assign admin</th>
+                                <th>Transfer leadership</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for invite in invites %}
+                            {% for user in users if user['id'] != user_id %}
                             <tr>
-                                <td>{{ get_name_from_user_id(invite['user_id']) }}</td>
-                                <td>{{ get_name_from_user_id(invite['sender']) }}</td>
-                                <td>{{invite['sent_at']}}</td>
+                                <td>{{ get_name_from_user_id(user['id']) }} - {{ user['alliance_role'] }}</td>
+                                <td>
+                                    {% if user['alliance_role'] == "member" %}
+                                    <form action="/my/assignadmin" method="POST">
+                                        <input type=hidden name=user_id value="{{user['id']}}">
+                                        <input type=hidden name=user_alliance_id value="{{user['alliance_id']}}">
+                                        <input class="button" type=submit value="Assign admin">
+                                    </form>
+                                    {% else %}
+                                    <form action="/my/revokeadmin" method="POST">
+                                        <input type=hidden name=user_id value="{{user['id']}}">
+                                        <input type=hidden name=user_alliance_id value="{{user['alliance_id']}}">
+                                        <input class="button" type=submit value="Revoke admin">
+                                    </form>
+                                    {%endif %}
+                                </td>
+                                <td>
+                                    <form action="/my/assignowner" method="POST"
+                                        onsubmit="return confirm('Are you sure you want to transfer ownership, this is not reversible without admin interfering?');">
+                                        <input type=hidden name=user_id value="{{user['id']}}">
+                                        <input type=hidden name=user_alliance_id value="{{user['alliance_id']}}">
+                                        <input class="button" type=submit value="Transfer leadership">
+                                    </form>
+                                </td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
-            </div>
-            <div class="tabs-panel" id="panel4">
-                {{ allianceUserRankings(shortname=shortname) }}
+                {%endif %}
             </div>
             <div class="tabs-panel" id="panel5">
                 <form id="leave-form" action="/my/leave" method="POST">
