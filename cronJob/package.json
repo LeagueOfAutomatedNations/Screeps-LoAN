@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "dockerode": "^4.0.2",
     "node-cron": "^3.0.3",
     "winston": "^3.11.0"
   },
