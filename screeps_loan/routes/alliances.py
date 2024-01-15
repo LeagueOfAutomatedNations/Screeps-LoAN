@@ -57,20 +57,20 @@ def alliance_listing_json():
 def alliance_listing():
     alliance_query = alliances_model.AllianceQuery()
     all_alliances = alliance_query.getAll()
-    alliances_name = [item["shortname"] for item in all_alliances]
-    users_with_alliance = users_model.UserQuery().find_name_by_alliances(alliances_name)
+    alliances_id = [item["id"] for item in all_alliances]
+    users_with_alliance = users_model.UserQuery().find_name_by_alliances(alliances_id)
     display_alliances = []
     for alliance in all_alliances:
-        if not alliance["shortname"]:
+        if not alliance["id"]:
             continue
 
-        if alliances_model.get_room_count(alliance["shortname"]) < 2:
+        if alliances_model.get_room_count(alliance["id"]) < 2:
             continue
 
         alliance["users"] = [
             user
             for user in users_with_alliance
-            if user["alliance"] == alliance["shortname"]
+            if user["alliance_id"] == alliance["id"]
         ]
         if alliance["users"]:
             display_alliances.append(alliance)
@@ -97,7 +97,7 @@ def alliance_profile(shortname):
     alliance_url = "/a/%s.json" % (shortname)
     alliance_url = "/alliances.js"
 
-    users = users_model.find_users_by_alliance(shortname)
+    users = users_model.find_users_by_alliance(alliance["id"])
 
     maxroomshard0 = get_shard_size("shard0")
     maxroomshard1 = get_shard_size("shard1")

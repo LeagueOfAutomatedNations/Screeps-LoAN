@@ -3,7 +3,7 @@
 <div class="callout primary">
     <div class="row column">
         <h1 class='text-center'>Invites</h1>
-        <p  class="lead"></p>
+        <p class="lead"></p>
     </div>
 </div>
 <div>
@@ -35,13 +35,13 @@
                 <thead>
                     <tr>
                         <th>Alliance</th>
-                        <th>User</th>
+                        <th>Sent by User</th>
                         <th> </th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for invite in invites %}
-                    <td>{{ get_name_from_shortname(invite['alliance']) }}</td>
+                    <td>{{ get_name_from_alliance_id(invite['alliance_id']) }}</td>
                     <td>{{ get_name_from_user_id(invite['sender']) }}</td>
                     <td>
                         <a href="{{url_for('invite_accept', inviteid=invite['id'])}}" data-confirmation-modal="#confirmationModalAccept" class="oneclickconfirm">

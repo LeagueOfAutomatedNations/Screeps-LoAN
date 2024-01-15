@@ -1,4 +1,4 @@
-{% macro allianceUserRankings(alliance_url='/alliances.js', shortname=none) -%}
+{% macro allianceUserRankings(shortname=none) -%}
 
 <div>
     <div class="callout primary">
@@ -13,6 +13,7 @@
                 <tr>
                     <th>Rank</th>
                     <th>User</th>
+                    <th>Role</th>
                     <th>GCL Level</th>
                     <th>Combined RCL</th>
                     <th>Spawn Count</th>
@@ -23,6 +24,7 @@
                 <tr>
                     <td>{{loop.index}}</td>
                     <td><a href="https://screeps.com/a/#!/profile/{{user['ign']}}">{{user['ign']}}</a></td>
+                    <td>{{user['alliance_role']}}</td>
                     <td>{{user['gcl_level']}}</td>
                     <td>{{user['combined_rcl']}}</td>
                     <td>{{user['spawn_count']}}</td>

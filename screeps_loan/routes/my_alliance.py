@@ -4,9 +4,13 @@ from werkzeug.utils import secure_filename
 import os
 import hashlib
 import screeps_loan.models.alliances as alliances_model
-import screeps_loan.models.invites as invites
+import screeps_loan.models.invites as invites_model
 import screeps_loan.models.users as users_model
-from screeps_loan.routes.decorators import login_required
+from screeps_loan.routes.decorators import (
+    login_required,
+    admin_required,
+    owner_required,
+)
 from screeps_loan.auth_user import AuthPlayer
 import screeps_loan.screeps_client as screeps_client
 import re
@@ -18,7 +22,7 @@ def allowed_file(filename):
 
 
 @app.route("/my/uploadlogo", methods=["POST"])
-@login_required
+@admin_required
 def upload_my_alliance_logo():
     # check if the post request has the file part
     my_id = session["my_id"]
@@ -41,24 +45,29 @@ def upload_my_alliance_logo():
         ext = file.filename.rsplit(".", 1)[1]
         filename = filename + "." + ext
         file.save(os.path.join(os.environ["OBJECT_STORAGE"], filename))
-        alliances_model.update_logo_of_alliance(alliance["shortname"], filename)
+        alliances_model.update_logo_of_alliance(alliance["id"], my_id, filename)
         return redirect(url_for("my_alliance"))
 
 
 @app.route("/my/updatecharter", methods=["POST"])
-@login_required
+@admin_required
 def update_my_alliance_charter():
     charter = request.form["charter"]
     my_id = session["my_id"]
     alliance = users_model.alliance_of_user(my_id)
 
-    alliances_model.update_charter_of_alliance(alliance["shortname"], charter)
+    alliances_model.update_charter_of_alliance(alliance["id"], my_id, charter)
     return redirect(url_for("my_alliance"))
 
 
 @app.route("/my/updateprofile", methods=["POST"])
-@login_required
+@admin_required
 def update_my_alliance_profile():
+    import screeps_loan.models.alliances as alliances
+
+    alliance_query = alliances.AllianceQuery()
+    all_alliances = alliance_query.getAll()
+
     if re.match("^[\w|\s|-]+$", request.form["fullname"]):
         fullname = request.form["fullname"]
     else:
@@ -69,15 +78,31 @@ def update_my_alliance_profile():
     else:
         shortname = None
 
-    if re.match("^[\w|-]+$", request.form["discord_url"]):
+    url_regex = re.compile(
+        r"^(?:https?://)?"  # optional "http://" or "https://"
+        r"(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+discord\.com"  # "discord.com" domain
+        r"(?:/?|[/?]\S+)$",
+        re.IGNORECASE,
+    )
+
+    if re.match(url_regex, request.form["discord_url"]):
         discord_url = request.form["discord_url"]
     else:
         discord_url = None
 
     my_id = session["my_id"]
     alliance = users_model.alliance_of_user(my_id)
+
+    for oAlliance in all_alliances:
+        if oAlliance["id"] != alliance["id"] and (
+            oAlliance["fullname"] == fullname
+            or oAlliance["shortname"] == shortname
+            or oAlliance["discord_url"] == discord_url
+        ):
+            return redirect(url_for("my_alliance"))
+
     alliances_model.update_all_alliances_info(
-        alliance["shortname"], shortname, fullname, discord_url
+        alliance["id"], my_id, shortname, fullname, discord_url
     )
     return redirect(url_for("my_alliance"))
 
@@ -89,7 +114,19 @@ def my_alliance():
     alliance = users_model.alliance_of_user(my_id)
     if alliance is None:
         return render_template("alliance_creation.html")
-    return render_template("my.html", alliance=alliance)
+
+    invites = invites_model.get_invites_by_alliance(alliance["id"])
+    users = users_model.find_users_by_alliance(alliance["id"])
+    role = users_model.get_user_role(my_id)
+
+    return render_template(
+        "my.html",
+        user_id=my_id,
+        alliance=alliance,
+        invites=invites,
+        users=users,
+        role=role,
+    )
 
 
 @app.route("/my/create", methods=["POST"])
@@ -110,12 +147,20 @@ def create_an_alliance():
 @app.route("/my/leave", methods=["POST"])
 @login_required
 def leave_alliance():
-    users_model.update_alliance_by_screeps_id(session["screeps_id"], None)
-    return redirect(url_for("my_alliance"))
+    user_id = session["my_id"]
+
+    alliance = users_model.alliance_of_user(user_id)
+    if alliance is None:
+        return "You are not in an alliance, can't leave"
+
+    alliance_id = alliance["id"]
+    users_model.leave_alliance_by_user_id(user_id, alliance_id)
+
+    return redirect(url_for("index"))
 
 
 @app.route("/invite", methods=["POST"])
-@login_required
+@admin_required
 def invite_to_alliance():
     my_id = session["my_id"]
     alliance = users_model.alliance_of_user(my_id)
@@ -146,7 +191,7 @@ def invite_to_alliance():
         flash("User is already in an alliance.")
         return redirect(url_for("my_alliance"))
 
-    invites.add_invite(id, alliance["shortname"], my_id)
+    invites_model.add_or_update_invite(id, alliance["id"], my_id)
     api.msg_send(
         ign,
         "You are invited to join %s \n\n%s"
@@ -182,8 +227,80 @@ def kick_from_alliance():
     if current_alliance[1] != alliance[1]:
         flash("User is not in your alliance.")
         return redirect(url_for("my_alliance"))
+    if my_id == user_id:
+        flash("You cant kick yourself.")
+        return redirect(url_for("my_alliance"))
 
-    users_model.update_alliance_by_user_id(user_id, None)
+    users_model.update_alliance_by_user_id(user_id, alliance["id"], True)
 
     flash("Successfully kicked user from your alliance")
+    return redirect(url_for("my_alliance"))
+
+
+@app.route("/my/assignadmin", methods=["POST"])
+@owner_required
+def assign_admin_to_user():
+    my_id = session["my_id"]
+
+    target_user_id = request.form["user_id"]
+    user_alliance_id = request.form["user_alliance_id"]
+
+    if (
+        users_model.alliance_of_user(my_id)["id"]
+        != users_model.alliance_of_user(target_user_id)["id"]
+    ):
+        return "User is not in your alliance"
+
+    users_model.update_alliance_role_by_user_id(
+        user_alliance_id, target_user_id, my_id, "admin"
+    )
+
+    flash("Successfully assigned admin for user")
+
+    return redirect(url_for("my_alliance"))
+
+
+@app.route("/my/revokeadmin", methods=["POST"])
+@owner_required
+def revoke_admin_from_user():
+    my_id = session["my_id"]
+
+    target_user_id = request.form["user_id"]
+    user_alliance_id = request.form["user_alliance_id"]
+
+    if (
+        users_model.alliance_of_user(my_id)["id"]
+        != users_model.alliance_of_user(target_user_id)["id"]
+    ):
+        return "User is not in your alliance"
+
+    users_model.update_alliance_role_by_user_id(
+        user_alliance_id, target_user_id, my_id, "member"
+    )
+
+    flash("Successfully revoked admin for user")
+
+    return redirect(url_for("my_alliance"))
+
+
+@app.route("/my/assignowner", methods=["POST"])
+@owner_required
+def transfer_leadership_to_user():
+    my_id = session["my_id"]
+
+    target_user_id = request.form["user_id"]
+    user_alliance_id = request.form["user_alliance_id"]
+
+    if (
+        users_model.alliance_of_user(my_id)["id"]
+        != users_model.alliance_of_user(target_user_id)["id"]
+    ):
+        return "User is not in your alliance"
+
+    users_model.assign_alliance_ownerrole_by_user_id(
+        user_alliance_id, target_user_id, my_id
+    )
+
+    flash("Successfully transfered owner to user")
+
     return redirect(url_for("my_alliance"))

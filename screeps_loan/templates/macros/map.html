@@ -1,4 +1,4 @@
-{% macro map(alliance_url='/alliances.js', shard='shard0', maxroom=100, shortname=none, grouptype=none,
+{% macro map(shard='shard0', maxroom=100, shortname=none, grouptype=none,
 unaffiliated=none, disablelabels=none) -%}
 
 <div class="unit whole">
@@ -44,7 +44,7 @@ unaffiliated=none, disablelabels=none) -%}
             });
         mapView.setSpinnerVisibile(true);
         $.when(
-            $.getJSON('{{ alliance_url }}', {}, function (data) {
+            $.getJSON('/map/{{ shard }}/alliances.js', {}, function (data) {
                 console.log('alliance data loaded')
                 alliance_data = data
             }),
