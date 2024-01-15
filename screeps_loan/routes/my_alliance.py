@@ -78,14 +78,7 @@ def update_my_alliance_profile():
     else:
         shortname = None
 
-    url_regex = re.compile(
-        r"^(?:https?://)?"  # optional "http://" or "https://"
-        r"(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+discord\.com"  # "discord.com" domain
-        r"(?:/?|[/?]\S+)$",
-        re.IGNORECASE,
-    )
-
-    if re.match(url_regex, request.form["discord_url"]):
+    if re.match(r'\b(?:https?://)?(?:www\.)?(?:discord\.com|discord\.gg)/([a-zA-Z0-9-]+)\b', request.form["discord_url"]):
         discord_url = request.form["discord_url"]
     else:
         discord_url = None
