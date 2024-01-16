@@ -169,11 +169,8 @@ ORDER BY
         return None
 
     def find_shortname_by_id(self, alliance_id):
-        from screeps_loan import app
         query = "SELECT shortname from alliances where id=%s"
         result = db.find_one(query, (alliance_id,))
-        app.logger.info(alliance_id)
-        app.logger.info(result)
 
         if result is not None:
             return result[0]

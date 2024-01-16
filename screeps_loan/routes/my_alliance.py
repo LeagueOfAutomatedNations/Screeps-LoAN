@@ -66,7 +66,6 @@ def update_my_alliance_profile():
     import screeps_loan.models.alliances as alliances
 
     alliance_query = alliances.AllianceQuery()
-    all_alliances = alliance_query.getAll()
 
     if re.match("^[\w|\s|-]+$", request.form["fullname"]):
         fullname = request.form["fullname"]
@@ -86,6 +85,7 @@ def update_my_alliance_profile():
     my_id = session["my_id"]
     alliance = users_model.alliance_of_user(my_id)
 
+    all_alliances = alliance_query.getAll()
     for oAlliance in all_alliances:
         if oAlliance["id"] != alliance["id"] and (
             oAlliance["fullname"] == fullname
@@ -132,6 +132,12 @@ def create_an_alliance():
         shortname = request.form["shortname"]
     else:
         shortname = re.sub(r"\w+", "", request.form["shortname"])
+
+    alliance_query = alliances_model.AllianceQuery()
+    all_alliances = alliance_query.getAll()
+    for oAlliance in all_alliances:
+        if oAlliance["fullname"] == fullname or oAlliance["shortname"] == shortname:
+            return redirect(url_for("alliance_creation"))
 
     alliances_model.create_an_alliance(my_id, fullname, shortname)
     return redirect(url_for("my_alliance"))
