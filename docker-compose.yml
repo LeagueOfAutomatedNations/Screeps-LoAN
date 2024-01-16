@@ -1,4 +1,11 @@
 version: '3'
+
+x-logging: &default-logging
+  driver: "local"
+  options:
+    max-size: "20m"
+    max-file: "5"
+
 services:
   loan:
     platform: linux/x86_64
@@ -24,3 +31,16 @@ services:
       test: [ "CMD-SHELL", "pg_isready", "-U", "screeps" ]
     ports:
       - 127.0.0.1:5432:5432
+  pgbackups:
+    image: kartoza/pg-backup:14-3.2
+    restart: always
+    logging: *default-logging
+    depends_on:
+      - postgres
+    environment:
+        - POSTGRES_USER=${DB_USERNAME}
+        - POSTGRES_PASS=${DB_PASSWORD}
+        - POSTGRES_DB=${DB}
+        - POSTGRES_HOST=postgres
+    volumes:
+        - /var/opt/pgbackups:/backups

@@ -57,29 +57,6 @@ services:
     ports:
       - 5434:5432
   pgbackups:
-    image: prodrigestivill/postgres-backup-local
-    restart: always
-    volumes:
-        - /var/opt/pgbackupsLoAN:/backups
-    logging: *default-logging
-    links:
-      - postgresLoAN
-    depends_on:
-      - postgresLoAN
-    networks:
-      - traefik-net
-    environment:
-        - POSTGRES_HOST=postgresLoAN
-        - POSTGRES_DB=${DB}
-        - POSTGRES_USER=${DB_USERNAME}
-        - POSTGRES_PASSWORD=${DB_PASSWORD}
-        - POSTGRES_EXTRA_OPTS=-Z6 --schema=public --blobs
-        - SCHEDULE=@daily
-        - BACKUP_KEEP_DAYS=7
-        - BACKUP_KEEP_WEEKS=4
-        - BACKUP_KEEP_MONTHS=12
-        - HEALTHCHECK_PORT=8080
-  pgbackups2:
     image: kartoza/pg-backup:14-3.2
     restart: always
     logging: *default-logging
@@ -90,11 +67,13 @@ services:
     environment:
         - POSTGRES_USER=${DB_USERNAME}
         - POSTGRES_PASS=${DB_PASSWORD}
+        - POSTGRES_DB=${DB}
         - POSTGRES_HOST=postgresLoAN
     volumes:
-        - /var/opt/pgbackups2LoAN:/backups
+        - /var/opt/pgbackups:/backups
   cronjob:
     build: cronJob
+    logging: *default-logging
     restart: unless-stopped
     extra_hosts:
       - "host.docker.internal:host-gateway"

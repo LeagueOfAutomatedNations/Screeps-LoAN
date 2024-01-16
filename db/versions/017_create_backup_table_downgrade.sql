@@ -1,0 +1,1 @@
+DROP DATABASE screeps_backup;
