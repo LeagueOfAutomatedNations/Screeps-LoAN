@@ -127,6 +127,7 @@ class Rankings(object):
             )
 
             self.update(
+                alliance["shortname"],
                 alliance["id"],
                 alliance_gcl,
                 combined_gcl,
@@ -156,6 +157,7 @@ class Rankings(object):
 
     def update(
         self,
+        alliance,
         alliance_id,
         alliance_gcl,
         combined_gcl,
@@ -168,11 +170,12 @@ class Rankings(object):
     ):
         # Store info in db
         cursor = self.conn.cursor()
-        query = "INSERT INTO rankings(import, alliance, alliance_gcl, combined_gcl, average_gcl, rcl, spawns, members, alliance_power, combined_power) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        query = "INSERT INTO rankings(import, alliance, alliance_id, alliance_gcl, combined_gcl, average_gcl, rcl, spawns, members, alliance_power, combined_power) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
         cursor.execute(
             query,
             (
                 self.id,
+                alliance,
                 alliance_id,
                 alliance_gcl,
                 combined_gcl,

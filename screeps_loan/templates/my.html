@@ -34,54 +34,18 @@ $('.datatable').DataTable({
                 <img class="" src="{{url_for('static', filename = 'img/leaguelogo.png') }}">
                 {% endif %}
             </div>
-            <li class="tabs-title is-active"><a href="#panel1" aria-selected="true">User rankings</a></li>
-            <li class="tabs-title"><a href="#panel2" onclick="activateCharterBox()">Charter</a></li>
-            <li class="tabs-title"><a href="#panel3">Invites</a></li>
             {% if role != "member" %}
-            <li class="tabs-title"><a href="#panel4">Management</a></li>
+            <li class="tabs-title is-active"><a href="#panel1" aria-selected="true">Management</a></li>
+            <li class="tabs-title"><a href="#panel2">User rankings</a></li>
+            {% else %}
+            <li class="tabs-title is-active"><a href="#panel2" aria-selected="true">User rankings</a></li>
             {% endif %}
+            <li class="tabs-title"><a href="#panel3" onclick="activateCharterBox()">Charter</a></li>
+            <li class="tabs-title"><a href="#panel4">Invites</a></li>
             <li class="tabs-title"><a href="#panel5">Leave Alliance</a></li>
         </ul>
         <div class="tabs-content" data-tabs-content="tabs">
             <div class="tabs-panel is-active" id="panel1">
-                {{ allianceUserRankings(shortname=shortname) }}
-            </div>
-            <div class="tabs-panel" id="panel2">
-                <form id="charter-form" action="/my/updatecharter" method="POST">
-                    <textarea id="charter" name="charter">{{alliance['charter']}}</textarea>
-                    <input type=submit value="Submit">
-                </form>
-            </div>
-            <div class="tabs-panel" id="panel3">
-                <div class="callout primary">
-                    <div class="row column">
-                        <h1 class='text-center'>Invites</h1>
-                        <p class="lead"></p>
-                    </div>
-                </div>
-
-                <div class='row rankings'>
-                    <table role="grid" class="datatable">
-                        <thead>
-                            <tr>
-                                <th>Reciever</th>
-                                <th>Sent by User</th>
-                                <th>Sent at</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for invite in invites %}
-                            <tr>
-                                <td>{{ get_name_from_user_id(invite['user_id']) }}</td>
-                                <td>{{ get_name_from_user_id(invite['sender']) }}</td>
-                                <td>{{invite['sent_at']}}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="tabs-panel" id="panel4">
                 <form action="/invite" method="POST">
                     <p> Invite a user to your alliance. NAME IS CASE SENSITIVE</p>
                     <p><input type=text name=username></p>
@@ -123,10 +87,10 @@ $('.datatable').DataTable({
 
                         <div class="large-2 columns">
                             <!--
-                                            <label> Alliance Color </label>
-                                            <input name="color" type="color"
-                                            id='colorpicker' value="{{alliance['color']}}"/>
-                                        -->
+                                                                    <label> Alliance Color </label>
+                                                                    <input name="color" type="color"
+                                                                    id='colorpicker' value="{{alliance['color']}}"/>
+                                                                -->
                         </div>
 
                     </div>
@@ -188,6 +152,44 @@ $('.datatable').DataTable({
                     </table>
                 </div>
                 {%endif %}
+            </div>
+            <div class="tabs-panel" id="panel2">
+                {{ allianceUserRankings(shortname=shortname) }}
+            </div>
+            <div class="tabs-panel" id="panel3">
+                <form id="charter-form" action="/my/updatecharter" method="POST">
+                    <textarea id="charter" name="charter">{{alliance['charter']}}</textarea>
+                    <input type=submit value="Submit">
+                </form>
+            </div>
+            <div class="tabs-panel" id="panel4">
+                <div class="callout primary">
+                    <div class="row column">
+                        <h1 class='text-center'>Invites</h1>
+                        <p class="lead"></p>
+                    </div>
+                </div>
+
+                <div class='row rankings'>
+                    <table role="grid" class="datatable">
+                        <thead>
+                            <tr>
+                                <th>Reciever</th>
+                                <th>Sent by User</th>
+                                <th>Sent at</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for invite in invites %}
+                            <tr>
+                                <td>{{ get_name_from_user_id(invite['user_id']) }}</td>
+                                <td>{{ get_name_from_user_id(invite['sender']) }}</td>
+                                <td>{{invite['sent_at']}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <div class="tabs-panel" id="panel5">
                 <form id="leave-form" action="/my/leave" method="POST">

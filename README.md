@@ -27,3 +27,8 @@ flask import-users
 flask import-rankings
 flask import-user-rankings
 ```
+
+You can restore a database from a backup file like if the following file exist, replace YOUR_PASSWORD with your db password.
+```bash
+docker-compose exec -e POSTGRES_HOST='postgres' -e POSTGRES_PASS='YOUR_PASSWORD' -e TARGET_ARCHIVE='/backups/2024/January/PG_screeps.15-January-2024.dmp' -e TARGET_DB='screeps_backup' pgbackups /backup-scripts/restore.sh
+```

@@ -5,6 +5,11 @@ ADD
     COLUMN alliance_id integer NULL;
 
 ALTER TABLE
+    rankings
+ADD
+    COLUMN alliance_id integer NULL;
+
+ALTER TABLE
     alliance_invites
 ADD
     COLUMN alliance_id integer NOT NULL;

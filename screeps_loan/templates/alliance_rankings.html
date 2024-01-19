@@ -48,10 +48,11 @@ $('.datatable').DataTable({
                 {% for ranking in rankings %}
                 <tr>
                     <td>{{loop.index}}</td>
-                    {% set longname = get_name_from_alliance_id(ranking['alliance_id']) %}
+                    <td>{{ ranking['alliance_id'] }}</td>
+                    <!-- {% set longname = get_name_from_alliance_id(ranking['alliance_id']) %}
                     {% set shortname = get_shortname_from_alliance_id(ranking['alliance_id']) %}
                     <td><a href="{{url_for('alliance_profile', shortname = shortname) }}">{{longname}}</a>
-                    </td>
+                    </td> -->
                     <td>{{ranking['alliance_gcl']}}</td>
                     <td>{{ranking['combined_gcl']}}</td>
                     <td>{{ranking['average_gcl']}}</td>

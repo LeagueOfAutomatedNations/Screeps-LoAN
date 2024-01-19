@@ -3,6 +3,9 @@ ALTER TABLE
     users DROP COLUMN alliance_id;
 
 ALTER TABLE
+    rankings DROP COLUMN alliance_id;
+
+ALTER TABLE
     alliance_invites DROP COLUMN alliance_id;
 
 ALTER TABLE

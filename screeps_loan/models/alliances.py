@@ -168,6 +168,14 @@ ORDER BY
             return result[0]
         return None
 
+    def find_shortname_by_id(self, alliance_id):
+        query = "SELECT shortname from alliances where id=%s"
+        result = db.find_one(query, (alliance_id,))
+
+        if result is not None:
+            return result[0]
+        return None
+
     def find_by_id(self, alliance_id):
         query = "SELECT fullname from alliances where id=%s"
         result = db.find_one(query, (alliance_id,))
@@ -283,15 +291,6 @@ def find_by_shortname(name):
     cursor.execute(query, (name,))
     result = cursor.fetchone()
     return result
-
-
-@cache.cache()
-def find_shortname_by_id(alliance_id):
-    query = "SELECT shortname from alliances where id=%s"
-    result = db.find_one(query, (alliance_id,))
-    if result is not None:
-        return result[0]
-    return None
 
 
 @cache.cache()

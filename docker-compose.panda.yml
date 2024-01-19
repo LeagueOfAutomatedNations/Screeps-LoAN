@@ -24,19 +24,20 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik-net"
-      - "traefik.http.routers.loan.rule=Host(`loan.pandascreeps.com`)"
-      - "traefik.http.routers.loan.entrypoints=websecure"
-      - "traefik.http.routers.loan.tls.certresolver=letsencrypt"
-      - "traefik.http.middlewares.loan-redirect-web-secure.redirectscheme.scheme=https"
-      - "traefik.http.routers.loan.middlewares=loan-redirect-web-secure"
-      - "traefik.http.routers.loanExternal.rule=Host(`leagueofautomatednations.com`)"
-      - "traefik.http.routers.loanExternal.entrypoints=websecure"
-      - "traefik.http.routers.loanExternal.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.loanExternal2.rule=Host(`www.leagueofautomatednations.com`)"
-      - "traefik.http.routers.loanExternal2.entrypoints=websecure"
-      - "traefik.http.routers.loanExternal2.tls.certresolver=letsencrypt"
-      - "traefik.http.middlewares.loanExternal2-redirect-web-secure.redirectscheme.scheme=https"
-      - "traefik.http.routers.loanExternal2.middlewares=loanExternal2-redirect-web-secure"
+      
+      - "traefik.http.routers.loan-https.rule=Host(`loan.pandascreeps.com`)"
+      - "traefik.http.routers.loan-https.entrypoints=websecure"
+      - "traefik.http.routers.loan-https.tls.certresolver=letsencrypt"
+
+      - "traefik.http.routers.loan-http.rule=Host(`loan.pandascreeps.com`)"
+      - "traefik.http.routers.loan-http.entrypoints=web"
+
+      - "traefik.http.routers.loanExternal-https.rule=Host(`www.leagueofautomatednations.com`)"
+      - "traefik.http.routers.loanExternal-https.entrypoints=websecure"
+      - "traefik.http.routers.loanExternal-https.tls.certresolver=letsencrypt"
+
+      - "traefik.http.routers.loanExternal-http.rule=Host(`www.leagueofautomatednations.com`)"
+      - "traefik.http.routers.loanExternal-http.entrypoints=web"
     logging: *default-logging
     ports:
       - 5002:5000
@@ -56,30 +57,23 @@ services:
     ports:
       - 127.0.0.1:5434:5432
   pgbackups:
-    image: prodrigestivill/postgres-backup-local
+    image: kartoza/pg-backup:14-3.2
     restart: always
-    volumes:
-        - /var/opt/pgbackupsLoAN:/backups
     logging: *default-logging
-    links:
-      - postgresLoAN
     depends_on:
       - postgresLoAN
     networks:
       - traefik-net
     environment:
-        - POSTGRES_HOST=postgresLoAN
-        - POSTGRES_DB=${DB}
         - POSTGRES_USER=${DB_USERNAME}
-        - POSTGRES_PASSWORD=${DB_PASSWORD}
-        - POSTGRES_EXTRA_OPTS=-Z6 --schema=public --blobs
-        - SCHEDULE=@daily
-        - BACKUP_KEEP_DAYS=7
-        - BACKUP_KEEP_WEEKS=4
-        - BACKUP_KEEP_MONTHS=12
-        - HEALTHCHECK_PORT=8080
+        - POSTGRES_PASS=${DB_PASSWORD}
+        - POSTGRES_DB=${DB}
+        - POSTGRES_HOST=postgresLoAN
+    volumes:
+        - /var/opt/pgbackups:/backups
   cronjob:
     build: cronJob
+    logging: *default-logging
     restart: unless-stopped
     extra_hosts:
       - "host.docker.internal:host-gateway"
